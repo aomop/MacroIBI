@@ -29,11 +29,18 @@ jobs:
           r-version: 'release'
           use-public-rspm: true
       
-      - name: Install system libs (GLPK for igraph)
+      - name: Install system libs (magick + igraph)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libglpk40 || sudo apt-get install -y libglpk-dev
+          #  igraph runtime:
+          sudo apt-get install -y libglpk40
+          # ImageMagick 6 Q16 runtimes on Ubuntu 24.04 (t64 ABI):
+          sudo apt-get install -y \
+            imagemagick-6.q16 \
+            libmagick++-6.q16-9t64 \
+            libmagickcore-6.q16-7t64 \
+            libmagickwand-6.q16-7t64
 
       - name: Setup Pandoc (for any vignettes/reports)
         uses: r-lib/actions/setup-pandoc@v2
