@@ -28,6 +28,12 @@ jobs:
         with:
           r-version: 'release'
           use-public-rspm: true
+      
+      - name: Install system libs (GLPK for igraph)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglpk40 || sudo apt-get install -y libglpk-dev
 
       - name: Setup Pandoc (for any vignettes/reports)
         uses: r-lib/actions/setup-pandoc@v2
