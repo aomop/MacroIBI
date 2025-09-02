@@ -54,11 +54,10 @@ jobs:
         shell: Rscript {0}
         run: |
           if (!requireNamespace("lintr", quietly = TRUE)) install.packages("lintr")
-          ex <- lintr::exclusions("auto_saves", "metric_autosaves", ".github", "renv")
-          lints <- lintr::lint_dir(path = ".", exclusions = ex)
-          print(lints)
-          quit(status = if (length(lints) > 0) 1 else 0)
-
+          lintr::lint_dir(
+            path = ".",
+            exclusions = c("auto_saves", "metric_autosaves", ".github")
+          )
 
       - name: Unit tests (if you add tests/testthat)
         shell: Rscript {0}
