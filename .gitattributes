@@ -1,0 +1,9 @@
+* text=auto
+*.R text
+*.r text
+*.Rmd text
+*.qmd text
+*.css text
+*.js text
+*.html text
+*.md text

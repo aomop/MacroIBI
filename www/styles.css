@@ -1,0 +1,43 @@
+#submit_btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#submit_btn:hover {
+  background-color: #45a049;
+}
+
+#edit_btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#edit_btn:hover {
+  background-color: #0b7dda;
+}
+
+/* Style for dynamically created delete buttons */
+.delete-btn {
+  background-color: #CD3333; /* Red background for delete action */
+  color: white;             /* White text for contrast */
+  border: none;             /* Remove default border */
+  padding: 5px 10px;        /* Adjust padding for button size */
+  border-radius: 3px;       /* Rounded corners */
+  font-size: 14px;          /* Adjust font size */
+  cursor: pointer;          /* Change cursor to pointer for hover effect */
+  transition: background-color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.delete-btn:hover {
+  background-color: #d9363e; /* Darker red for hover effect */
+}
