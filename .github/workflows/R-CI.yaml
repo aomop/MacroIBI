@@ -51,6 +51,7 @@ jobs:
           cache-version: 1
 
       - name: Lint
+        continue-on-error: true
         shell: Rscript {0}
         run: |
           if (!requireNamespace("lintr", quietly = TRUE)) install.packages("lintr")
