@@ -50,14 +50,15 @@ jobs:
         with:
           cache-version: 1
 
-      - name: Lint (skip noisy dirs)
+      - name: Lint (skip generated/vendor dirs)
         shell: Rscript {0}
         run: |
           if (!requireNamespace("lintr", quietly = TRUE)) install.packages("lintr")
-          lintr::lint_dir(
-            path = ".",
-            exclusions = c("auto_saves", "metric_autosaves", ".github")
-          )
+          ex <- lintr::exclusions("auto_saves", "metric_autosaves", ".github", "renv")
+          lints <- lintr::lint_dir(path = ".", exclusions = ex)
+          print(lints)
+          quit(status = if (length(lints) > 0) 1 else 0)
+
 
       - name: Unit tests (if you add tests/testthat)
         shell: Rscript {0}
