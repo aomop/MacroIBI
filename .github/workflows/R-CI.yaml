@@ -32,17 +32,10 @@ jobs:
       - name: Setup Pandoc (for any vignettes/reports)
         uses: r-lib/actions/setup-pandoc@v2
 
-      # If you use renv, swap the next two steps for the renv block below.
-      - name: Install R packages with pak (auto-detects deps)
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Setup renv & restore
+        uses: r-lib/actions/setup-renv@v2
         with:
-          # Add any extra CI-only tools here
-          extra-packages: |
-            any::testthat
-            any::lintr
-            any::shinytest2
-          # For non-packages (apps), use "needs: install" or "needs: check"; both work.
-          needs: check
+          cache-version: 1
 
       - name: Lint (skip noisy dirs)
         shell: Rscript {0}
