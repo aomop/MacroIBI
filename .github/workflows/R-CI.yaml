@@ -1,0 +1,80 @@
+name: R CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+# Cancel older runs on the same branch to save time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # Lets pak/Actions install from GitHub if you ever depend on GitHub packages
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'stable'
+          use-public-rspm: true
+
+      - name: Setup Pandoc (for any vignettes/reports)
+        uses: r-lib/actions/setup-pandoc@v2
+
+      # If you use renv, swap the next two steps for the renv block below.
+      - name: Install R packages with pak (auto-detects deps)
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          # Add any extra CI-only tools here
+          extra-packages: |
+            any::testthat
+            any::lintr
+            any::shinytest2
+          # For non-packages (apps), use "needs: install" or "needs: check"; both work.
+          needs: check
+
+      - name: Lint (skip noisy dirs)
+        shell: Rscript {0}
+        run: |
+          if (!requireNamespace("lintr", quietly = TRUE)) install.packages("lintr")
+          lintr::lint_dir(
+            path = ".",
+            exclusions = c("auto_saves", "metric_autosaves", ".github")
+          )
+
+      - name: Unit tests (if you add tests/testthat)
+        shell: Rscript {0}
+        run: |
+          if (requireNamespace("testthat", quietly = TRUE) && dir.exists("tests")) {
+            testthat::test_dir("tests", reporter = c("progress", "summary"))
+          } else {
+            message("No tests/ dir; skipping testthat.")
+          }
+
+      - name: Shiny UI smoke test (headless)
+        shell: Rscript {0}
+        run: |
+          if (requireNamespace("shinytest2", quietly = TRUE)) {
+            # Minimal app load test; record snapshots if present.
+            # If you add shinytest2 tests under tests/testthat, this will run them.
+            if (dir.exists("tests/testthat")) {
+              shinytest2::test_app(".", load_timeout = 10000)
+            } else {
+              # Super-light "does the app start" check:
+              app <- shinytest2::AppDriver$new(".", load_timeout = 10000)
+              app$stop()
+            }
+          } else {
+            message("shinytest2 not available; skipping.")
+          }
