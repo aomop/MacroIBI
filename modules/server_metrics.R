@@ -3,9 +3,9 @@
 # --------------------------------------------------------------------
 # This module provides a UI placeholder for rendering a table that will display various metric scores.
 ui_metric_scores <- function(id) {
-  ns <- NS(id)  # Namespace for the module
-  tagList(
-    DTOutput(ns("metric_scores_table"))  # Placeholder for the metric scores table
+  ns <- shiny::NS(id)  # Namespace for the module
+  shiny::tagList(
+    DT::DTOutput(ns("metric_scores_table"))  # Placeholder for the metric scores table
   )
 }
 
@@ -14,11 +14,11 @@ ui_metric_scores <- function(id) {
 # --------------------------------------------------------------------
 # This server module calculates and displays the IBI metric scores.
 server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, group_totals, grand_total_observations) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns # Namespace for managing IDs within this module
-    
+
     # Initialize reactive values to store data for metrics
-    metric_scores <- reactiveValues(
+    metric_scores <- shiny::reactiveValues(
       data = data.frame(
         metric_name = c(
           "EOT Taxa: ", 
@@ -39,12 +39,12 @@ server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, gr
     )
     
     # Reactive observer to calculate metric values
-    observe({
+    shiny::observe({
       # Set metric values based on data retrieved from various sections
       metric_scores$data$metric_value <- c(
         safe_reactive_value(unique_taxa_counts[["section_1"]]),
         safe_reactive_value(unique_taxa_counts[["section_7"]]),
-        sum(sapply(reactiveValuesToList(unique_taxa_counts), function(x) safe_reactive_value(x)), na.rm = TRUE),
+        sum(purrr::map_dbl(shiny::reactiveValuesToList(unique_taxa_counts), safe_reactive_value), na.rm = TRUE),
         calculate_corixids_ratio(selected_genera, group_totals, taxonomy),
         if(grand_total_observations() > 0){
           safe_reactive_value(group_totals[["section_1"]]) / grand_total_observations()
@@ -71,7 +71,7 @@ server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, gr
     })
     
     # Render the metric scores table with formatted outputs
-    output$metric_scores_table <- renderDT({
+    output$metric_scores_table <- DT::renderDT({
       summarized_data <- rbind(
         metric_scores$data,
         data.frame(
@@ -83,14 +83,14 @@ server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, gr
         )
       )
       
-      datatable(
+      DT::datatable(
         summarized_data[, c("metric_name", "response", "metric_value", "metric_score", "adj_score")],
         options = list(dom = 't', paging = FALSE, ordering = FALSE),
         rownames = FALSE,
         colnames = c("Metric Name", "Response to Disturbance", "Metric Value", "Metric Score", "Adjusted Score")
       ) %>%
-        formatStyle("metric_name", target = "row", fontWeight = styleEqual("IBI Score (0-50)", "bold")) %>%
-        formatRound(c("metric_value", "metric_score", "adj_score"), digits = 2)
+        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) %>%
+        DT::formatRound(c("metric_value", "metric_score", "adj_score"), digits = 2)
     })
     
     return(

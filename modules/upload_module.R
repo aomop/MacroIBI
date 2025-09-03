@@ -3,8 +3,8 @@
 # --------------------------------------------------------------------
 # Provides a file input widget for uploading a CSV file
 upload_module_ui <- function(id) {
-  ns <- NS(id)
-  fileInput(ns("reload_data"), "Upload Saved Data (CSV)")
+  ns <- shiny::NS(id)
+  shiny::fileInput(ns("reload_data"), "Upload Saved Data (CSV)")
 }
 
 # --------------------------------------------------------------------
@@ -12,14 +12,14 @@ upload_module_ui <- function(id) {
 # --------------------------------------------------------------------
 # Handles file uploads and updates reactive values based on the uploaded data
 upload_module_server <- function(id, taxonomy, selected_genera, shared_reactives, toggle_state) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     
     ## --- Handle File Upload ---
-    observeEvent(input$reload_data, {
-      req(input$reload_data) # Ensure file is uploaded before proceeding
-      
+    shiny::observeEvent(input$reload_data, {
+      shiny::req(input$reload_data) # Ensure file is uploaded before proceeding
+
       # Read the uploaded CSV
-      data <- read.csv(input$reload_data$datapath)
+      data <- readr::read_csv(input$reload_data$datapath)
       
       shared_reactives$server_update <- TRUE
       
@@ -52,7 +52,7 @@ upload_module_server <- function(id, taxonomy, selected_genera, shared_reactives
           group_data <- split_data[[group_name]]
           
           if (!is.null(selected_genera[[group_name]])) {
-            isolate({
+            shiny::isolate({
               current_group <- selected_genera[[group_name]]()
               
               # Initialize current group data structure if null
@@ -73,20 +73,20 @@ upload_module_server <- function(id, taxonomy, selected_genera, shared_reactives
               })
               
               # Reassign the updated structure back to selected_genera
-              selected_genera[[group_name]] <- reactiveVal(current_group)
+              selected_genera[[group_name]] <- shiny::reactiveVal(current_group)
             })
-          } 
-        } 
+          }
+        }
       }
-      
+
       # Notify the user about the successful update
-      showNotification("Successfully updated with user uploaded data!", closeButton = TRUE, type = "message")
+      shiny::showNotification("Successfully updated with user uploaded data!", closeButton = TRUE, type = "message")
       message(paste0("Uploaded data from ", input$reload_data$name))
     })
     
     ## --- Toggle State Based on Title and Date ---
-    observe({
-      req(shared_reactives$user_title, shared_reactives$user_date)  # Ensure both Title and Date are present
+    shiny::observe({
+      shiny::req(shared_reactives$user_title, shared_reactives$user_date)  # Ensure both Title and Date are present
       # Toggle state based on presence of Title and Date
       if (nzchar(shared_reactives$user_title) && nzchar(shared_reactives$user_date)) {
         toggle_state(FALSE)

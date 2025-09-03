@@ -3,11 +3,11 @@
 # --------------------------------------------------------------------
 # Provides UI for saving data as a CSV file and includes an optional status message for auto-saves.
 download_module_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    tags$div(
-      tags$h4("Save Data", style = "font-size: 16px;"),  # Title above the button
-      downloadButton(ns("save_data"), "Download Data (CSV)")  # Button label
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::tags$div(
+      shiny::tags$h4("Save Data", style = "font-size: 16px;"),  # Title above the button
+      shiny::downloadButton(ns("save_data"), "Download Data (CSV)")  # Button label
     )
   )
 }
@@ -23,19 +23,19 @@ download_module_server <- function(
     auto_save_path = "auto_saves",
     expose_data_reactive = NULL # reactiveVal to share data with other modules
 ) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
+
     # Function to assemble data from selected_genera
     assemble_data <- function() {
-      req(selected_genera)
-      
-      group_names <- names(reactiveValuesToList(selected_genera))
-      
+      shiny::req(selected_genera)
+
+      group_names <- names(shiny::reactiveValuesToList(selected_genera))
+
       all_data <- lapply(group_names, function(group_name) {
         if (startsWith(group_name, "section_")) {
           group_reactive <- selected_genera[[group_name]]
-          group_data <- isolate(group_reactive()$data)
+          group_data <- shiny::isolate(group_reactive()$data)
           
           if (is.null(group_data) || length(group_data) == 0) return(NULL)
           
@@ -68,7 +68,7 @@ download_module_server <- function(
     
     # Reactive for internal access
     if (!is.null(expose_data_reactive)) {
-      observe({
+      shiny::observe({
         data <- assemble_data()
         if (!is.null(data)) {
           expose_data_reactive(data)
@@ -77,7 +77,7 @@ download_module_server <- function(
     }
     
     # Manual download functionality
-    output$save_data <- downloadHandler(
+    output$save_data <- shiny::downloadHandler(
       filename = function() {
         paste0("IBI_", shared_reactives$user_title, "_", shared_reactives$user_date, ".csv")
       },
@@ -89,7 +89,7 @@ download_module_server <- function(
           return()
         }
         
-        write.csv(data, file, row.names = FALSE)
+        readr::write_csv(data, file)
       }
     )
   })
