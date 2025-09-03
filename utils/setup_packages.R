@@ -37,16 +37,16 @@ install_bioc <- function(pkg) {
 }
 
 # Install missing GitHub packages
-install_github <- function(pkg, repo) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    cat(paste0("Installing ", pkg, " from GitHub (", repo, ")...\n"))
-    devtools::install_github(repo)
-  }
-}
+#install_github <- function(pkg, repo) {
+#  if (!requireNamespace(pkg, quietly = TRUE)) {
+#    cat(paste0("Installing ", pkg, " from GitHub (", repo, ")...\n"))
+#    devtools::install_github(repo)
+#  }
+#}
 
 # Perform installations
 invisible(lapply(cran_packages, install_cran))
 invisible(lapply(bioc_packages, install_bioc))
-invisible(mapply(install_github, names(github_packages), github_packages))
+#invisible(mapply(install_github, names(github_packages), github_packages))
 
 cat("All required packages are installed.\n")
