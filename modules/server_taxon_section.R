@@ -3,15 +3,15 @@
 # --------------------------------------------------------------------
 # Handles dynamic updates to taxon data, interactions, and calculations
 server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, total_unique_taxa, taxon_tree) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Namespace for the module
-    
+
     # Initialize reactive values
-    selected_genera <- reactiveValues(data = list())    # Stores selected taxa for this group
-    uploaded_data <- reactiveVal(NULL)                  # Placeholder for uploaded data
+    selected_genera <- shiny::reactiveValues(data = list())    # Stores selected taxa for this group
+    uploaded_data <- shiny::reactiveVal(NULL)                  # Placeholder for uploaded data
     
     ## --- Add a Taxon to the Group Table ---
-    observe({
+    shiny::observe({
       taxon_info <- selected_taxon()  # Retrieve selected taxon information
       
       if (!is.null(taxon_info$taxon) && taxon_info$section_id == id) {
@@ -21,8 +21,8 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
         section_id <- taxon_info$section_id
         
         # Add the taxon only if it's not already in the table
-        if (!(taxon_name %in% sapply(selected_genera$data, `[[`, "taxon"))) {
-          new_id <- UUIDgenerate()  # Generate a unique ID for the new row
+        if (!(taxon_name %in% purrr::map_chr(selected_genera$data, "taxon"))) {
+          new_id <- uuid::UUIDgenerate()  # Generate a unique ID for the new row
           
           # Add the new taxon with default dipnet counts
           selected_genera$data <- c(
@@ -39,13 +39,13 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     })
     
     ## --- Manage Delete Button Observers ---
-    observe({
+    shiny::observe({
       # Ensure observers are dynamically registered for each row in `selected_genera$data`
       lapply(selected_genera$data, function(row_data) {
         id <- paste0("delete_", row_data$id)  # Unique ID for the delete button
         
         # Use a unique observer for each delete button
-        observeEvent(input[[id]], {
+        shiny::observeEvent(input[[id]], {
           # Remove the corresponding row from `selected_genera$data`
           selected_genera$data <- Filter(function(x) x$id != row_data$id, selected_genera$data)
           message(paste0("Deleted ", row_data$taxon))
@@ -54,33 +54,33 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     })
     
     # Initialize reactive value to control the visibility of the tree
-    tree_visible <- reactiveVal(FALSE)
+    tree_visible <- shiny::reactiveVal(FALSE)
     
     # Observer to toggle the visibility on button click
-    observeEvent(input$show_tree, {
+    shiny::observeEvent(input$show_tree, {
       tree_visible(!tree_visible())  # Toggle the visibility state
       message(paste0("Taxonomic tree visibility set to ", tree_visible(), " in ", group_name))
     })
     
-    output$tree_ui <- renderUI({
+    output$tree_ui <- shiny::renderUI({
       if (tree_visible()) {
         taxonomic_tree_ui(ns("taxonomic_tree"))
       }
     })
     
     ## --- Render Dynamic Taxon Table UI ---
-    output$group_table_ui <- renderUI({
+    output$group_table_ui <- shiny::renderUI({
       if (length(selected_genera$data) == 0) return(NULL) # No data, return NULL
-      tagList(
+      shiny::tagList(
         # Create rows for each taxon
         lapply(selected_genera$data, function(row_data) {
           row_id <- row_data$id
-          fluidRow(
-            column(3, h5(row_data$taxon)),  # Taxon name
-            column(3, numericInput(ns(paste0("dipnet1_", row_id)), label = NULL, value = row_data$dipnet1)),  # Dipnet1 Input
-            column(3, numericInput(ns(paste0("dipnet2_", row_id)), label = NULL, value = row_data$dipnet2)),  # Dipnet2 input
-            column(2, verbatimTextOutput(ns(paste0("sum_count_", row_id)))),  # Row sum
-            column(1, actionButton(
+          shiny::fluidRow(
+            shiny::column(3, shiny::h5(row_data$taxon)),  # Taxon name
+            shiny::column(3, shiny::numericInput(ns(paste0("dipnet1_", row_id)), label = NULL, value = row_data$dipnet1)),  # Dipnet1 Input
+            shiny::column(3, shiny::numericInput(ns(paste0("dipnet2_", row_id)), label = NULL, value = row_data$dipnet2)),  # Dipnet2 input
+            shiny::column(2, shiny::verbatimTextOutput(ns(paste0("sum_count_", row_id)))),  # Row sum
+            shiny::column(1, shiny::actionButton(
               ns(paste0("delete_", row_id)),
               "Delete",
               class = "delete-btn"
@@ -88,18 +88,18 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
           )
         }),
         # Add footer with summary information
-        fluidRow(
-          column(4, h4("Total Taxa: ", textOutput(ns("unique_taxa_count")))),                  # Unique taxa count
-          column(4, h4("Percent of Total Sample: ", textOutput(ns("percent_total_sample")))),  # Percent of total sample
-          column(4, h4("Total Individuals: ", textOutput(ns("group_sum_count"))))              # Group sum count
-        ), 
-        actionButton(ns("show_tree"), "Show/Hide Taxonomic Hierarchy"),
-        uiOutput(ns("tree_ui"))  # Dynamically rendered tree UI
+        shiny::fluidRow(
+          shiny::column(4, shiny::h4("Total Taxa: ", shiny::textOutput(ns("unique_taxa_count")))),                  # Unique taxa count
+          shiny::column(4, shiny::h4("Percent of Total Sample: ", shiny::textOutput(ns("percent_total_sample")))),  # Percent of total sample
+          shiny::column(4, shiny::h4("Total Individuals: ", shiny::textOutput(ns("group_sum_count"))))              # Group sum count
+        ),
+        shiny::actionButton(ns("show_tree"), "Show/Hide Taxonomic Hierarchy"),
+        shiny::uiOutput(ns("tree_ui"))  # Dynamically rendered tree UI
       )
     })
     
     ## --- Update Taxon Data Dynamically ---
-    observe({
+    shiny::observe({
       lapply(selected_genera$data, function(row_data) {
         row_id <- row_data$id
         
@@ -117,16 +117,16 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
         })
         
         # Render the row-level sum of Dipnet1 and Dipnet2
-        output[[paste0("sum_count_", row_id)]] <- renderText({
+        output[[paste0("sum_count_", row_id)]] <- shiny::renderText({
           if (!is.null(dipnet1) && !is.null(dipnet2)) dipnet1 + dipnet2 else NA
         })
       })
     })
     
     ## --- Calculate Group Summary Statistics ---
-    group_sum_count <- reactive({
+    group_sum_count <- shiny::reactive({
       if (length(selected_genera$data) == 0) return(0)  # No data, return 0
-      sum(sapply(selected_genera$data, function(row_data) {
+      sum(purrr::map_dbl(selected_genera$data, function(row_data) {
         dipnet1 <- input[[paste0("dipnet1_", row_data$id)]]
         dipnet2 <- input[[paste0("dipnet2_", row_data$id)]]
         if (!is.null(dipnet1) && !is.null(dipnet2)) dipnet1 + dipnet2 else 0
@@ -134,8 +134,8 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     })
     
     # Calculate unique taxa, considering hierarchical relationships
-    calculate_unique_taxa <- reactive({
-      selected_taxa <- sapply(selected_genera$data, `[[`, "taxon")
+    calculate_unique_taxa <- shiny::reactive({
+      selected_taxa <- purrr::map_chr(selected_genera$data, "taxon")
       if (length(selected_taxa) == 0) {
         return(0)
       }
@@ -171,7 +171,7 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     })
     
     ## --- Render Summary Outputs ---
-    output$percent_total_sample <- renderText({
+    output$percent_total_sample <- shiny::renderText({
       total <- total_unique_taxa()
       if (is.null(total) || total == 0) "0%" else {
         percent <- round((calculate_unique_taxa() / total) * 100, 2)
@@ -180,8 +180,8 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     })
     
     # Render unique taxa count and total individuals
-    output$unique_taxa_count <- renderText({ calculate_unique_taxa() })
-    output$group_sum_count <- renderText({ group_sum_count() })
+    output$unique_taxa_count <- shiny::renderText({ calculate_unique_taxa() })
+    output$group_sum_count <- shiny::renderText({ group_sum_count() })
     
     # Initialize the tree-building module
     taxonomic_tree_server(id = "taxonomic_tree", 
