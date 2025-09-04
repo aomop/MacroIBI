@@ -13,7 +13,9 @@ A Shiny application for calculating a macroinvertebrate-based Index of Biotic In
 
 ## Screenshots
 
-![Screenshot of the app](www/Picture1.png)
+![Screenshot of initial app state](www/init_screenshot.png)
+![Screenshot of data tab](www/table_screenshot.png)
+![Screenshot of results tab](www/results_screenshot.png)
 
 ## Quick Start
 
