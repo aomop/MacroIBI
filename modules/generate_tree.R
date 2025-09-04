@@ -4,11 +4,11 @@
 # Provides a UI placeholder for displaying a taxonomic tree visualization.
 # Includes components for the tree display and a download button for the tree image.
 taxonomic_tree_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    plotOutput(ns("taxonomic_tree")),
-    hidden(id = 
-    downloadButton(ns("download_tree"), "Download Tree Image")
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::plotOutput(ns("taxonomic_tree")),
+    shiny::hidden(id =
+    shiny::downloadButton(ns("download_tree"), "Download Tree Image")
     )
   )
 }
@@ -18,25 +18,25 @@ taxonomic_tree_ui <- function(id) {
 # --------------------------------------------------------------------
 # Handles the server-side logic to construct and manage a taxonomic tree based on selected genera.
 taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns # Namespace function to manage IDs within this module
-    
+
     # Reactive expression for constructing the tree using taxonomy data
-    reactive_tree <- reactive({
-      req(selected_genera()) # Ensure selected genera data is available
+    reactive_tree <- shiny::reactive({
+      shiny::req(selected_genera()) # Ensure selected genera data is available
       
       # Extract the specific section data
       section_data <- selected_genera()$data
-      req(section_data)  # Ensure section data is not NULL
+      shiny::req(section_data)  # Ensure section data is not NULL
       
       # Convert section_data to data.frame
       taxa_data <- data.frame(
-        tsn = sapply(section_data, `[[`, "tsn"),
+        tsn = purrr::map_chr(section_data, "tsn"),
         stringsAsFactors = FALSE
       )
       
       # Generate the complete lineage up to the highest level for each TSN
-      all_tsns <- unique(unlist(sapply(taxa_data$tsn, function(tsn) {
+      all_tsns <- unique(unlist(purrr::map(taxa_data$tsn, function(tsn) {
         current_tsn <- tsn
         tsns <- c(current_tsn)
         while(TRUE) {
@@ -103,7 +103,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       if(nrow(full_taxonomy) > 1) {
         tryCatch({
           edge_list <- as.matrix(full_taxonomy[, c("parentTsn", "tsn")])
-          tree <- as.phylo(edge_list, directed = TRUE)
+          tree <- ape::as.phylo(edge_list, directed = TRUE)
           plot(tree)  # If tree creation is successful, plot it
         }, error = function(e) {
           print(paste("Failed to create tree:", e$message))
@@ -114,46 +114,46 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       tsn_to_taxon <- setNames(full_taxonomy$taxon, full_taxonomy$tsn)
       
       # Step 2: Safely replace TSNs in tree with taxon names
-      tree$tip.label <- sapply(tree$tip.label, function(x) {
+      tree$tip.label <- purrr::map_chr(tree$tip.label, function(x) {
         if (!is.na(x) && as.character(x) %in% names(tsn_to_taxon)) {
           tsn_to_taxon[[as.character(x)]]
         } else {
           paste("Unknown:", x)  # Fallback: keep the TSN value if no match
         }
       })
-      
-      tree$node.label <- sapply(tree$node.label, function(x) {
+
+      tree$node.label <- purrr::map_chr(tree$node.label, function(x) {
         if (!is.na(x) && as.character(x) %in% names(tsn_to_taxon)) {
           tsn_to_taxon[[as.character(x)]]
         } else {
           paste("")  # Fallback: keep the TSN value if no match
         }
       })
-      
+
       # Match `taxa_data$tsn` to `tree$tip.label` using the same conversion
-      converted_tsn_labels <- sapply(taxa_data$tsn, function(tsn) {
+      converted_tsn_labels <- purrr::map_chr(taxa_data$tsn, function(tsn) {
         tsn_to_taxon[[as.character(tsn)]]
       })
       
       # Build the tree
-      p <- ggtree(tree) +
-        geom_tiplab(aes(label = label), fontface = 3) +
-        geom_nodelab(aes(label = label), fontface = 3, hjust = 1.125, nudge_y = 0.125) +
-        theme_tree2() +
-        labs(title = "Taxonomic Tree")
+      p <- ggtree::ggtree(tree) +
+        ggtree::geom_tiplab(ggplot2::aes(label = label), fontface = 3) +
+        ggtree::geom_nodelab(ggplot2::aes(label = label), fontface = 3, hjust = 1.125, nudge_y = 0.125) +
+        ggtree::theme_tree2() +
+        ggplot2::labs(title = "Taxonomic Tree")
       
       # Extract the x-axis range dynamically from the ggtree object
-      tree_data <- ggplot_build(p)$data[[1]]  # Access tree's ggplot data
+      tree_data <- ggplot2::ggplot_build(p)$data[[1]]  # Access tree's ggplot data
       xmax <- max(tree_data$x, na.rm = TRUE)  # Get the maximum x value for the tree
       
       # Rebuild the tree with dynamic x-axis limits
-      p + xlim(0, xmax + 2)  # Add some buffer space
+      p + ggplot2::xlim(0, xmax + 2)  # Add some buffer space
         
         #browser()
     })
     
     # Output the tree plot
-    output$taxonomic_tree <- renderPlot({
+    output$taxonomic_tree <- shiny::renderPlot({
       tree_plot <- reactive_tree()
       if (is.null(tree_plot)) {
         plot.new()
@@ -165,12 +165,12 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
     
     
     # Download handler for tree image
-    output$download_tree <- downloadHandler(
+    output$download_tree <- shiny::downloadHandler(
       filename = function() {
         paste0(ns("section"), "_taxa_tree.png")
       },
       content = function(file) {
-        ggsave(file, plot = reactive_tree(), width = 10, height = 6)
+        ggplot2::ggsave(file, plot = reactive_tree(), width = 10, height = 6)
       }
     )
   })

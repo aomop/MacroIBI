@@ -191,16 +191,16 @@ server <- function(input, output, session) {
   shared_reactives <- reactiveValues(user_title = NULL, user_date = NULL, server_update = TRUE)
   
   # Total Observations and Unique Taxa: Calculate totals for UI display and metric calculations
-  total_unique_taxa <- reactive({
-    counts <- reactiveValuesToList(unique_taxa_counts)
-    sum(sapply(counts, reactive_handler), na.rm = TRUE)
+  total_unique_taxa <- shiny::reactive({
+    counts <- shiny::reactiveValuesToList(unique_taxa_counts)
+    sum(purrr::map_dbl(counts, reactive_handler), na.rm = TRUE)
   })
   
-  grand_total_observations <- reactive({
+  grand_total_observations <- shiny::reactive({
     
-    counts <- reactiveValuesToList(group_totals)
+    counts <- shiny::reactiveValuesToList(group_totals)
     if (length(counts) < length(group_list)) return(0)
-    sum(sapply(counts, reactive_handler), na.rm = TRUE)
+    sum(purrr::map_dbl(counts, reactive_handler), na.rm = TRUE)
   })
   
   ## --- Observe Reactive Values --- ##
@@ -211,7 +211,7 @@ server <- function(input, output, session) {
   # Create a reactive flag to track if the modal has been shown
   modal_shown <- reactiveVal(FALSE)
   
-  observe({
+  shiny::observe({
     if (!modal_shown()) {
       showModal(
         modalDialog(
@@ -286,16 +286,16 @@ server <- function(input, output, session) {
   # Populate the dropdown menu based on user input with data from the taxonomy data frame
   observe({
     all_choices <- taxonomy %>%
-      filter(!is.na(taxon), taxon != "") %>%
-      mutate(
+      dplyr::filter(!is.na(.data$taxon), .data$taxon != "") %>%
+      dplyr::mutate(
         name = paste0(
-          "<strong>", taxon, "</strong> <span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>", level, "</span>"
+          "<strong>", .data$taxon, "</strong> <span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>", .data$level, "</span>"
         ),
-        value = taxon
+        value = .data$taxon
       ) %>%
-      select(value, name)
+      dplyr::select(dplyr::all_of(c("value", "name")))
     
-    updateSelectizeInput(
+    shiny::updateSelectizeInput(
       session, "main_taxon_select",
       choices = c(NA, setNames(all_choices$value, all_choices$name)),
       server = TRUE,
@@ -313,17 +313,17 @@ server <- function(input, output, session) {
   })
   
   # Populate tables; observe when a selection is made, determine the section, and route it to the correct table
-  observeEvent(input$main_taxon_select, {
+  shiny::observeEvent(input$main_taxon_select, {
     selected_taxon_data <- input$main_taxon_select
     
     taxon_group <- taxonomy %>%
-      filter(taxon == selected_taxon_data) %>%
-      pull(Group) %>%
+      dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
+      dplyr::pull(.data$Group) %>%
       unique()
-    
+
     taxon_info <- taxonomy %>%
-      filter(taxon == selected_taxon_data) %>%
-      select(taxon, tsn, parentTsn) %>%
+      dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
+      dplyr::select(dplyr::all_of(c("taxon", "tsn", "parentTsn"))) %>%
       unique()
     
     if (length(taxon_group) == 1) {

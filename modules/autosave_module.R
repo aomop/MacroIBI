@@ -2,11 +2,11 @@
 # UI Function for the Auto-Save Reload Module
 # --------------------------------------------------------------------
 autosave_module_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),  # Toggle for auto-save
-    actionButton(ns("load_autosave"), "Load Auto-Save"),  # Button to open file selection modal
-    textOutput(ns("autosave_status"))  # Display status updates
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),  # Toggle for auto-save
+    shiny::actionButton(ns("load_autosave"), "Load Auto-Save"),  # Button to open file selection modal
+    shiny::textOutput(ns("autosave_status"))  # Display status updates
   )
 }
 
@@ -16,10 +16,10 @@ autosave_module_ui <- function(id) {
 autosave_module_server <- function(
     id, auto_save_path = "auto_saves", metric_save_path = "metric_autosaves", selected_genera, 
     shared_reactives, metric_scores, auto_save_interval = 30) {
-  moduleServer(id, function(input, output, session) {
+  shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
-    summarized_data <- reactive(
+
+    summarized_data <- shiny::reactive(
       rbind(
         metric_scores$data,
         data.frame(
@@ -39,13 +39,13 @@ autosave_module_server <- function(
     
     # Function to update the auto-save status message
     update_autosave_status <- function(message) {
-      output$autosave_status <- renderText({
+      output$autosave_status <- shiny::renderText({
         paste0(message, " (Last updated: ", Sys.time(), ")")
       })
     }
-    
-    observeEvent(input$enable_autosave, {
-      if (input$enable_autosave == FALSE) {
+
+    shiny::observeEvent(input$enable_autosave, {
+      if (isFALSE(input$enable_autosave)) {
         message("Auto-save feature disabled by user")
       } else {
         message("Auto-save feature enabled by user")
@@ -54,10 +54,10 @@ autosave_module_server <- function(
     
     
     # Auto-save timer
-    auto_save_timer <- reactiveTimer(auto_save_interval * 1000)
+    auto_save_timer <- shiny::reactiveTimer(auto_save_interval * 1000)
     
     # Auto-save logic: Triggered periodically based on `auto_save_timer`
-    observe({
+    shiny::observe({
       if (!input$enable_autosave) {
         update_autosave_status("Auto-save feature is disabled.")
         return()
@@ -67,11 +67,11 @@ autosave_module_server <- function(
       auto_save_timer()  # Trigger periodically
       
       # Collect data and save
-      group_names <- names(reactiveValuesToList(selected_genera))
+      group_names <- names(shiny::reactiveValuesToList(selected_genera))
       all_data <- lapply(group_names, function(group_name) {
         if (startsWith(group_name, "section_")) {
           group_reactive <- selected_genera[[group_name]]
-          group_data <- isolate(group_reactive()$data)
+          group_data <- shiny::isolate(group_reactive()$data)
           if (is.null(group_data) || length(group_data) == 0) return(NULL)
           do.call(rbind, lapply(group_data, function(row) {
             data.frame(
@@ -114,38 +114,38 @@ autosave_module_server <- function(
     })
     
     # Separate logic for loading auto-saves (independent of auto-save state)
-    observeEvent(input$load_autosave, {
+    shiny::observeEvent(input$load_autosave, {
       # List available auto-save files
       files <- list.files(auto_save_path, pattern = "autosave_", full.names = FALSE)
       
       # Dynamically set modal content based on file availability
       if (length(files) > 0) {
-        showModal(
-          modalDialog(
+        shiny::showModal(
+          shiny::modalDialog(
             title = "Manage Auto-Saves",
-            selectInput(ns("selected_file"), "Available Files", choices = files),
-            footer = tagList(
-              modalButton("Cancel"),
-              actionButton(ns("confirm_load"), "Load Selected File"),
-              actionButton(ns("delete_file"), "Delete Selected File", class = "btn-danger")
+            shiny::selectInput(ns("selected_file"), "Available Files", choices = files),
+            footer = shiny::tagList(
+              shiny::modalButton("Cancel"),
+              shiny::actionButton(ns("confirm_load"), "Load Selected File"),
+              shiny::actionButton(ns("delete_file"), "Delete Selected File", class = "btn-danger")
             )
           )
         )
       } else {
-        showModal(
-          modalDialog(
+        shiny::showModal(
+          shiny::modalDialog(
             title = "No Auto-Saves Available",
             "There are no auto-saved files to load or delete.",
             easyClose = TRUE,
-            footer = modalButton("Close")
+            footer = shiny::modalButton("Close")
           )
         )
       }
     })
     
     # Load the selected auto-save file
-    observeEvent(input$confirm_load, {
-      req(input$selected_file)  # Ensure a file is selected
+    shiny::observeEvent(input$confirm_load, {
+      shiny::req(input$selected_file)  # Ensure a file is selected
       selected_file_path <- file.path(auto_save_path, input$selected_file)
       
       shared_reactives$server_update <- TRUE
@@ -171,7 +171,7 @@ autosave_module_server <- function(
             group_data <- split_data[[group_name]]
             
             if (!is.null(selected_genera[[group_name]])) {
-              isolate({
+              shiny::isolate({
                 current_group <- selected_genera[[group_name]]()
                 if (is.null(current_group)) {
                   current_group <- list(data = list())
@@ -190,73 +190,73 @@ autosave_module_server <- function(
                 })
                 
                 # Update `selected_genera`
-                selected_genera[[group_name]] <- reactiveVal(current_group)
+                selected_genera[[group_name]] <- shiny::reactiveVal(current_group)
               })
             }
           }
         }
-        
-        removeModal()  # Close the modal
-        showNotification("Auto-save loaded successfully!", type = "message")
+
+        shiny::removeModal()  # Close the modal
+        shiny::showNotification("Auto-save loaded successfully!", type = "message")
         message(paste("Loaded data from file:", input$selected_file))
       } else {
-        showNotification("The selected file no longer exists.", type = "error")
+        shiny::showNotification("The selected file no longer exists.", type = "error")
       }
     })
     
-    observeEvent(input$delete_file, {
-      req(input$selected_file)  # Ensure a file is selected
+    shiny::observeEvent(input$delete_file, {
+      shiny::req(input$selected_file)  # Ensure a file is selected
       selected_file_path <- file.path(auto_save_path, input$selected_file)
       
       # Show confirmation modal
-      showModal(
-        modalDialog(
+      shiny::showModal(
+        shiny::modalDialog(
           title = "Confirm Deletion",
-          paste("Are you sure you want to delete the file", input$selected_file, "?", 
+          paste("Are you sure you want to delete the file", input$selected_file, "?",
                 "<strong>The data will be permanantly deleted - <span style='color: red;'>there is no method for recovery.</strong></span>"),
-          footer = tagList(
-            modalButton("Cancel"),
-            actionButton(ns("confirm_delete"), "Yes, Delete", class = "btn-danger")
+          footer = shiny::tagList(
+            shiny::modalButton("Cancel"),
+            shiny::actionButton(ns("confirm_delete"), "Yes, Delete", class = "btn-danger")
           )
         )
       )
     })
     
     # Handle file deletion after confirmation
-    observeEvent(input$confirm_delete, {
-      req(input$selected_file)  # Ensure a file is selected
+    shiny::observeEvent(input$confirm_delete, {
+      shiny::req(input$selected_file)  # Ensure a file is selected
       selected_file_path <- file.path(auto_save_path, input$selected_file)
       
       if (file.exists(selected_file_path)) {
         file.remove(selected_file_path)  # Delete the file
-        showNotification("Selected auto-save file has been deleted.", type = "warning")
+        shiny::showNotification("Selected auto-save file has been deleted.", type = "warning")
         message(paste("Deleted file", selected_file_path))
         
         # Refresh the file list
         files <- list.files(auto_save_path, pattern = "\\.rds$", full.names = FALSE)
         
         # Close the confirmation modal
-        removeModal()
+        shiny::removeModal()
         
         # Reopen the main modal with the updated file list
         if (length(files) > 0) {
-          showModal(
-            modalDialog(
+          shiny::showModal(
+            shiny::modalDialog(
               title = "Manage Auto-Saves",
-              selectInput(ns("selected_file"), "Available Files", choices = files),
-              footer = tagList(
-                modalButton("Cancel"),
-                actionButton(ns("confirm_load"), "Load Selected File"),
-                actionButton(ns("delete_file"), "Delete Selected File", class = "btn-danger")
+              shiny::selectInput(ns("selected_file"), "Available Files", choices = files),
+              footer = shiny::tagList(
+                shiny::modalButton("Cancel"),
+                shiny::actionButton(ns("confirm_load"), "Load Selected File"),
+                shiny::actionButton(ns("delete_file"), "Delete Selected File", class = "btn-danger")
               )
             )
           )
         } else {
-          showNotification("No auto-save files remain.", type = "message")
+          shiny::showNotification("No auto-save files remain.", type = "message")
         }
       } else {
-        showNotification("The selected file no longer exists.", type = "error")
-        removeModal()  # Close the confirmation modal
+        shiny::showNotification("The selected file no longer exists.", type = "error")
+        shiny::removeModal()  # Close the confirmation modal
       }
     })
     
