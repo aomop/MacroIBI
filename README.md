@@ -39,14 +39,6 @@ shiny::runApp()
 2. From the project root run `renv::restore()` to install package versions pinned in `renv.lock`.
 3. Ensure system dependencies like ImageMagick and PhantomJS are available (TODO).
 
-## Configuration
-
-No special configuration is required. Adjust port or host when running locally, e.g.:
-
-```r
-shiny::runApp(port = 1234, host = "0.0.0.0")
-```
-
 ## Running the App
 
 - **R console**: set working directory to the project root and call `shiny::runApp()`.
@@ -75,17 +67,10 @@ These tests confirm the app and taxonomy data exist and attempt to launch the ap
 
 1. Provide a wetland name and sampling date when prompted.
 2. Search and add taxa using the selection input; counts can be edited directly in the group tables.
-3. View updated metrics in the *Metrics* section.
-4. Enable auto-save to periodically persist your work, or upload a saved CSV to resume.
-5. Download raw data or reports from the *Results* section.
-
-## Performance & Ops
-
-TODO
-
-## Security & Privacy
-
-TODO
+3. Verify taxonomy 
+4. View updated metrics in the *Results* section.
+5. Enable auto-save to periodically persist your work, or upload a saved CSV to resume.
+6. Download raw data or automatically generate a report.
 
 ## Troubleshooting
 
@@ -94,11 +79,7 @@ TODO
 
 ## Contributing
 
-Contributions are welcome. For now, please contact Sam Swanson before submitting pull requests. TODO: add contribution guidelines.
-
-## Changelog
-
-TODO
+Ideas for new features are welcome! Please contact Sam Swanson before submitting a pull request.
 
 ## License
 
