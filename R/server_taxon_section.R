@@ -1,8 +1,13 @@
-# --------------------------------------------------------------------
-# Server Module for the Taxon Section
-# --------------------------------------------------------------------
-# Handles dynamic updates to taxon data, interactions, and calculations
-server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, total_unique_taxa, taxon_tree) {
+#' Taxon section server
+#'
+#' @param id Module identifier.
+#' @param group_name Display name for the group.
+#' @param taxonomy_data Taxonomy data frame.
+#' @param selected_taxon Reactive value representing the selected taxon.
+#' @param total_unique_taxa Reactive expression with the total unique taxa count.
+#' @return A list of reactive values for the section.
+#' @keywords internal
+server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, total_unique_taxa) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns  # Namespace for the module
 

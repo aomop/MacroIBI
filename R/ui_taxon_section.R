@@ -1,9 +1,10 @@
-# --------------------------------------------------------------------
-# UI Module for the Taxon Section
-# --------------------------------------------------------------------
-# This is a paired module with server_taxon_section; sometimes it is helpful
-# to separate module functionalities when one becomes too complex.
-# Generates a styled container for displaying the individual group tables.
+#' Taxon section UI
+#'
+#' @param id Module identifier.
+#' @param group_name Display name for the group.
+#' @param color Color used for styling.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 ui_taxon_section <- function(id, group_name, color) {
   # Namespace function to ensure unique IDs within the module
   ns <- shiny::NS(id)

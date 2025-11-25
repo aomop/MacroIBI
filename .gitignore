@@ -16,7 +16,4 @@ Thumbs.db
 *.tmo
 *.tmp
 *.bak
-auto_saves/*
-!auto_saves/.gitkeep
-metric_autosaves/*
-!metric_autosaves/.gitkeep
+inst/doc/

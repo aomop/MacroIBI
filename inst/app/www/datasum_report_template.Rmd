@@ -31,6 +31,9 @@ library(knitr)
 library(grid)
 library(gridExtra)
 library(kableExtra)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 ```
 
 ```{r, echo=FALSE, warning = FALSE, message = FALSE}

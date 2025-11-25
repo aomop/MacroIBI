@@ -1,7 +1,8 @@
-# --------------------------------------------------------------------
-# UI Module for Displaying Metric Scores
-# --------------------------------------------------------------------
-# This module provides a UI placeholder for rendering a table that will display various metric scores.
+#' Metric scores UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 ui_metric_scores <- function(id) {
   ns <- shiny::NS(id)  # Namespace for the module
   shiny::tagList(
@@ -9,10 +10,16 @@ ui_metric_scores <- function(id) {
   )
 }
 
-# --------------------------------------------------------------------
-# Server Module for Metric Scores
-# --------------------------------------------------------------------
-# This server module calculates and displays the IBI metric scores.
+#' Metric scores server
+#'
+#' @param id Module identifier.
+#' @param selected_genera Reactive values of selected genera.
+#' @param taxonomy Taxonomy data frame.
+#' @param unique_taxa_counts Reactive values of unique taxa counts.
+#' @param group_totals Reactive values of group totals.
+#' @param grand_total_observations Reactive expression for grand total observations.
+#' @return Reactive values for metric scores.
+#' @keywords internal
 server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, group_totals, grand_total_observations) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns # Namespace for managing IDs within this module
@@ -88,8 +95,8 @@ server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, gr
         options = list(dom = 't', paging = FALSE, ordering = FALSE),
         rownames = FALSE,
         colnames = c("Metric Name", "Response to Disturbance", "Metric Value", "Metric Score", "Adjusted Score")
-      ) %>%
-        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) %>%
+      ) |>
+        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) |>
         DT::formatRound(c("metric_value", "metric_score", "adj_score"), digits = 2)
     })
     

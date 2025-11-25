@@ -1,3 +1,8 @@
+#' Results download UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 results_download_ui <- function(id) {
   ns <- shiny::NS(id)
   shinyjs::useShinyjs()
@@ -11,16 +16,22 @@ results_download_ui <- function(id) {
 }
 
 
-results_download_server <- function(id, metric_scores, shared_reactives, selected_genera, taxonomy) {
+#' Results download server
+#'
+#' @param id Module identifier.
+#' @param metric_scores Reactive values for metric scores.
+#' @param shared_reactives Shared reactive values.
+#' @param selected_genera Reactive values of selected genera.
+#' @param taxonomy Taxonomy data frame.
+#' @param metric_save_path Path where metric autosave files are stored.
+#' @keywords internal
+results_download_server <- function(id, metric_scores, shared_reactives, selected_genera, taxonomy, metric_save_path = get_app_path("metric_autosave_dir")) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    # Retrieve metric autosave files
-    metric_autosave_path <- "metric_autosaves"
-    all_metric_files <- list.files(metric_autosave_path, pattern = "^metrics_", full.names = TRUE)
-    
-    # Define the file corresponding to the current location
-    current_metric_file <- file.path(metric_autosave_path, paste0("metrics_", isolate(shared_reactives$user_title), ".rds"))
+    all_metric_files <- list.files(metric_save_path, pattern = "^metrics_", full.names = TRUE)
+
+    current_metric_file <- file.path(metric_save_path, paste0("metrics_", isolate(shared_reactives$user_title), ".rds"))
     
     # Exclude the current location's metric file from the list
     filtered_metric_files <- all_metric_files[all_metric_files != current_metric_file]
@@ -45,6 +56,9 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
     ))
     
     shared_data <- shiny::reactiveVal()
+
+    full_report_template <- system.file("app/www", "full_report_template.Rmd", package = "macroibi")
+    datasum_report_template <- system.file("app/www", "datasum_report_template.Rmd", package = "macroibi")
     
     download_module_server(
       id = "exposed_data",
@@ -76,8 +90,8 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
         options = list(dom = 't', paging = FALSE, ordering = FALSE),
         rownames = FALSE,
         colnames = c("Metric Name", "Response to Disturbance", "Metric Value", "Metric Score", "Adjusted Score")
-      ) %>%
-        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) %>%
+      ) |>
+        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) |>
         DT::formatRound(c("metric_value", "metric_score", "adj_score"), digits = 2)
     )
     
@@ -150,7 +164,7 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
           # Step 1: Copy the Rmd template
           shiny::incProgress(0.1, detail = "Preparing template...")
           temp_rmd <- tempfile(fileext = ".Rmd")
-          file.copy("www/full_report_template.Rmd", temp_rmd, overwrite = TRUE)
+          file.copy(full_report_template, temp_rmd, overwrite = TRUE)
           
           # Step 2: Render the R Markdown file
           shiny::incProgress(0.5, detail = "Rendering report...")
@@ -163,7 +177,7 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
               data = prepared_data()$summarized_data,
               comparison_metrics = prepared_data()$combined_metrics
             ),
-            envir = new.env(parent = globalenv())
+            envir = new.env(parent = asNamespace("macroibi"))
           )
           
           shiny::incProgress(1, detail = "Completed!")
@@ -181,7 +195,7 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
           # Step 1: Copy the Rmd template
           shiny::incProgress(0.1, detail = "Preparing template...")
           temp_rmd <- tempfile(fileext = ".Rmd")
-          file.copy("www/datasum_report_template.Rmd", temp_rmd, overwrite = TRUE)
+          file.copy(datasum_report_template, temp_rmd, overwrite = TRUE)
           
           # Step 2: Render the R Markdown file
           shiny::incProgress(0.5, detail = "Rendering report...")
@@ -196,7 +210,7 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
               raw_data = prepared_data()$raw_data,
               taxonomy = taxonomy
             ),
-            envir = new.env(parent = globalenv())
+            envir = new.env(parent = asNamespace("macroibi"))
           )
           
           shiny::incProgress(1, detail = "Completed!")

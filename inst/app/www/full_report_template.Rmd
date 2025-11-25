@@ -32,6 +32,9 @@ library(knitr)
 library(grid)
 library(gridExtra)
 library(kableExtra)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 ```
 
 # **IBI Overview**
