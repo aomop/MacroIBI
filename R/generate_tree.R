@@ -1,8 +1,8 @@
-# --------------------------------------------------------------------
-# UI Module for Taxonomic Tree Display
-# --------------------------------------------------------------------
-# Provides a UI placeholder for displaying a taxonomic tree visualization.
-# Includes components for the tree display and a download button for the tree image.
+#' Taxonomic tree UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 taxonomic_tree_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
@@ -13,10 +13,12 @@ taxonomic_tree_ui <- function(id) {
   )
 }
 
-# --------------------------------------------------------------------
-# Server Module for Constructing and Displaying the Taxonomic Tree
-# --------------------------------------------------------------------
-# Handles the server-side logic to construct and manage a taxonomic tree based on selected genera.
+#' Taxonomic tree server
+#'
+#' @param id Module identifier.
+#' @param selected_genera Reactive values of selected genera.
+#' @param taxonomy_df Reactive taxonomy data frame.
+#' @keywords internal
 taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns

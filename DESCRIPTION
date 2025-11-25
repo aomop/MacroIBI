@@ -1,0 +1,36 @@
+Package: macroibi
+Title: Wetland Macroinvertebrate IBI Dashboard
+Version: 0.1.0
+Authors@R: person("Sam", "Swanson", email = "sam.swanson@example.com", role = c("aut", "cre"))
+Description: Launches the Macroinvertebrate Index of Biotic Integrity Shiny dashboard and supporting utilities for wetlands.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.2.0)
+Imports:
+    shiny,
+    shinyjs,
+    shinybusy,
+    bslib,
+    viridis,
+    DT,
+    webshot,
+    htmltools,
+    purrr,
+    dplyr,
+    readr,
+    rmarkdown,
+    uuid,
+    tools
+Suggests:
+    testthat (>= 3.0.0),
+    shinytest2,
+    knitr,
+    grid,
+    gridExtra,
+    kableExtra,
+    tidyr,
+    ggplot2
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3

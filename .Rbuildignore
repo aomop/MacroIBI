@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^auto_saves$
+^metric_autosaves$
+^tests/testthat/test-smoke.R$

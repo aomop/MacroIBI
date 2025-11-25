@@ -1,20 +1,29 @@
- # --------------------------------------------------------------------
-# UI Function for the Auto-Save Reload Module
-# --------------------------------------------------------------------
+#' Autosave module UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 autosave_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),  # Toggle for auto-save
-    shiny::actionButton(ns("load_autosave"), "Load Auto-Save"),  # Button to open file selection modal
-    shiny::textOutput(ns("autosave_status"))  # Display status updates
+    shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),
+    shiny::actionButton(ns("load_autosave"), "Load Auto-Save"),
+    shiny::textOutput(ns("autosave_status"))
   )
 }
 
-# --------------------------------------------------------------------
-# Server Function for the Auto-Save Reload Module
-# --------------------------------------------------------------------
+#' Autosave module server
+#'
+#' @param id Module identifier.
+#' @param auto_save_path Path where autosave RDS files are stored.
+#' @param metric_save_path Path where metric autosave RDS files are stored.
+#' @param selected_genera Reactive values of selected genera.
+#' @param shared_reactives Shared reactive values for the session.
+#' @param metric_scores Reactive values for metric scores.
+#' @param auto_save_interval Interval in seconds between autosaves.
+#' @keywords internal
 autosave_module_server <- function(
-    id, auto_save_path = "auto_saves", metric_save_path = "metric_autosaves", selected_genera, 
+    id, auto_save_path = get_app_path("autosave_dir"), metric_save_path = get_app_path("metric_autosave_dir"), selected_genera,
     shared_reactives, metric_scores, auto_save_interval = 30) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -30,14 +39,10 @@ autosave_module_server <- function(
           adj_score = sum(metric_scores$data$adj_score, na.rm = TRUE)
         )
       ))
-    
-    # Ensure the auto-save directory exists
+
     if (!dir.exists(auto_save_path)) dir.create(auto_save_path, recursive = TRUE)
-    
-    # Create the metric auto-save directory if it doesn't exist
     if (!dir.exists(metric_save_path)) dir.create(metric_save_path, recursive = TRUE)
-    
-    # Function to update the auto-save status message
+
     update_autosave_status <- function(message) {
       output$autosave_status <- shiny::renderText({
         paste0(message, " (Last updated: ", Sys.time(), ")")
@@ -51,22 +56,18 @@ autosave_module_server <- function(
         message("Auto-save feature enabled by user")
       }
     }, ignoreInit = TRUE)
-    
-    
-    # Auto-save timer
+
     auto_save_timer <- shiny::reactiveTimer(auto_save_interval * 1000)
-    
-    # Auto-save logic: Triggered periodically based on `auto_save_timer`
+
     shiny::observe({
       if (!input$enable_autosave) {
         update_autosave_status("Auto-save feature is disabled.")
         return()
       }
-      
+
       auto_save_file <- file.path(auto_save_path, paste0("autosave_", shared_reactives$user_title, ".csv"))
-      auto_save_timer()  # Trigger periodically
-      
-      # Collect data and save
+      auto_save_timer()
+
       group_names <- names(shiny::reactiveValuesToList(selected_genera))
       all_data <- lapply(group_names, function(group_name) {
         if (startsWith(group_name, "section_")) {
@@ -87,38 +88,30 @@ autosave_module_server <- function(
           return(NULL)
         }
       })
-      
+
       combined_data <- do.call(rbind, all_data)
-      # Update autosave status based on conditions
       if (!is.null(combined_data) && nrow(combined_data) > 0) {
         if (!is.null(shared_reactives$user_title) && shared_reactives$user_title != "") {
-          # Title is present, perform auto-save
           auto_save_file <- file.path(auto_save_path, paste0("autosave_", shared_reactives$user_title, ".rds"))
           combined_data$Title <- shared_reactives$user_title
           combined_data$Date <- as.character(shared_reactives$user_date)
           saveRDS(combined_data, auto_save_file)
-          
-          # Save pre-calculated metrics (summarized_data) to a separate folder
+
           metric_file <- file.path(metric_save_path, paste0("metrics_", shared_reactives$user_title, ".rds"))
           saveRDS(summarized_data(), metric_file)
-          
+
           update_autosave_status("Auto-save completed.")
         } else {
-          # Title is missing
           update_autosave_status("Please add a title to enable auto-save.")
         }
       } else {
-        # No data to auto-save
         update_autosave_status("No data to auto-save.")
       }
     })
-    
-    # Separate logic for loading auto-saves (independent of auto-save state)
+
     shiny::observeEvent(input$load_autosave, {
-      # List available auto-save files
       files <- list.files(auto_save_path, pattern = "autosave_", full.names = FALSE)
-      
-      # Dynamically set modal content based on file availability
+
       if (length(files) > 0) {
         shiny::showModal(
           shiny::modalDialog(
@@ -142,42 +135,37 @@ autosave_module_server <- function(
         )
       }
     })
-    
-    # Load the selected auto-save file
+
     shiny::observeEvent(input$confirm_load, {
-      shiny::req(input$selected_file)  # Ensure a file is selected
+      shiny::req(input$selected_file)
       selected_file_path <- file.path(auto_save_path, input$selected_file)
-      
+
       shared_reactives$server_update <- TRUE
-      
+
       if (file.exists(selected_file_path)) {
-        # Read the auto-save file
         data <- readRDS(selected_file_path)
-        
-        # Update shared_reactives with Title and Date
+
         if ("Title" %in% colnames(data)) {
           shared_reactives$user_title <- data$Title[1]
         }
         if ("Date" %in% colnames(data)) {
           shared_reactives$user_date <- data$Date[1]
         }
-        
-        # Process data and update `selected_genera`
+
         other_data <- data[, !(colnames(data) %in% c("Title", "Date")), drop = FALSE]
         split_data <- split(other_data, other_data$Group)
-        
+
         for (group_name in names(split_data)) {
           if (startsWith(group_name, "section_")) {
             group_data <- split_data[[group_name]]
-            
+
             if (!is.null(selected_genera[[group_name]])) {
               shiny::isolate({
                 current_group <- selected_genera[[group_name]]()
                 if (is.null(current_group)) {
                   current_group <- list(data = list())
                 }
-                
-                # Update data structure
+
                 current_group$data <- lapply(seq_len(nrow(group_data)), function(i) {
                   list(
                     id = i,
@@ -188,32 +176,30 @@ autosave_module_server <- function(
                     parentTsn = group_data$parentTsn[i]
                   )
                 })
-                
-                # Update `selected_genera`
+
                 selected_genera[[group_name]] <- shiny::reactiveVal(current_group)
               })
             }
           }
         }
 
-        shiny::removeModal()  # Close the modal
+        shiny::removeModal()
         shiny::showNotification("Auto-save loaded successfully!", type = "message")
         message(paste("Loaded data from file:", input$selected_file))
       } else {
         shiny::showNotification("The selected file no longer exists.", type = "error")
       }
     })
-    
+
     shiny::observeEvent(input$delete_file, {
-      shiny::req(input$selected_file)  # Ensure a file is selected
+      shiny::req(input$selected_file)
       selected_file_path <- file.path(auto_save_path, input$selected_file)
-      
-      # Show confirmation modal
+
       shiny::showModal(
         shiny::modalDialog(
           title = "Confirm Deletion",
           paste("Are you sure you want to delete the file", input$selected_file, "?",
-                "<strong>The data will be permanantly deleted - <span style='color: red;'>there is no method for recovery.</strong></span>"),
+                "<strong>The data will be permanently deleted - <span style='color: red;'>there is no method for recovery.</strong></span>"),
           footer = shiny::tagList(
             shiny::modalButton("Cancel"),
             shiny::actionButton(ns("confirm_delete"), "Yes, Delete", class = "btn-danger")
@@ -221,24 +207,19 @@ autosave_module_server <- function(
         )
       )
     })
-    
-    # Handle file deletion after confirmation
+
     shiny::observeEvent(input$confirm_delete, {
-      shiny::req(input$selected_file)  # Ensure a file is selected
+      shiny::req(input$selected_file)
       selected_file_path <- file.path(auto_save_path, input$selected_file)
-      
+
       if (file.exists(selected_file_path)) {
-        file.remove(selected_file_path)  # Delete the file
+        file.remove(selected_file_path)
         shiny::showNotification("Selected auto-save file has been deleted.", type = "warning")
         message(paste("Deleted file", selected_file_path))
-        
-        # Refresh the file list
+
         files <- list.files(auto_save_path, pattern = "\\.rds$", full.names = FALSE)
-        
-        # Close the confirmation modal
         shiny::removeModal()
-        
-        # Reopen the main modal with the updated file list
+
         if (length(files) > 0) {
           shiny::showModal(
             shiny::modalDialog(
@@ -256,9 +237,8 @@ autosave_module_server <- function(
         }
       } else {
         shiny::showNotification("The selected file no longer exists.", type = "error")
-        shiny::removeModal()  # Close the confirmation modal
+        shiny::removeModal()
       }
     })
-    
   })
 }

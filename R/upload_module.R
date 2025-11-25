@@ -1,16 +1,21 @@
-# --------------------------------------------------------------------
-# UI Function for the Upload Module
-# --------------------------------------------------------------------
-# Provides a file input widget for uploading a CSV file
+#' Upload module UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 upload_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::fileInput(ns("reload_data"), "Upload Saved Data (CSV)")
 }
 
-# --------------------------------------------------------------------
-# Server Function for the Upload Module
-# --------------------------------------------------------------------
-# Handles file uploads and updates reactive values based on the uploaded data
+#' Upload module server
+#'
+#' @param id Module identifier.
+#' @param taxonomy Taxonomy data frame.
+#' @param selected_genera Reactive values of selected genera.
+#' @param shared_reactives Shared reactive values.
+#' @param toggle_state Reactive value controlling editing state.
+#' @keywords internal
 upload_module_server <- function(id, taxonomy, selected_genera, shared_reactives, toggle_state) {
   shiny::moduleServer(id, function(input, output, session) {
     

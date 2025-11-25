@@ -1,7 +1,8 @@
-# --------------------------------------------------------------------
-# UI Module for Download and Auto-Save Functionality
-# --------------------------------------------------------------------
-# Provides UI for saving data as a CSV file and includes an optional status message for auto-saves.
+#' Download module UI
+#'
+#' @param id Module identifier.
+#' @return A Shiny UI fragment.
+#' @keywords internal
 download_module_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
@@ -12,16 +13,22 @@ download_module_ui <- function(id) {
   )
 }
 
-# --------------------------------------------------------------------
-# Server Module for Download and Auto-Save Functionality
-# --------------------------------------------------------------------
+#' Download module server
+#'
+#' @param id Module identifier.
+#' @param selected_genera Reactive values of selected genera.
+#' @param shared_reactives Shared reactive values.
+#' @param auto_save_interval Interval used for autosave (reserved for future use).
+#' @param auto_save_path Path to autosave directory (reserved for future use).
+#' @param expose_data_reactive Optional reactiveVal used to expose assembled data.
+#' @keywords internal
 download_module_server <- function(
     id,
     selected_genera,
     shared_reactives,
     auto_save_interval = 30,
-    auto_save_path = "auto_saves",
-    expose_data_reactive = NULL # reactiveVal to share data with other modules
+    auto_save_path = get_app_path("autosave_dir"),
+    expose_data_reactive = NULL
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
