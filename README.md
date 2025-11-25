@@ -30,7 +30,7 @@ shiny::runApp()
 ## Requirements
 
 - R 4.4.2 or later
-- R packages handled via `renv`; core packages include `shiny`, `ggtree`, `DT`, `magick`, and others
+- R packages handled via `renv`; core packages include `shiny`, `DT`, `magick`, and others
 - External tools: `magick` requires ImageMagick and `webshot` needs PhantomJS (TODO: confirm installation steps)
 
 ## Installation & Setup

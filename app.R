@@ -16,10 +16,8 @@ library(anytime)       # Automatic and accurate date string parsing
 library(magick)        # Advanced image processing and manipulation in R
 library(tidyverse)     # Collection of packages for data manipulation and visualization
 library(uuid)          # Generate universally unique identifiers (UUIDs)
-library(ggtree)        # Visualization and annotation of phylogenetic trees
 library(ape)           # Analyses of Phylogenetics and Evolution
 library(phytools)      # Phylogenetic tools for comparative biology
-library(treeio)        # Classes and functions for phylogenetic tree I/O
 
 # --------------------------------------------------------------------
 # Data Loading and Preprocessing

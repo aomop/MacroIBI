@@ -99,20 +99,28 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       
       full_taxonomy <- full_taxonomy[full_taxonomy$level %in% valid_levels, ]
    
-      # Attempt to create the tree if multiple rows are present
-      if(nrow(full_taxonomy) > 1) {
-        tryCatch({
-          edge_list <- as.matrix(full_taxonomy[, c("parentTsn", "tsn")])
-          tree <- ape::as.phylo(edge_list, directed = TRUE)
-          plot(tree)  # If tree creation is successful, plot it
-        }, error = function(e) {
-          print(paste("Failed to create tree:", e$message))
-        })
+      if (nrow(full_taxonomy) <= 1) {
+        warning("Tree cannot be generated with only one taxon.")
+        return(NULL)
       }
-      
+
+      # Attempt to create the tree if multiple rows are present
+      edge_list <- as.matrix(full_taxonomy[, c("parentTsn", "tsn")])
+
+      tree <- tryCatch({
+        ape::as.phylo(edge_list, directed = TRUE)
+      }, error = function(e) {
+        warning(paste("Failed to create tree:", e$message))
+        NULL
+      })
+
+      if (is.null(tree)) {
+        return(NULL)
+      }
+
       # Step 1: Create a mapping from TSNs to taxon names
       tsn_to_taxon <- setNames(full_taxonomy$taxon, full_taxonomy$tsn)
-      
+
       # Step 2: Safely replace TSNs in tree with taxon names
       tree$tip.label <- purrr::map_chr(tree$tip.label, function(x) {
         if (!is.na(x) && as.character(x) %in% names(tsn_to_taxon)) {
@@ -130,28 +138,15 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         }
       })
 
-      # Match `taxa_data$tsn` to `tree$tip.label` using the same conversion
-      converted_tsn_labels <- purrr::map_chr(taxa_data$tsn, function(tsn) {
-        tsn_to_taxon[[as.character(tsn)]]
-      })
-      
-      # Build the tree
-      p <- ggtree::ggtree(tree) +
-        ggtree::geom_tiplab(ggplot2::aes(label = label), fontface = 3) +
-        ggtree::geom_nodelab(ggplot2::aes(label = label), fontface = 3, hjust = 1.125, nudge_y = 0.125) +
-        ggtree::theme_tree2() +
-        ggplot2::labs(title = "Taxonomic Tree")
-      
-      # Extract the x-axis range dynamically from the ggtree object
-      tree_data <- ggplot2::ggplot_build(p)$data[[1]]  # Access tree's ggplot data
-      xmax <- max(tree_data$x, na.rm = TRUE)  # Get the maximum x value for the tree
-      
-      # Rebuild the tree with dynamic x-axis limits
-      p + ggplot2::xlim(0, xmax + 2)  # Add some buffer space
-        
-        #browser()
+      list(tree = tree)
     })
-    
+
+    draw_tree <- function(tree_obj) {
+      ape::plot(tree_obj, show.tip.label = TRUE, cex = 0.8)
+      ape::nodelabels(tree_obj$node.label, frame = "n", cex = 0.7, adj = c(1.1, -0.1))
+      title("Taxonomic Tree")
+    }
+
     # Output the tree plot
     output$taxonomic_tree <- shiny::renderPlot({
       tree_plot <- reactive_tree()
@@ -159,7 +154,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         plot.new()
         text(0.5, 0.5, "Tree cannot be generated with only one taxon.", cex = 1.5)
       } else {
-        print(tree_plot)
+        draw_tree(tree_plot$tree)
       }
     })
     
@@ -170,7 +165,16 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         paste0(ns("section"), "_taxa_tree.png")
       },
       content = function(file) {
-        ggplot2::ggsave(file, plot = reactive_tree(), width = 10, height = 6)
+        tree_plot <- reactive_tree()
+        grDevices::png(file, width = 1200, height = 800, res = 120)
+        on.exit(grDevices::dev.off(), add = TRUE)
+
+        if (is.null(tree_plot)) {
+          plot.new()
+          text(0.5, 0.5, "Tree cannot be generated with only one taxon.", cex = 1.5)
+        } else {
+          draw_tree(tree_plot$tree)
+        }
       }
     )
   })
