@@ -125,7 +125,10 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix) {
 }
 
 #' Internal server
+#' @param taxonomy Taxonomy data frame.
+#' @param group_list List of taxonomic groups.
 #' @keywords internal
+#' @import rlang
 macroibi_server <- function(taxonomy, group_list) {
   function(input, output, session) {
     group_totals <- reactiveValues()

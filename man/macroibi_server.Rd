@@ -6,6 +6,11 @@
 \usage{
 macroibi_server(taxonomy, group_list)
 }
+\arguments{
+\item{taxonomy}{Taxonomy data frame.}
+
+\item{group_list}{List of taxonomic groups.}
+}
 \description{
 Internal server
 }

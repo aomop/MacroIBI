@@ -19,6 +19,8 @@ taxonomic_tree_ui <- function(id) {
 #' @param selected_genera Reactive values of selected genera.
 #' @param taxonomy_df Reactive taxonomy data frame.
 #' @keywords internal
+#' @import stats
+#' @import graphics
 taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns

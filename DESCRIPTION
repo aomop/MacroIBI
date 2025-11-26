@@ -21,7 +21,8 @@ Imports:
     readr,
     rmarkdown,
     uuid,
-    tools
+    tools,
+    rlang
 Suggests:
     testthat (>= 3.0.0),
     shinytest2,

@@ -152,5 +152,5 @@ escape_latex <- function(x) {
   x <- gsub("([&_#$%{}])", "\\\\\\1", x, perl = TRUE)
   x <- gsub("~", "\\\\textasciitilde{}", x, fixed = TRUE)
   x <- gsub("\\^", "\\\\textasciicircum{}", x, fixed = TRUE)
-  gsub("'", "’", x, fixed = TRUE)
+  x <- gsub("'", "\\\\textquotesingle{}", x, fixed = TRUE)
 }
