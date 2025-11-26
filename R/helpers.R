@@ -1,9 +1,3 @@
-#' Helper utilities for MacroIBI
-#'
-#' Internal helper functions used across the MacroIBI Shiny application.
-#' @keywords internal
-NULL
-
 #' Evaluate a reactive or numeric value safely
 #'
 #' @param x A numeric value or a reactive returning numeric output.

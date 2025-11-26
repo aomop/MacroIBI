@@ -72,7 +72,8 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
       df1 <- summarized_data()  
       
       df2 <- combined_metrics
-      
+      browser()
+  
       # Determine common levels across both datasets
       common_levels <- unique(c(df1$metric_name, df2$metric_name))
       
