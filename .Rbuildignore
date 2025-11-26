@@ -4,3 +4,4 @@
 ^auto_saves$
 ^metric_autosaves$
 ^tests/testthat/test-smoke.R$
+^LICENSE\.md$
