@@ -6,7 +6,9 @@
 ui_metric_scores <- function(id) {
   ns <- shiny::NS(id)  # Namespace for the module
   shiny::tagList(
-    DT::DTOutput(ns("metric_scores_table"))  # Placeholder for the metric scores table
+    shinycssloaders::withSpinner(
+      DT::DTOutput(ns("metric_scores_table"))
+    )  # Placeholder for the metric scores table
   )
 }
 

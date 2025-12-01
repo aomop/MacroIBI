@@ -6,7 +6,7 @@
 taxonomic_tree_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::plotOutput(ns("taxonomic_tree")),
+    shinycssloaders::withSpinner(shiny::plotOutput(ns("taxonomic_tree"))),
     shinyjs::hidden(id =
     shiny::downloadButton(ns("download_tree"), "Download Tree Image")
     )

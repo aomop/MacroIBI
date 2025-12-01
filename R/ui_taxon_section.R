@@ -32,7 +32,7 @@ ui_taxon_section <- function(id, group_name, color) {
       ),
 
       # Placeholder for dynamically generated rows in the taxon table
-      shiny::uiOutput(ns("group_table_ui"))
+      shinycssloaders::withSpinner(shiny::uiOutput(ns("group_table_ui")))
       # Button to toggle the display of the taxonomic tree
     )
   )
