@@ -313,7 +313,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         )
       }
       
-      ## ---- NEW: draw node points -------------------------------------------
+      ## ---- draw node points -------------------------------------------
       # Align nodes$selected with coords rows
       node_idx_for_coords <- match(coords$tsn, nodes$tsn)
       node_selected       <- nodes$selected[node_idx_for_coords]
@@ -326,7 +326,26 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         bg  = ifelse(node_selected, "black", "white"),
         cex = 0.8
       )
+      ## ---- legend for selected / non-selected nodes -------------------------
+      # Get current user coordinates
+      usr <- par("usr")  # c(xmin, xmax, ymin, ymax)
+      
+      # Place legend slightly to the right of the plot area and a bit below the top
+      legend_x <- usr[2] 
+      legend_y <- usr[4] 
+      
+      legend(
+        x      = legend_x,
+        y      = legend_y,
+        legend = c("Selected taxon", "Non-selected\nparent taxon"),
+        pch    = 21,
+        pt.bg  = c("black", "white"),  # fill colors to match points()
+        pt.cex = 0.9,
+        bty    = "n",                  # no box
+        xpd    = NA                    # allow drawing in margin
+      )
       ## ----------------------------------------------------------------------
+      
       
       # Label selected taxa (leaf_tsns may include internal nodes)
       leaf_idx <- match(leaf_tsns, coords$tsn)
@@ -336,11 +355,10 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       n_leaves  <- length(leaf_tsns)
       label_cex <- max(0.4, min(1.2, 12 / n_leaves))
       
-      usr <- par("usr")  # c(xmin, xmax, ymin, ymax)
-      
       # Base vertical offset for labels (in "character heights")
-      base_offset <- strheight("M", cex = label_cex) * 1.2
-      y_padding   <- strheight("M", cex = label_cex) * 0.6
+      base_offset    <- strheight("M", cex = label_cex) * 1.2
+      x_label_offset <- strwidth("M",  cex = label_cex) * 0.8
+      y_padding      <- strheight("M", cex = label_cex) * 0.6
       
       # Helper: is this tsn an internal node (has children) or a tip?
       has_children <- function(tsn) {
@@ -367,36 +385,40 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         x_i <- coords$x[ci]
         y_i <- coords$y[ci]
         
-        label_x[i] <- x_i
+        # Start with defaults
+        x_raw <- x_i
+        y_raw <- y_i
         
         if (!has_children(tsn_i)) {
-          # --- leaf: keep the old behavior (label below the point) ----------
-          y_raw <- y_i - 0.1
+          # --- LEAF: label to the right, same y -----------------------
+          x_raw <- x_i + x_label_offset
+          y_raw <- y_i
         } else {
-          # --- internal selected node: choose above or below ----------------
+          # --- INTERNAL SELECTED NODE: above or below -----------------
           cm_y <- child_mean_y[[as.character(tsn_i)]]
           
           if (is.null(cm_y) || is.na(cm_y)) {
-            # Fallback: treat like a leaf if no child info
+            # Fallback: above the node
             y_raw <- y_i - base_offset
           } else {
             # Direction of children relative to this node
-            # (assuming y increases downward; if children are below, labels go above)
             direction <- sign(cm_y - y_i)
             
             if (direction >= 0) {
-              # Children are below → put label above the node
+              # Children are below → put label above
               y_raw <- y_i - base_offset
             } else {
-              # Children are above → put label below the node
+              # Children are above → put label below
               y_raw <- y_i + base_offset
             }
           }
         }
         
-        # Clamp labels inside the plotting region
+        # Clamp labels inside plotting region vertically
         y_min <- usr[3] + y_padding
         y_max <- usr[4] - y_padding
+        
+        label_x[i] <- x_raw
         label_y[i] <- max(y_min, min(y_raw, y_max))
       }
       
@@ -405,7 +427,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         y      = label_y,
         labels = leaf_lab,
         srt    = 0,
-        adj    = c(0.5, 0.5),
+        adj    = c(0, 0.5),
         cex    = label_cex
       )
       
