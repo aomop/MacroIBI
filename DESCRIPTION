@@ -1,6 +1,6 @@
 Package: macroibi
 Title: Wetland Macroinvertebrate IBI Dashboard
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Sam", "Swanson", email = "sam.swanson@example.com", role = c("aut", "cre"))
 Description: Launches the Macroinvertebrate Index of Biotic Integrity Shiny dashboard and supporting utilities for wetlands.
 License: MIT + file LICENSE
