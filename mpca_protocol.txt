@@ -1,0 +1,78 @@
+MACROINVERTEBRATE COMMUNITY SAMPLING PROTOCOL FOR DEPRESSIONAL WETLAND MONITORING SITES
+I. PURPOSE
+To describe the methods used by Minnesota Pollution Control Agency’s (MPCA) Biological Monitoring Program to collect macroinvertebrate community information at wetland monitoring sites for the purpose of assessing water quality and developing biological criteria.
+II. SCOPE/LIMITATIONS
+This procedure applies to all monitoring sites for which an integrated assessment of water quality is to be conducted. An integrated assessment involves the collection of biological (macroinvertebrate and plant) and chemical data to assess wetland condition.
+III. GENERAL INFORMATION
+Sites may be selected for monitoring for a number of reasons including: 1) sites randomly selected for condition monitoring as part of a probabilistic or random survey, 2) sites selected for the development and calibration of biological criteria (e.g., index of biological integrity), and 3) sites selected to evaluate a suspected or potential stressor that may be impacting the ecological condition of the wetland.
+IV. REQUIREMENTS
+A. Qualifications of crew leaders: The crew leader must be a professional aquatic biologist with a minimum of a Bachelor of Science degree in aquatic biology or closely related specialization. He or she must have a minimum of six months field experience in aquatic macroinvertebrate community sampling methodology and taxonomy. Field crew leaders should also possess excellent map reading skills and a demonstrated proficiency in the use of a GPS (Global Positioning System) receiver and orienteering compass.
+B. Qualifications of field technicians/interns: A field technician/intern must have at least one year of college education and coursework in environmental and/or biological science.
+C. General qualifications: All personnel conducting this procedure must have the ability to perform rigorous physical activity. It is often necessary to wade through streams and/or wetlands, canoe, or hike for long distances to reach a sampling site.
+V. RESPONSIBILITIES
+A. Field crew leader: Implement the procedures outlined in the action steps and ensure that the data generated meets the standards and objectives of the Biological Monitoring Program.
+B. Technicians/interns: Implement the procedures outlined in the action steps, including maintenance and stocking of equipment, data collection and recording.
+wq-bwm5-02
+Version October 2014
+VI. QUALITY ASSURANCE AND QUALITY CONTROL
+Compliance with this procedure will be maintained through annual internal reviews. Technical personnel will conduct periodic self-checks by comparing their results with other trained personnel. Calibration and maintenance of equipment will be conducted according to the guidelines specified in the manufacturer’s manuals.
+In addition to adhering to the specific requirements of this sampling protocol and any supplementary site specific procedures, the minimum QA/QC requirements for this activity are as follows:
+A. Control of deviations: Deviation shall be sufficiently documented to allow repetition of the activity as performed.
+B. QC samples: Ten percent of sites sampled in any given year are re-sampled as a means of determining sampling error and temporal variability.
+C. Verification: The field crew leader will conduct periodic reviews of field personnel to ensure that technical personnel are following procedures in accordance with this SOP.
+VII. TRAINING
+A. All inexperienced personnel will receive instruction from a trainer designated by the program manager. Major revisions in this protocol require that all personnel be re-trained in the revised protocol by experienced personnel.
+B. The field crew leader will provide instruction in the field and administer a field test to ensure personnel can execute this procedure.
+VIII. ACTION STEPS
+A. Equipment list: Verify that all necessary items are present before commencement of this procedure (Table 1).
+B. Data collection method: Sampling depressional wetland macroinvertebrate assemblages is conducted during a seasonal index period of June through early July. In previous wetland work, MPCA biologists found that some macroinvertebrate larval stages were too immature to identify down to genus when sampled in May. In stream invertebrate work, the sampling is done in August and September to capture base flow conditions and to obtain a relatively high percentage of mature larval specimens. Sampling this late in the summer does not work for wetlands because water levels may be too low to sample them effectively and/or they may be heavily colonized by invertebrates which have immigrated into them from other, more permanent waterbodies.
+The MPCA stratifies depressional wetlands into four wadeable (< 1 m depth) habitats: emergent vegetation, floating-leaved vegetation, submergent vegetation zones, and shallow, open water (< 25% plant cover). During development of wetland macroinvertebrate indices of biological integrity or IBIs the focus was on sampling the emergent vegetation zone. In this zone there is a high richness and abundance of invertebrates, including large predatory insects, due in part to the decomposing vegetation and diverse vegetative microhabitats that occur in this zone. However, disturbance (human or natural) to the wetland may result in a diminished or altogether absent emergent vegetation zone. If an emergent vegetation zone is not present within the wetland, sample an alternative zone of the wetland in the following preferential order: floating-leaf vegetation (e.g., water lily), submerged aquatic vegetation, and shallow, open water. Record each vegetation zone sampled on the wetland invertebrate visit form (Appendix B). Multiple zones may be sampled as long as the majority of dip net sweeps are taken within the highest priority zone present (e.g., emergent vegetation).
+Sampling of wetland aquatic macroinvertebrates by the MPCA Biological Monitoring Program is restricted to invertebrate organisms that are retained by a U.S. Standard No. 30 sieve (28 meshes per inch, 0.595 mm openings), excluding zooplankton such as ostracods, copepods, cladocerans, and rotifers. Macroinvertebrates are collected in the field using a dip net sampling technique followed by a process to separate organisms from vegetation and debris
+in the field. Previous MPCA projects (e.g., Helgen et al. 1993) demonstrated that dip net sampling captures the
+wq-bwm5-02
+Version October 2014
+==================================================================================
+Table 1. Equipment List – This table identifies all equipment needed in the field in order to implement the sampling protocol as described.
+==================================================================================
+Two D-frame dip nets with 500 micron mesh – for collection of inverts
+Sample processing field apparatus – for separating invertebrates from vegetation and detritus (see Figure 2):
+4 small plastic pans
+2 hardware cloth frames
+2 large plastic pans
+200 μm mesh sieve – for sample consolidation and transfer to jar
+Two squirt-bottles – one for site water to transfer sample contents sieve and one for alcohol to back-flush sieve and
+preservation
+Two soft-touch forceps – for picking invertebrates
+Wetland Invertebrate Visit Form – for recording data
+Maps of wetland and surrounding upland (aerial imagery) – for navigating to sampling station\
+Hand-held GPS unit – for navigating to site and documenting location of sample collection
+Pencils and clipboard– for filling out forms and internal sample labels
+Scissors – for cutting labels
+Permanent/Alcohol proof marker – for external sample labels
+Internal and external invertebrate sample identification labels – to label sample containers
+100% reagent alcohol – for preserving sample specimens
+Waterproof notebook – for making observations
+Chest waders – for comfort and safety during sampling
+Rain-gear – for comfort and safety during sampling during inclement weather
+Camera – to document site conditions
+Plastic sample jars; wide-mouth, 16 oz. capacity – for storing preserved sample
+Cooler or crate - to store sample jars
+greatest richness of invertebrates, but actively swimming or night-active predators may be under-collected by this method. A comparison of sampling approaches (dip net + activity traps vs. dip nets alone), utilizing a cost-benefit evaluation, revealed that activity traps did increase the ability of the macroinvertebrate IBI to distinguish various levels of human disturbance (Bouchard et al. 2014). However, the added cost of activity traps, particularly those associated with visiting a site twice to deploy and retrieve traps, did not outweigh the added information provided by this sampling technique. In 2007 the MPCA discontinued the use of activity trap sampling and transitioned to a sampling methodology that relied exclusively on dip net sampling.
+wq-bwm5-02
+Version October 2014
+Two samples are collected from each wetland site using a heavy-handled D-frame dip net with a 500 micron mesh size. Samples are taken within a 10 - 15 m radius in the highest priority vegetation zone present in the wetland and are not intended to be replicates, but rather to sample the wetland more widely. Ultimately, data from the two dip net samples are combined for the purpose of calculating an IBI score for the wetland. Each dip net sample consists of two dip net efforts and each effort consists of sweeping the dip net strongly a few times (3 -5 depending on the density of the vegetation), reaching outward and pulling the net back towards oneself in a rapid motion (Figure 1). Each sweep should be through the water column and vegetation above the substrate. If mud is accidentally scraped into the net, the net should be cleaned out and the sampling effort must be repeated in an area away from the previous netting.
+Figure 1. Summary of MPCA’s wetland dip net sampling method.
+A method utilized by MPCA reduces the amount of time associated with separating invertebrates from the vegetation that invariably gets swept into the dip net. This method involves the placement of the entire dip net contents (from dip net effort) on top of a framed ½ inch hardware cloth screen set over two small pans (cooler style) (Figure 2). Each crew member places their dip net contents onto a separate frame/pan apparatus. Each frame is placed so no open screen area projects beyond the pans below. This frame and pan setup is placed into a larger plastic pan which can be floated on the water. Sieved water from the site can be used to rinse the vegetation on each screen, providing water in the pans for the organisms to drop into. Then, over a period of ten minutes the vegetation is spread apart on the hardware cloth to allow the invertebrates to drop or crawl out into the pans below. During this time, each crew member searches through the vegetation on their screen using forceps to pick invertebrates and place them into the pans below. Care should be taken by each crew member to avoid focusing on a single taxon (e.g., one that is easy to pick or conspicuous) or the same area of vegetation/detritus to insure that the sample accurately reflects the invertebrate community of the site.
+After ten minutes, the contents of the four pans below both hardware cloth frames are poured through a 200 micron nytex nylon net sieve to drain out the water. The sieve is made with 15 cm length of 4” diameter PVC pipe with the net glued on one end with a ring of the PVC. The 200 micron sieve is used to retain chironomids dislodged from the vegetation. Snails, leeches, and other organisms typically stick to the pans and require a squirt-bottle (site water) or forceps to flush into the sieve. Transferring the contents of each pan into the sieve should take place over the large plastic pan so as to capture any individuals that fall. The contents of each large plastic pan can then be poured into the sieve after the pans are emptied. Once all the pans (large and small) have been poured into the sieve, the contents are back-flushed with 100% reagent-grade alcohol using a strong squirt-bottle into a sample jar, thus combining the two dip net efforts into one dip net sample (Figure 1). The goal is to end up with ~80% alcohol as a final concentration in the sample. Care must be taken to re-preserve samples containing a large catch of invertebrates or to divide the sample between two jars (e.g., jar 1 of 2, jar 2 of 2). The jar should have not more than 1/3 volume of invertebrates to alcohol. Sixteen-ounce plastic jars with foam or polypropylene seals are useful for preservation in the field. Internal labels made with India ink or pencil on 100% cotton paper or other material known to survive the preservatives are placed within the jar. Labels are also placed on the outside of the jar for convenience in managing samples. Internal and external labels should include the following information: site ID, date, sample #,
++crew leadertechniciandip net effort(3 -5 sweeps)dip net effort(3 -5 sweeps)=dip net sample
+wq-bwm5-02
+Version October 2014
+jar # (if multiple), and crew initials. Once completed, each crew member conducts a second dip net effort and the entire process is repeated for collection of the second dip net sample.
+Figure 2. Diagram of hardware cloth and pan apparatus for separating invertebrate specimens from vegetation collected by dip nets.
+C. Sample Storage and Maintenance: In the time prior to sample processing and the identification of organisms preserved samples should be kept in a designated hazardous materials room and checked periodically for adequate preservative volume, re-preserving with 80% alcohol as necessary. For samples that require additional alcohol the lids are tightened or replaced in order to prevent further evaporation.
+E. Literature Cited:
+Helgen, J.H., K. Thompson, J.P. Gathman, M. Gernes, L.C. Ferrington, and C. Wright. 1993. Developing
+an Index of Biological Integrity for 33 Depressional Wetlands in Minnesota. Minnesota Pollution
+Control Agency, St. Paul, MN.
+Bouchard, R.W., J.A. Genet, and J.W. Chirhart. 2014. Does supplementing dipnet samples with activity traps
+improve the ability to assess the biological integrity of macroinvertebrate communities in depressional wetlands? Wetlands 34(4):699-711
