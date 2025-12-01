@@ -160,10 +160,9 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       # --- Build adjacency: children_by_parent ------------------------------
       children_by_parent <- split(edges$child, edges$parent)
       
-      # Find roots: nodes that are never a child
-      root_tsns <- setdiff(nodes$tsn, edges$child)
-      # (Optional) keep only roots that actually connect to selected taxa, but
-      # usually there will be just one MRCA root in the trimmed tree.
+      # Find roots: nodes whose parent is not in the node set (or is NA/"")
+      parent_in_nodes <- nodes$parentTsn %in% nodes$tsn
+      root_tsns <- unique(nodes$tsn[!parent_in_nodes | is.na(nodes$parentTsn) | nodes$parentTsn == ""])
       
       # Speed up membership tests
       selected_set <- unique(selected_tsns)
@@ -241,7 +240,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         leaf_tsns = selected_tsns
       )
     }
-    
+      
     # --------------------------------------------------------------------
     # Helper: draw the tree with base R graphics
     # --------------------------------------------------------------------
@@ -250,7 +249,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       nodes     <- tree$nodes
       edges     <- tree$edges
       coords    <- tree$coords
-      leaf_tsns <- tree$leaf_tsns
+      leaf_tsns <- tree$leaf_tsns   # selected taxa; name is a bit misleading if some are internal
       
       # Save and restore par so we don't mess up other plots
       old_par <- par(no.readonly = TRUE)
@@ -260,46 +259,37 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       # mar: bottom, left, top, right
       par(mar = c(5, 2, 2, 8), xpd = NA)
       
-      # Basic plotting window (you already swapped x/y; this just respects that)
+      # Basic plotting window
       y_range <- range(coords$y, na.rm = TRUE)
       x_range <- range(coords$x, na.rm = TRUE)
       
       plot(
-        x_range + c(-1, 1),      # no rev() here
+        x_range + c(-1, 1),
         y_range + c(-1, 1),
         type = "n", axes = FALSE, xlab = "", ylab = ""
       )
       
       ## ---- derive clade positions from nodes -------------------------------
-      # Grab one row per level, keeping `x` and `rank_index`
-      # Join nodes to coords so we use displayed x positions
       level_df <- merge(
         nodes[, c("tsn", "level", "rank_index")],
         coords[, c("tsn", "x")],
         by = "tsn"
       )
       
-      # One representative row per level
       level_df <- level_df[!duplicated(level_df$level),
                            c("level", "rank_index", "x")]
-      
-      # Keep only the levels we actually want
       level_df <- subset(level_df, level %in% axis_levels)
-      
-      # Order from higher ranks to lower ranks (Kingdom → Species)
       level_df <- level_df[order(level_df$rank_index), ]
       
-      # Named vector: values = x positions in *plot* coords
       clade_positions <- setNames(level_df$x, level_df$level)
       
-      # Draw bottom axis using these positions
       if (length(clade_positions) > 0) {
         axis(
           side     = 1,
           at       = clade_positions,
           labels   = names(clade_positions),
           tick     = TRUE,
-          las      = 2,      # vertical-ish labels
+          las      = 2,
           cex.axis = 0.8
         )
         
@@ -323,31 +313,99 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         )
       }
       
-      # Label leaves (selected taxa)
+      ## ---- NEW: draw node points -------------------------------------------
+      # Align nodes$selected with coords rows
+      node_idx_for_coords <- match(coords$tsn, nodes$tsn)
+      node_selected       <- nodes$selected[node_idx_for_coords]
+      
+      # Simple filled circles: filled if selected, hollow otherwise
+      points(
+        x   = coords$x,
+        y   = coords$y,
+        pch = 21,
+        bg  = ifelse(node_selected, "black", "white"),
+        cex = 0.8
+      )
+      ## ----------------------------------------------------------------------
+      
+      # Label selected taxa (leaf_tsns may include internal nodes)
       leaf_idx <- match(leaf_tsns, coords$tsn)
       leaf_lab <- nodes$taxon[match(leaf_tsns, nodes$tsn)]
       
-      # Dynamic label size based on number of leaves
+      # Dynamic label size based on number of labeled taxa
       n_leaves  <- length(leaf_tsns)
       label_cex <- max(0.4, min(1.2, 12 / n_leaves))
       
-      # Compute desired label y and then clamp to stay inside plot region
       usr <- par("usr")  # c(xmin, xmax, ymin, ymax)
       
-      raw_label_y <- coords$y[leaf_idx] - 0.1
+      # Base vertical offset for labels (in "character heights")
+      base_offset <- strheight("M", cex = label_cex) * 1.2
+      y_padding   <- strheight("M", cex = label_cex) * 0.6
       
-      # Minimum y inside the plotting region, with a bit of padding
-      y_padding <- strheight("M", cex = label_cex) * 0.6
-      min_y     <- usr[3] + y_padding
+      # Helper: is this tsn an internal node (has children) or a tip?
+      has_children <- function(tsn) {
+        any(edges$parent == tsn)
+      }
       
-      safe_label_y <- pmax(raw_label_y, min_y)
+      # Precompute a mean child y for each parent for directionality
+      # (we only need this for nodes that *are* parents)
+      child_mean_y <- tapply(
+        coords$y[match(edges$child, coords$tsn)],
+        edges$parent,
+        mean,
+        na.rm = TRUE
+      )
+      
+      # Compute label positions taxon-by-taxon
+      label_x <- numeric(n_leaves)
+      label_y <- numeric(n_leaves)
+      
+      for (i in seq_along(leaf_tsns)) {
+        tsn_i <- leaf_tsns[i]
+        ci    <- leaf_idx[i]
+        
+        x_i <- coords$x[ci]
+        y_i <- coords$y[ci]
+        
+        label_x[i] <- x_i
+        
+        if (!has_children(tsn_i)) {
+          # --- leaf: keep the old behavior (label below the point) ----------
+          y_raw <- y_i - 0.1
+        } else {
+          # --- internal selected node: choose above or below ----------------
+          cm_y <- child_mean_y[[as.character(tsn_i)]]
+          
+          if (is.null(cm_y) || is.na(cm_y)) {
+            # Fallback: treat like a leaf if no child info
+            y_raw <- y_i - base_offset
+          } else {
+            # Direction of children relative to this node
+            # (assuming y increases downward; if children are below, labels go above)
+            direction <- sign(cm_y - y_i)
+            
+            if (direction >= 0) {
+              # Children are below → put label above the node
+              y_raw <- y_i - base_offset
+            } else {
+              # Children are above → put label below the node
+              y_raw <- y_i + base_offset
+            }
+          }
+        }
+        
+        # Clamp labels inside the plotting region
+        y_min <- usr[3] + y_padding
+        y_max <- usr[4] - y_padding
+        label_y[i] <- max(y_min, min(y_raw, y_max))
+      }
       
       text(
-        x      = coords$x[leaf_idx],
-        y      = safe_label_y,
+        x      = label_x,
+        y      = label_y,
         labels = leaf_lab,
         srt    = 0,
-        adj    = c(0,0.5),
+        adj    = c(0.5, 0.5),
         cex    = label_cex
       )
       
@@ -361,34 +419,84 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       shiny::req(selected_genera(), taxonomy_df())
       
       section_data <- selected_genera()$data
-      shiny::req(section_data)
+      if (is.null(section_data) || length(section_data) == 0) {
+        return(list(
+          tree    = NULL,
+          message = "No taxa in this group yet.\nAdd at least two taxa to see a tree."
+        ))
+      }
       
       # Extract TSNs of selected taxa
       selected_tsns <- purrr::map_chr(section_data, ~ as.character(.x$tsn))
       
+      if (length(selected_tsns) < 2) {
+        return(list(
+          tree    = NULL,
+          message = "Tree cannot be generated with fewer than two taxa."
+        ))
+      }
+      
       # Build nodes table from taxonomy
       nodes <- build_tree_nodes(selected_tsns, taxonomy_df())
       
-      # If we somehow only have 0 or 1 selected taxa, bail early
-      if (sum(nodes$selected) <= 1) {
-        warning("Tree cannot be generated with fewer than two taxa.")
-        return(NULL)
+      if (is.null(nodes) || nrow(nodes) == 0) {
+        return(list(
+          tree    = NULL,
+          message = "No matching nodes found in the taxonomy for the selected taxa."
+        ))
       }
       
-      # Compute layout
-      layout_tree(nodes)
+      if (sum(nodes$selected) <= 1) {
+        return(list(
+          tree    = NULL,
+          message = "Tree collapses to a single node.\nNeed at least two distinct taxa in this clade."
+        ))
+      }
+      
+      # Compute layout; if it errors, return a debug message
+      tree_obj <- tryCatch(
+        layout_tree(nodes),
+        error = function(e) {
+          warning("layout_tree() failed: ", conditionMessage(e))
+          NULL
+        }
+      )
+      
+      if (is.null(tree_obj)) {
+        return(list(
+          tree    = NULL,
+          message = "An error occurred while laying out the tree.\nCheck the logs for details."
+        ))
+      }
+      
+      # Success: wrap in our standard structure
+      list(
+        tree    = tree_obj,
+        message = NULL
+      )
     })
     
     # --------------------------------------------------------------------
     # Plot output
     # --------------------------------------------------------------------
+    `%||%` <- function(x, y) if (is.null(x)) y else x
+    
     output$taxonomic_tree <- shiny::renderPlot({
-      tree <- reactive_tree()
-      if (is.null(tree)) {
+      res <- reactive_tree()
+      
+      # If the reactive was cancelled by req()
+      if (is.null(res)) {
         plot.new()
-        text(0.5, 0.5, "Tree cannot be generated for the selected taxa.", cex = 1.5)
+        text(0.5, 0.5, "Tree not available yet.\n(reactive cancelled by req())", cex = 1.2)
+        return()
+      }
+      
+      if (is.null(res$tree)) {
+        msg <- res$message %||% "Tree could not be generated for an unknown reason."
+        plot.new()
+        text(0.5, 0.5, msg, cex = 1.2)
       } else {
-        draw_tree_base(tree)
+        draw_tree_base(res$tree)
       }
     })
     
