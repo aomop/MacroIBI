@@ -5,3 +5,6 @@
 ^metric_autosaves$
 ^tests/testthat/test-smoke.R$
 ^LICENSE\.md$
+^app\.R$
+^rsconnect$
+^\.rscignore$

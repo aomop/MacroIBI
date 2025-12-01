@@ -22,7 +22,8 @@ Imports:
     rmarkdown,
     uuid,
     tools,
-    rlang
+    rlang,
+    pkgload
 Suggests:
     testthat (>= 3.0.0),
     shinytest2,

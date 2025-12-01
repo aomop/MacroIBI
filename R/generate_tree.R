@@ -76,41 +76,131 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       nodes
     }
     
+    # Define a rank order from top (Kingdom) to bottom (Species)
+    rank_levels <- c(
+      "Kingdom", "Subkingdom", "Infrakingdom",
+      "Superphylum", "Phylum", "Subphylum",
+      "Superclass", "Class", "Subclass", "Infraclass",
+      "Superorder", "Order", "Suborder", "Infraorder",
+      "Superfamily", "Family", "Subfamily",
+      "Tribe", "Subtribe",
+      "Genus", "Subgenus",
+      "Species"
+    )
+    
     # --------------------------------------------------------------------
     # Helper: compute layout (x,y) for each node
     # --------------------------------------------------------------------
     layout_tree <- function(nodes) {
-      # Define a rank order from top (Kingdom) to bottom (Species)
-      rank_levels <- c(
-        "Kingdom", "Subkingdom", "Infrakingdom",
-        "Superphylum", "Phylum", "Subphylum",
-        "Superclass", "Class", "Subclass", "Infraclass",
-        "Superorder", "Order", "Suborder", "Infraorder",
-        "Superfamily", "Family", "Subfamily",
-        "Tribe", "Subtribe",
-        "Genus", "Subgenus",
-        "Species"
-      )
-      
       # Map taxonomic level to a numeric rank index
       nodes$rank_index <- match(nodes$level, rank_levels)
       
-      # In case some levels are missing, just drop NAs
-      nodes <- nodes[!is.na(nodes$rank_index), ]
+      # Drop levels we don't know how to rank
+      nodes <- nodes[!is.na(nodes$rank_index), , drop = FALSE]
       
-      # x coordinate: higher ranks higher on the plot
-      max_rank <- max(nodes$rank_index, na.rm = TRUE)
-      nodes$x  <- max_rank - nodes$rank_index + 1
+      # --- If we have fewer than 2 selected taxa, no tree to draw ----------
+      selected_tsns <- unique(nodes$tsn[nodes$selected])
+      if (length(selected_tsns) <= 1) return(NULL)
       
-      # y coordinate:
-      #  1. assign leaves (selected taxa) equally spaced
-      #  2. internal nodes get mean of their children
-      leaf_tsns <- nodes$tsn[nodes$selected]
-      leaf_tsns <- unique(leaf_tsns)
+      # --------------------------------------------------------------------
+      # 1) Find MRCA of all selected taxa
+      # --------------------------------------------------------------------
+      parent_lookup <- setNames(nodes$parentTsn, nodes$tsn)
       
-      # If we really only have 0 or 1 leaves, we can't build a meaningful tree
-      if (length(leaf_tsns) <= 1) return(NULL)
+      get_ancestors <- function(tsn) {
+        tsn <- as.character(tsn)
+        out <- character()
+        seen <- character()
+        cur  <- tsn
+        
+        while (!is.na(cur) && nzchar(cur) && !(cur %in% seen)) {
+          seen <- c(seen, cur)
+          out  <- c(out, cur)
+          
+          p <- parent_lookup[[cur]]
+          if (is.null(p) || is.na(p) || p == "") break
+          
+          cur <- as.character(p)
+        }
+        out
+      }
       
+      anc_list   <- lapply(selected_tsns, get_ancestors)
+      common_anc <- Reduce(intersect, anc_list)
+      
+      if (length(common_anc) == 0) {
+        # No common ancestor found in this subset (paranoid fallback)
+        min_rank_to_keep <- min(nodes$rank_index, na.rm = TRUE)
+      } else {
+        # Pick the deepest common ancestor = MRCA (largest rank_index)
+        mrca_idx  <- which(nodes$tsn %in% common_anc)
+        mrca_rank <- max(nodes$rank_index[mrca_idx], na.rm = TRUE)
+        
+        # We want MRCA level + 1 "up" the tree:
+        # e.g., if MRCA is Order, we keep from Superorder down.
+        min_rank_to_keep <- max(1L, mrca_rank - 1L)
+      }
+      
+      # --------------------------------------------------------------------
+      # 2) Drop ranks above (MRCA parent), i.e., anything "more general"
+      # --------------------------------------------------------------------
+      nodes <- nodes[nodes$rank_index >= min_rank_to_keep, , drop = FALSE]
+      
+      nodes$x <- nodes$rank_index - min_rank_to_keep + 1
+      
+      # Selected taxa = “leaves” for our purposes
+      selected_tsns <- unique(nodes$tsn[nodes$selected])
+      if (length(selected_tsns) <= 1) return(NULL)
+      
+      # Build edge table for the trimmed tree
+      edges <- nodes[!is.na(nodes$parentTsn) & nodes$parentTsn != "",
+                     c("parentTsn", "tsn")]
+      names(edges) <- c("parent", "child")
+      
+      # --- Build adjacency: children_by_parent ------------------------------
+      children_by_parent <- split(edges$child, edges$parent)
+      
+      # Find roots: nodes that are never a child
+      root_tsns <- setdiff(nodes$tsn, edges$child)
+      # (Optional) keep only roots that actually connect to selected taxa, but
+      # usually there will be just one MRCA root in the trimmed tree.
+      
+      # Speed up membership tests
+      selected_set <- unique(selected_tsns)
+      
+      # Depth-first traversal to get a topology-respecting leaf order
+      leaf_order <- character()
+      
+      dfs <- function(tsn) {
+        # Recurse into children first
+        ch <- children_by_parent[[tsn]]
+        if (!is.null(ch) && length(ch) > 0) {
+          # Optional: sort children for a stable, deterministic order
+          # You could sort by rank_index or by taxon name; simplest is:
+          ch <- sort(ch)
+          for (cc in ch) dfs(cc)
+        }
+        # If this node is one of the selected taxa, treat it as a leaf
+        if (tsn %in% selected_set) {
+          leaf_order <<- c(leaf_order, tsn)
+        }
+      }
+      
+      # Walk from each root (usually just one)
+      for (r in root_tsns) {
+        dfs(r)
+      }
+      
+      # Safety: if something weird happens and we didn't visit all selected_tsns,
+      # fall back to adding any missing ones at the end
+      missing <- setdiff(selected_set, leaf_order)
+      if (length(missing) > 0) {
+        leaf_order <- c(leaf_order, missing)
+      }
+      
+      # ----------------------------------------------------------------------
+      # Build coords and assign y according to leaf_order
+      # ----------------------------------------------------------------------
       coords <- data.frame(
         tsn = nodes$tsn,
         y   = NA_real_,
@@ -118,15 +208,11 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         stringsAsFactors = FALSE
       )
       
-      coords$y[match(leaf_tsns, coords$tsn)] <- seq_along(leaf_tsns)
-      coords$x <- max(coords$x, na.rm = TRUE) - coords$x + 1
+      # Leaf spacing factor: tweak this to stretch/compress vertically
+      spacing <- 1
+      coords$y[match(leaf_order, coords$tsn)] <- seq_along(leaf_order) * spacing
       
-      # Build an edge table for convenience
-      edges <- nodes[!is.na(nodes$parentTsn) & nodes$parentTsn != "",
-                     c("parentTsn", "tsn")]
-      names(edges) <- c("parent", "child")
-      
-      # Propagate y positions upward: each parent gets mean(child y)
+      # Propagate y up the tree: parents at mean(child y)
       changed <- TRUE
       while (changed) {
         changed <- FALSE
@@ -137,30 +223,30 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
           
           if (is.na(coords$y[idx_p])) {
             child_tsns <- edges$child[edges$parent == p]
-            child_x    <- coords$y[match(child_tsns, coords$tsn)]
-            child_x    <- child_x[!is.na(child_x)]
+            child_y    <- coords$y[match(child_tsns, coords$tsn)]
+            child_y    <- child_y[!is.na(child_y)]
             
-            if (length(child_x) > 0) {
-              coords$y[idx_p] <- mean(child_x)
+            if (length(child_y) > 0) {
+              coords$y[idx_p] <- mean(child_y)
               changed <- TRUE
             }
           }
         }
       }
       
-      # Return both nodes and edges so we can draw the tree
       list(
-        nodes = nodes,
-        edges = edges,
-        coords = coords,
-        leaf_tsns = leaf_tsns
+        nodes     = nodes,
+        edges     = edges,
+        coords    = coords,
+        leaf_tsns = selected_tsns
       )
     }
     
     # --------------------------------------------------------------------
     # Helper: draw the tree with base R graphics
     # --------------------------------------------------------------------
-    draw_tree_base <- function(tree) {
+    draw_tree_base <- function(tree,
+                               axis_levels = rank_levels) {
       nodes     <- tree$nodes
       edges     <- tree$edges
       coords    <- tree$coords
@@ -170,20 +256,56 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       old_par <- par(no.readonly = TRUE)
       on.exit(par(old_par), add = TRUE)
       
-      # Give extra right margin and let drawing go outside plot region
+      # Give extra bottom margin for axis labels and let drawing go outside plot region
       # mar: bottom, left, top, right
-      par(mar = c(2, 2, 2, 8), xpd = NA)
+      par(mar = c(5, 2, 2, 8), xpd = NA)
       
       # Basic plotting window (you already swapped x/y; this just respects that)
       y_range <- range(coords$y, na.rm = TRUE)
       x_range <- range(coords$x, na.rm = TRUE)
       
-      # If you want x flipped, keep rev(x_range) here:
       plot(
-        rev(x_range) + c(-1, 1),  # flip horizontally; drop rev() if you don't want that
+        x_range + c(-1, 1),      # no rev() here
         y_range + c(-1, 1),
         type = "n", axes = FALSE, xlab = "", ylab = ""
       )
+      
+      ## ---- derive clade positions from nodes -------------------------------
+      # Grab one row per level, keeping `x` and `rank_index`
+      # Join nodes to coords so we use displayed x positions
+      level_df <- merge(
+        nodes[, c("tsn", "level", "rank_index")],
+        coords[, c("tsn", "x")],
+        by = "tsn"
+      )
+      
+      # One representative row per level
+      level_df <- level_df[!duplicated(level_df$level),
+                           c("level", "rank_index", "x")]
+      
+      # Keep only the levels we actually want
+      level_df <- subset(level_df, level %in% axis_levels)
+      
+      # Order from higher ranks to lower ranks (Kingdom → Species)
+      level_df <- level_df[order(level_df$rank_index), ]
+      
+      # Named vector: values = x positions in *plot* coords
+      clade_positions <- setNames(level_df$x, level_df$level)
+      
+      # Draw bottom axis using these positions
+      if (length(clade_positions) > 0) {
+        axis(
+          side     = 1,
+          at       = clade_positions,
+          labels   = names(clade_positions),
+          tick     = TRUE,
+          las      = 2,      # vertical-ish labels
+          cex.axis = 0.8
+        )
+        
+        abline(v = clade_positions, lty = 3, col = "grey80")
+      }
+      ## ----------------------------------------------------------------------
       
       # Draw edges
       for (i in seq_len(nrow(edges))) {
@@ -206,18 +328,26 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       leaf_lab <- nodes$taxon[match(leaf_tsns, nodes$tsn)]
       
       # Dynamic label size based on number of leaves
-      n_leaves <- length(leaf_tsns)
+      n_leaves  <- length(leaf_tsns)
       label_cex <- max(0.4, min(1.2, 12 / n_leaves))
-      # Rough rule:
-      # - up to ~12 leaves → cex ≈ 1
-      # - lots of leaves   → cex shrinks but not below 0.4
+      
+      # Compute desired label y and then clamp to stay inside plot region
+      usr <- par("usr")  # c(xmin, xmax, ymin, ymax)
+      
+      raw_label_y <- coords$y[leaf_idx] - 0.1
+      
+      # Minimum y inside the plotting region, with a bit of padding
+      y_padding <- strheight("M", cex = label_cex) * 0.6
+      min_y     <- usr[3] + y_padding
+      
+      safe_label_y <- pmax(raw_label_y, min_y)
       
       text(
         x      = coords$x[leaf_idx],
-        y      = coords$y[leaf_idx] - 0.1,
+        y      = safe_label_y,
         labels = leaf_lab,
-        srt    = 45,
-        adj    = c(1, 0.5),
+        srt    = 0,
+        adj    = c(0,0.5),
         cex    = label_cex
       )
       
