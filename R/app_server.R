@@ -3,6 +3,7 @@
 #' @param group_list List of taxonomic groups.
 #' @keywords internal
 #' @import rlang
+#' @import shinycssloaders
 macroibi_server <- function(taxonomy, group_list) {
   function(input, output, session) {
     group_totals <- reactiveValues()
@@ -11,6 +12,23 @@ macroibi_server <- function(taxonomy, group_list) {
     selected_genera <- reactiveValues(data = list())
     toggle_state <- reactiveVal(TRUE)
     shared_reactives <- reactiveValues(user_title = NULL, user_date = NULL, server_update = TRUE)
+    
+    # --------------------------------------------------------------------
+    # Stable mapping from section IDs to group IDs/names
+    # --------------------------------------------------------------------
+    sanitize_group_id <- function(x) {
+      x <- tolower(x)
+      x <- gsub("[^a-z0-9]+", "_", x)
+      x <- gsub("^_+|_+$", "", x)
+      x
+    }
+    
+    group_defs <- data.frame(
+      section_id = paste0("section_", seq_along(group_list)),
+      group_id   = sanitize_group_id(group_list),
+      group_name = group_list,
+      stringsAsFactors = FALSE
+    )
     
     total_unique_taxa <- shiny::reactive({
       counts <- shiny::reactiveValuesToList(unique_taxa_counts)
@@ -222,8 +240,9 @@ macroibi_server <- function(taxonomy, group_list) {
     
     download_module_server(
       "download_module",
-      selected_genera,
-      shared_reactives
+      selected_genera = selected_genera,
+      shared_reactives = shared_reactives,
+      group_defs = group_defs
     )
     
     autosave_module_server(
@@ -233,7 +252,8 @@ macroibi_server <- function(taxonomy, group_list) {
       selected_genera = selected_genera,
       shared_reactives = shared_reactives,
       metric_scores = metric_scores,
-      auto_save_interval = 30
+      auto_save_interval = 30,
+      group_defs = group_defs
     )
     
     upload_module_server(
@@ -241,7 +261,8 @@ macroibi_server <- function(taxonomy, group_list) {
       taxonomy = taxonomy,
       selected_genera = selected_genera,
       shared_reactives = shared_reactives,
-      toggle_state = toggle_state
+      toggle_state = toggle_state,
+      group_defs = group_defs
     )
     
     results_download_server(
@@ -250,7 +271,8 @@ macroibi_server <- function(taxonomy, group_list) {
       shared_reactives = shared_reactives,
       selected_genera = selected_genera,
       taxonomy = taxonomy,
-      metric_save_path = get_app_path("metric_autosave_dir")
+      metric_save_path = get_app_path("metric_autosave_dir"),
+      group_defs = group_defs
     )
   }
 }

@@ -10,7 +10,8 @@ results_download_server(
   shared_reactives,
   selected_genera,
   taxonomy,
-  metric_save_path = get_app_path("metric_autosave_dir")
+  metric_save_path = get_app_path("metric_autosave_dir"),
+  group_defs
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ results_download_server(
 \item{taxonomy}{Taxonomy data frame.}
 
 \item{metric_save_path}{Path where metric autosave files are stored.}
+
+\item{group_defs}{Data frame with columns section_id, group_id, group_name
+mapping section modules to stable groups.}
 }
 \description{
 Results download server

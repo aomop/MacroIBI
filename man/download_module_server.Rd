@@ -8,6 +8,7 @@ download_module_server(
   id,
   selected_genera,
   shared_reactives,
+  group_defs,
   auto_save_interval = 30,
   auto_save_path = get_app_path("autosave_dir"),
   expose_data_reactive = NULL
@@ -19,6 +20,9 @@ download_module_server(
 \item{selected_genera}{Reactive values of selected genera.}
 
 \item{shared_reactives}{Shared reactive values.}
+
+\item{group_defs}{Data frame with columns section_id, group_id, group_name
+mapping module IDs to stable group identifiers.}
 
 \item{auto_save_interval}{Interval used for autosave (reserved for future use).}
 

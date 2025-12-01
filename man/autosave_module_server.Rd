@@ -11,7 +11,8 @@ autosave_module_server(
   selected_genera,
   shared_reactives,
   metric_scores,
-  auto_save_interval = 30
+  auto_save_interval = 30,
+  group_defs
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ autosave_module_server(
 \item{metric_scores}{Reactive values for metric scores.}
 
 \item{auto_save_interval}{Interval in seconds between autosaves.}
+
+\item{group_defs}{Data frame with columns section_id, group_id, group_name
+mapping modules to stable taxonomic groups.}
 }
 \description{
 Autosave module server

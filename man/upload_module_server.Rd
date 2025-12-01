@@ -9,7 +9,8 @@ upload_module_server(
   taxonomy,
   selected_genera,
   shared_reactives,
-  toggle_state
+  toggle_state,
+  group_defs
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ upload_module_server(
 \item{shared_reactives}{Shared reactive values.}
 
 \item{toggle_state}{Reactive value controlling editing state.}
+
+\item{group_defs}{Data frame with columns section_id, group_id, group_name
+mapping groups to section modules.}
 }
 \description{
 Upload module server

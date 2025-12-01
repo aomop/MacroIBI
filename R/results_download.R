@@ -15,7 +15,6 @@ results_download_ui <- function(id) {
   )
 }
 
-
 #' Results download server
 #'
 #' @param id Module identifier.
@@ -24,8 +23,18 @@ results_download_ui <- function(id) {
 #' @param selected_genera Reactive values of selected genera.
 #' @param taxonomy Taxonomy data frame.
 #' @param metric_save_path Path where metric autosave files are stored.
+#' @param group_defs Data frame with columns section_id, group_id, group_name
+#'   mapping section modules to stable groups.
 #' @keywords internal
-results_download_server <- function(id, metric_scores, shared_reactives, selected_genera, taxonomy, metric_save_path = get_app_path("metric_autosave_dir")) {
+results_download_server <- function(
+    id,
+    metric_scores,
+    shared_reactives,
+    selected_genera,
+    taxonomy,
+    metric_save_path = get_app_path("metric_autosave_dir"),
+    group_defs
+) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -64,6 +73,7 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
       id = "exposed_data",
       selected_genera = selected_genera,
       shared_reactives = shared_reactives,
+      group_defs = group_defs,
       expose_data_reactive = shared_data
     )
     
@@ -72,7 +82,6 @@ results_download_server <- function(id, metric_scores, shared_reactives, selecte
       df1 <- summarized_data()  
       
       df2 <- combined_metrics
-      browser()
   
       # Determine common levels across both datasets
       common_levels <- unique(c(df1$metric_name, df2$metric_name))
