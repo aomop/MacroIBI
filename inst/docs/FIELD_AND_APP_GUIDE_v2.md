@@ -6,15 +6,15 @@
 
 ## Table of Contents
 
-1. **Overview**  
-2. **Equipment Checklist**  
-3. **Collecting Macroinvertebrate Samples (Field)**  
-4. **Sorting Samples in the Field**  
-5. **Lab Identification & Enumeration**  
-6. **Installing the MacroIBI R Package**  
-7. **Using the MacroIBI App (Workflow)**  
-8. **Additional Features**  
-9. **Practical Tips**
+1. [**Overview**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#1-overview)
+2. [**Equipment Checklist**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#2-equipment-checklist)
+3. [**Collecting Macroinvertebrate Samples (Field)**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#3-collecting-macroinvertebrate-samples-field)
+4. [**Sorting Samples in the Field**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#4-sorting-samples-in-the-field)
+5. [**Lab Identification & Enumeration**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#5-lab-identification--enumeration)
+6. [**Installing the MacroIBI R Package**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#6-installing-the-macroibi-r-package)
+7. [**Using the MacroIBI App (Workflow)**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#7-using-the-macroibi-app)
+8. [**Additional Features**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#8-additional-features)
+9. [**Practical Tips**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#9-practical-tips)
 
 ---
 
@@ -293,7 +293,7 @@ Upload any previously exported **Raw Data CSV** to restore tables exactly as sav
 
 ---
 
-## 9. Practical Tips
+## 9. Tips
 
 - Whether counts are entered per-dipnet or combined does not affect IBI scores.  
 - If samples were split into multiple jars, combine them during identification.  
