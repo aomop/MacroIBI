@@ -8,7 +8,7 @@
 
 1. [**Overview**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#1-overview)
 2. [**Equipment Checklist**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#2-equipment-checklist)
-3. [**Collecting Macroinvertebrate Samples (Field)**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#3-collecting-macroinvertebrate-samples-field)
+3. [**Collecting Macroinvertebrate Samples (Field)**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#3-collecting-macroinvertebrate-samples)
 4. [**Sorting Samples in the Field**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#4-sorting-samples-in-the-field)
 5. [**Lab Identification & Enumeration**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#5-lab-identification--enumeration)
 6. [**Installing the MacroIBI R Package**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#6-installing-the-macroibi-r-package)
