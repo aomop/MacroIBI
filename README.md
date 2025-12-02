@@ -2,6 +2,8 @@
 
 A Shiny application for calculating a macroinvertebrate-based Index of Biotic Integrity (IBI) for wetlands, packaged for easy installation and reuse.
 
+***Please see the FIELD_AND_APP_GUIDE.md file for questions about sampling protocol***
+
 ## Installation
 
 ```r
