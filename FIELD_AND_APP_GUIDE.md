@@ -66,7 +66,7 @@ Required Lab Equipment:
 1. Pour all pan contents through the 200 µm sieve, flushing stuck snails or leeches with your water squirt bottle. Combine any organisms that fall into the large pans.
 2. Back‑flush the sieve with reagent alcohol into a sample jar, combining both efforts for the dip net sample. Aim for ~80% final alcohol. Split into multiple jars if the jar is more than ⅓ full of organisms.
     - You may need to use the squirt bottle to get all organisms out of the sieve; **do not use water in this step!**
-3. Label inside and outside the jar with site ID, date, sample number, jar number (if multiple), and crew initials.
+3. Label the jar with site ID, date, sample number, jar number (if multiple), and crew initials.
 4. Keep preserved jars in a designated hazardous‑materials room. Check periodically for evaporation and top up with 80% alcohol; replace lids if needed to prevent further loss.
 
 ## 4. Preparing for Lab Identification
