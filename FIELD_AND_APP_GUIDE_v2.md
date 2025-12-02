@@ -20,7 +20,7 @@
 
 ## 1. Overview
 
-This guide explains how to collect, sort, identify, and score wetland macroinvertebrates using the MPCA protocol and the **MacroIBI R/Shiny application**. No prior R experience is required—this document walks you through installation and use of the app step-by-step.
+This guide explains how to collect, sort, identify, and score wetland macroinvertebrates using the MPCA protocol and the MacroIBI R/Shiny application. No prior R experience is required, this document walks you through installation and use of the app step-by-step.
 
 ---
 
@@ -44,15 +44,14 @@ This guide explains how to collect, sort, identify, and score wetland macroinver
 
 ### Optional Field Equipment
 
-- Maps  
+- Maps  for navigation
 - Scissors for labels  
-- Camera  
+- Camera  to capture site conditions
 - Cooler or crate for transporting samples  
-- Weather-appropriate clothing  
 
 ### Required Lab Equipment
 
-- Stereoscopes (2–4×)  
+- Stereoscopes (2x-4x magnification)  
 - Petri dishes  
 - Identification guides  
 - Squirt bottles (water or alcohol)  
@@ -73,7 +72,7 @@ This guide explains how to collect, sort, identify, and score wetland macroinver
 
 Prioritize habitat zones in this order:
 
-1. **Emergent vegetation** (richest fauna)  
+1. Emergent vegetation (richest fauna)  
 2. Floating-leaf vegetation  
 3. Submerged vegetation  
 4. Shallow open water  
@@ -83,21 +82,21 @@ Record the zone(s) used.
 ### Sampling Procedure
 
 1. **Identify the sampling area.**  
-   Select the highest-priority habitat available and work within a 10–15 m radius.
+   Select the highest-priority habitat available and work within a 10-15 m radius.
 
 2. **Collect two efforts per sample.**  
-   For each effort, perform **3–5 strong sweeps** through vegetation and water.  
-   *Avoid scraping mud—restart the effort if needed.*
+   For each effort, perform **3-5 strong sweeps** through vegetation and water.  
+   *Avoid scraping mud; restart the effort if so.*
 
 3. **Sort for 10 minutes.**  
    Dump both efforts onto hardware cloth above the bin.  
-   Start a **10-minute timer** and begin sorting (see next section).
+   Start a 10-minute timer and begin sorting (see next section).
 
 4. **Repeat for the second sample.**  
    Stay in the same zone but choose new micro-locations.  
    Samples may be combined or kept separate for processing; both ultimately contribute to one IBI evaluation.
 
-> **Tip:** With larger crews, some people can begin the second sample while others finish the 10-minute sort—this saves significant time.
+> **Tip:** With larger crews, some people can begin the second sample while others finish the 10-minute sort; this saves significant time.
 
 ---
 
@@ -106,15 +105,15 @@ Record the zone(s) used.
 ### During the 10-Minute Sorting Window
 
 1. Rinse vegetation so organisms fall into the pans.  
-2. Pick organisms with forceps into the water-filled pans—stay generalist, not taxon-specific.  
+2. Pick organisms with forceps into the water-filled pans.  
 3. After 10 minutes, return vegetation to the wetland; all organisms in the bin become the sample.
 
 ### After Vegetation Removal
 
-1. Pour pans through the **200 µm sieve**; flush snails/leeches into the sieve.  
+1. Pour pans through the 200 µm sieve; flush snails/leeches into the sieve.  
 2. Back-flush the sieve **with alcohol only** into sample jars.  
    - Aim for ~80% final concentration.  
-   - Split jars if >⅓ full.  
+   - Split jars if >1/3 full.  
 3. Label jars (site ID, date, sample #, jar #, crew initials).  
 4. Store in hazardous-materials room; check periodically for evaporation.
 
@@ -133,7 +132,9 @@ Record the zone(s) used.
    - Family-level ID is required; genus ideal; species when possible.  
    - One person should handle data entry; others relay counts.  
    - Pre-sort into visually similar piles to speed identification.  
-   - If samples must remain preserved, **use alcohol—not water**.
+   - Samples may be rinsed with water to reduce irritation during the process, BUT;
+   - If samples must remain preserved after ID, do not use any water.
+   
 
 4. **Enter Data Periodically**  
    Relay taxa and counts to the data handler for entry into the app.  
@@ -145,13 +146,13 @@ Record the zone(s) used.
 ## 6. Installing the MacroIBI R Package
 
 1. Install **R**: <https://cran.r-project.org>  
-2. Install **RStudio** (recommended): <https://posit.co/download/rstudio-desktop/>  
+2. Install **RStudio** (highly recommended): <https://posit.co/download/rstudio-desktop/>  
 3. Download or clone the MacroIBI repository.
 
 ### If Using Git
 
 ```bash
-cd "/desired/directory/path"
+cd "/desired/directory/path" # Change this
 git clone https://github.com/aomop/MacroIBI.git
 ```
 
@@ -165,7 +166,7 @@ git clone https://github.com/aomop/MacroIBI.git
 **Without RStudio:**
 
 ```r
-setwd("PATH/TO/MacroIBI-main/")
+setwd("PATH/TO/MacroIBI-main/") # Change this
 install.packages("devtools")
 devtools::install_local()
 ```
@@ -195,9 +196,9 @@ You can also continue without metadata if you plan to upload data or reload an a
 
 ---
 
-### Step 1 — Enable Autosave (Critical!)
+### Step 1 — Enable Autosave
 
-Before entering data, open **Autosave Settings** on the left side of the Data tab.
+Before entering data, find the **Autosave Settings** on the left side of the Data tab and **Enable Auto-Save**
 
 Autosave will:
 
@@ -212,9 +213,9 @@ You can reload autosaves using **Load Autosave**.
 
 ---
 
-### Step 2 — Enter Taxa and Counts (Data Tab)
+### Step 2 — Enter Taxa and Counts
 
-Use **Select Taxon** to search and add taxa.  
+Still on the data tab, use **Select Taxon** to search and add taxa.  
 The app assigns each taxon to the correct group automatically.
 
 Each row displays:
@@ -229,11 +230,6 @@ Each group footer updates live:
 - **Total Taxa**  
 - **Percent of Total Sample**  
 - **Total Individuals**
-
-You may:
-
-- Upload previously saved CSVs  
-- Clear entries using **Clear All Data** (cannot be undone!)  
 
 ---
 
@@ -290,7 +286,7 @@ Upload any previously exported **Raw Data CSV** to restore tables exactly as sav
 ### Clearing Data
 
 **Clear All Data** resets everything.  
-⚠️ *This cannot be undone if the data wasn’t saved.*
+***This cannot be undone if the data isn’t saved.***
 
 ---
 
