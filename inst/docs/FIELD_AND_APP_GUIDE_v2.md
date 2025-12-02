@@ -14,7 +14,6 @@
 6. [**Installing the MacroIBI R Package**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#6-installing-the-macroibi-r-package)
 7. [**Using the MacroIBI App (Workflow)**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#7-using-the-macroibi-app)
 8. [**Additional Features**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#8-additional-features)
-9. [**Practical Tips**](https://github.com/aomop/MacroIBI/blob/main/inst/docs/FIELD_AND_APP_GUIDE_v2.md#9-practical-tips)
 
 ---
 
@@ -293,10 +292,3 @@ Upload any previously exported **Raw Data CSV** to restore tables exactly as sav
 ***This cannot be undone if the data isn’t saved.***
 
 ---
-
-## 9. Tips
-
-- Whether counts are entered per-dipnet or combined does not affect IBI scores.  
-- If samples were split into multiple jars, combine them during identification.  
-- Keep your field form nearby when entering titles/dates for accurate report labeling.  
-- Re-enable autosave each time you begin a new identification session.  
