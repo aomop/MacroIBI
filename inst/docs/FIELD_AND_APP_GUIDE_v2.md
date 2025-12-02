@@ -151,6 +151,7 @@ Record the zone(s) used.
 
 ### If Using Git
 
+- Open bash, then run:
 ```bash
 cd "/desired/directory/path" # Change this
 git clone https://github.com/aomop/MacroIBI.git
@@ -158,13 +159,13 @@ git clone https://github.com/aomop/MacroIBI.git
 
 ### If Downloading as ZIP
 
-- Click the green **Code** button → “Download ZIP”  
+- Click the green **Code** button -> “Download ZIP”  
 - Extract the ZIP contents.
 
 ### Install the App
 
 **Without RStudio:**
-
+- Open R, then run:
 ```r
 setwd("PATH/TO/MacroIBI-main/") # Change this
 install.packages("devtools")
@@ -174,7 +175,7 @@ devtools::install_local()
 **With RStudio:**
 
 - Open `Wetland_IBI.Rproj`
-
+- In the console, run:
 ```r
 install.packages("devtools")
 devtools::install_local()
