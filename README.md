@@ -5,7 +5,7 @@ A Shiny application for calculating a macroinvertebrate-based Index of Biotic In
 **Please see the [FIELD AND APP GUIDE](inst/docs/FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
 
 ## Installation
-Ensure R or RStudio is installed.
+Ensure R and RStudio are installed.
 ```r
 # from the project root
 install.packages("devtools")
@@ -17,7 +17,7 @@ devtools::install_local()
 ```r
 library(macroibi)
 run_macroibi()
-# launch in a browser if using rstudio:
+# launch in a browser:
 run_macroibi(browser = TRUE)
 ```
 
