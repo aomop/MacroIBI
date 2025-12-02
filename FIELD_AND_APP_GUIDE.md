@@ -147,7 +147,7 @@ Each group footer shows:
 - **Percent of Total Sample**
 - **Total Individuals**
 
-## Step 4: Review Calculated Metrics (Results Tab)
+## Step 3: Review Calculated Metrics (Results Tab)
 
 Switch to the **Results** tab to see the calculated metrics.
 Metrics will update instantly when new data is added.
@@ -163,7 +163,7 @@ Displayed values include:
 
 Hover over *“How are these calculated?”* for metric equation details.
 
-## Step 5: Export Final Outputs (Results Tab)
+## Step 4: Export Final Outputs (Results Tab)
 
 Available downloads:
 1. **Raw Data CSV**
