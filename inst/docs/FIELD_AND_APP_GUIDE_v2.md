@@ -59,7 +59,7 @@ This guide explains how to collect, sort, identify, and score wetland macroinver
 
 ---
 
-## 3. Collecting Macroinvertebrate Samples (Field)
+## 3. Collecting Macroinvertebrate Samples
 
 ### When to Sample
 
