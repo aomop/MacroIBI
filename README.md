@@ -1,11 +1,11 @@
 # MacroIBI
 
-A Shiny application for calculating a macroinvertebrate-based Index of Biotic Integrity (IBI) for wetlands, packaged for easy installation and reuse.
+A Shiny application for calculating a macroinvertebrate-based Index of Biotic Integrity (IBI) for wetlands, packaged for easy installation.
 
 **Please see the [FIELD AND APP GUIDE](inst/docs/FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
 
 ## Installation
-
+Ensure R or RStudio is installed.
 ```r
 # from the project root
 install.packages("devtools")
@@ -16,9 +16,9 @@ devtools::install_local()
 
 ```r
 library(macroibi)
-app <- run_macroibi()
-# launch interactively
-shiny::runApp(app)
+run_macroibi()
+# launch in a browser if using rstudio:
+run_macroibi(browser = TRUE)
 ```
 
 The app bundles its static assets and taxonomy reference data inside the package. Autosave files are written to a per-user data directory obtained via `tools::R_user_dir("macroibi", "data")`.
