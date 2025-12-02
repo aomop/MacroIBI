@@ -103,7 +103,7 @@ Required Lab Equipment:
     install.packages("devtools")
     devtools::install_local()
     ```
-   If you have RStudio; open the `WetlandIBI.Rproj` file, then run:
+   If you have RStudio; open the `Wetland_IBI.Rproj` file, then run:
    ```r
    install.packages("devtools")
    devtools::install_local()
