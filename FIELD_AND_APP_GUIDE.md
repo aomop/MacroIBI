@@ -76,6 +76,7 @@ Required Lab Equipment:
     - All taxa must be identified at least to the Family level, Genus ideally, and Species if possible.
     - Designate one person to handle data entry; all other team members should relay counts to them.
     - It can be helpful to designate people to pre-sort the samples; group organisms together into visually similar groups. This allows the identifiers to quickly ID many organisms.
+    - If the sample cannot be fully processed in one sitting or should otherwise remain preserved, water should not be used at any point during this process.
 4. **Enter Data** Periodically relay taxa counts to the data handler so they can enter the taxa and counts into the app.
     - If samples have been combined, all counts can be entered into the "Dipnet 1" box
     - See section 7 for more details on using the app.
@@ -111,33 +112,76 @@ Required Lab Equipment:
 
 ## 7. Using the App
 
-1. In R, load the package and start the app:
+Start the dashboard by loading the package and running:
+
 ```r
 library(macroibi)
 run_macroibi()
 ```
-2. A browser window titled **Wetland IBI Dashboard** opens with two tabs: **Data** for entry and **Results** for scores.
 
-**Entering Taxa and Counts (Data Tab)**
+A browser window titled **Wetland IBI Dashboard** will open.
 
-1. Use **Select Taxon** to search the built‑in taxonomy and add taxa to the appropriate colored group section. Each section shows the taxon name and numeric inputs for **Dipnet 1 Count** and **Dipnet 2 Count**; totals update automatically.
-2. Each group footer displays **Total Taxa**, **Percent of Total Sample**, and **Total Individuals**, updating as you edit counts.
-3. Use **Show/Hide Taxonomic Hierarchy** to visualize relationships for the taxa you entered.
-4. Click **Clear All Data** to reset everything, or use the **Upload/Download** card to import previously saved CSV data back into the tables.
-5. Enable **Autosave Settings** to periodically cache your work; the app stores autosaves per user automatically.
+## Step 1: Turn On Autosave (Data Tab)
 
-**Calculating Metrics and Viewing Results**
+*After entering a title and date*, find the **Autosave Settings** panel on the left side of the **Data** tab and enable autosaving.
+The app will periodically cache your progress in a user-specific autosave directory so that long identification sessions are protected.
+You can re-load these autosave files with the "Load Autosave" button.
 
-1. Go to the **Results** tab. The app shows the **Total Individuals** and a table of metric values and scores: EOT taxa, snail taxa, all taxa richness, corixid ratio, abundance of EOT, and the overall IBI (0–50).
-2. Hover over “How are these calculated?” to see the corixid metric formula and adjustment figure.
-3. Metric scores update instantly as you edit counts in the Data tab.
+## Step 2: Enter Taxa and Counts While Sorting (Data Tab)
 
-**Saving and Sharing Results**
+Use **Select Taxon** to add taxa to the group section counts.
+The app automatically sorts taxa into the correct groups.
 
-Use the buttons at the bottom of the Results tab to download:
-- **CSV** of metric data, named with your site and date.
-- **Table Image (PNG)** with title and sampling/calculation dates.
-- **Data Summary (PDF)** and **Full Report (PDF)** that include current metrics and comparisons to other saved metric files in your autosave directory.
+Each row displays:
+- the taxon name
+- numeric inputs for **Dipnet 1 Count** and **Dipnet 2 Count**
+- an automatically updating **Sum Count**
+
+Each group footer shows:
+- **Total Taxa**
+- **Percent of Total Sample**
+- **Total Individuals**
+
+## Step 4: Review Calculated Metrics (Results Tab)
+
+Switch to the **Results** tab to see the calculated metrics.
+Metrics will update instantly when new data is added.
+
+Displayed values include:
+- Total Individuals
+- EOT richness
+- Snail richness
+- All‑taxa richness
+- Corixid ratio
+- Abundance of EOT
+- Overall IBI score (0–50)
+
+Hover over *“How are these calculated?”* for metric equation details.
+
+## Step 5: Export Final Outputs (Results Tab)
+
+Available downloads:
+1. **Raw Data CSV**
+    - For long-term storage or re-upload into the app.
+3. **Table Image (PNG)**
+    - A formatted snapshot of the metric table with title and sampling dates.
+5. **Data Summary (PDF)**
+    - A concise overview of calculated metrics.
+7. **Full Report (PDF)**
+    - A detailed report including your current results and comparisons to any other saved metric files in your autosave directory.
+  
+*Both the data summary and the full report rely on the autosave feature being populated with other locations*
+                                                                                                                                                                                                                                                                                                                                                             
+## Additional Features
+
+### Visualize the Taxonomic Hierarchy
+Use **Show/Hide Taxonomic Hierarchy** to display a tree of the taxa you’ve selected.
+
+### Reloading Old Work
+Upload any previously exported raw‑data CSV to restore progress.
+
+### Clearing Data
+Use the **Clear All Data** button if you need to reset, but ***BEWARE***!! If your data is not saved this cannot be undone!
 
 ## 8. Practical Tips
 
