@@ -69,7 +69,7 @@ Required Lab Equipment:
 3. Label the jar with site ID, date, sample number, jar number (if multiple), and crew initials.
 4. Keep preserved jars in a designated hazardous‑materials room. Check periodically for evaporation and top up with 80% alcohol; replace lids if needed to prevent further loss.
 
-## 4. Preparing for Lab Identification
+## 4. Lab Identification and Enumeration
 
 1. **Setup the software** Ensure R and the MacroIBI package are installed on your computer. See section 5 for details.
 2. **Set up the Workspace** Set up a clean bench with the required lab equipment layed out in section 1.
@@ -129,6 +129,8 @@ Enter the sample information, then hit the green "Let's go!" button. You may als
 After entering a title and date, find the **Autosave Settings** panel on the left side of the **Data** tab and enable autosaving.
 The app will periodically cache your progress in a user-specific autosave directory so that long identification sessions are protected.
 You can re-load these autosave files with the "Load Autosave" button.
+
+*The report and data summary features discussed later rely on having a bank of cached autosaves.*
 
 ## Step 2: Enter Taxa and Counts While Sorting (Data Tab)
 
