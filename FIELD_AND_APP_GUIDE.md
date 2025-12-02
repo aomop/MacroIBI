@@ -36,7 +36,7 @@ Required Lab Equipment:
 - Petri dishes for sorting taxa
 - Aquatic macroinvertebrate identification guides
 - Squirt bottle(s) filled with either water or alcohol
-- Dissection kit for manipuating organisms under the microscope (foreceps, needles/pointers)
+- Dissection kit for manipuating organisms under magnification (foreceps, needles/pointers)
 - A computer with R and the macroibi package installed
 
 ## 3. Collecting Macroinvertebrate Samples
@@ -63,26 +63,52 @@ During the 10 minute sorting window:
 After separating vegetation:
 1. Pour all pan contents through the 200 µm sieve, flushing stuck snails or leeches with your water squirt bottle. Combine any organisms that fall into the large pans.
 2. Back‑flush the sieve with reagent alcohol into a sample jar, combining both efforts for the dip net sample. Aim for ~80% final alcohol. Split into multiple jars if the jar is more than ⅓ full of organisms.
-    - You may need to use the squirt bottle to get all organisms out of the sieve; **do not use water in this step**
+    - You may need to use the squirt bottle to get all organisms out of the sieve; **do not use water in this step!**
 3. Label inside and outside the jar with site ID, date, sample number, jar number (if multiple), and crew initials.
 
 *Keep preserved jars in a designated hazardous‑materials room. Check periodically for evaporation and top up with 80% alcohol; replace lids if needed to prevent further loss.*
 
 ## 5. Preparing for Lab Identification
 
-1. **Workspace.** Set up a clean bench with your sample jars, dissecting microscope, petri dishes, and forceps. Work through each jar in turn.
-2. **Identify taxa.** Sort organisms by taxonomic group (e.g., Ephemeroptera, Odonata, Trichoptera, snails, beetles/true bugs). Count individuals from each dip net sample separately when possible to match the app’s Dipnet 1 and Dipnet 2 fields.
-3. **Data you will need in the app.** For each taxon you identify: the group, the taxon name (Genus/Family/Order level as available), and counts from Dipnet 1 and Dipnet 2. Keep your field forms handy for habitat notes and dates.
+1. **Setup the software** Ensure R and the MacroIBI package are installed on your computer. See section 6 for details.
+2. **Set up the Workspace** Set up a clean bench with the required lab equipment layed out in section 2.
+3. **Identify + Count** This protocol requires that every organism in the sample is identified and counted.
+    - Identifiers will need magnification to make many of the IDs accurately; some taxa can be ID'd with the naked eye
+    - All taxa must be identified at least to the Family level, Genus ideally, and Species if possible.
+    - Designate one person to handle data entry; all other team members should relay counts to them.
+    - It can be helpful to designate people to pre-sort the samples; group organisms together into visually similar groups. This allows the identifiers to quickly ID many organisms.
+4. **Enter Data** Periodically relay taxa counts to the data handler so they can enter the taxa and counts into the app.
+    - If samples have been combined, all counts can be entered into the "Dipnet 1" box
+    - See section 7 for more details on using the app.
 
 ## 6. Installing the MacroIBI R Package
 
-1. Install R (https://cran.r-project.org) if you do not have it. The app uses R and Shiny but requires no coding experience.
-2. Download or clone this repository, open R, and from the project root run:
-```r
-install.packages("devtools")
-devtools::install_local()
-```
-These commands install the MacroIBI package locally.
+1. Install R [https://cran.r-project.org] if you do not have it.
+2. Install RStudio (Optional, but highly recommended) [https://posit.co/download/rstudio-desktop/]
+3. Download or clone this repository.
+   If you have git bash, open a terminal and run:
+
+   ```bash
+   cd "/desired/directory/path" # Change this
+   git clone https://github.com/aomop/MacroIBI.git
+   ```
+   
+   If not; download the repository as a .zip file by clicking the green "Code" button in the top left-hand corner of the repository page.
+   
+5. Extract the .zip file contents to the desired file path
+6. Install and run the app:
+
+   If you do not have R studio, launch R and type:
+    ```r
+    setwd("PATH/TO/THE/REPOSITORY") # Change this to the path of the extracted content. It should end with ".../MacroIBI-main/"
+    install.packages("devtools")
+    devtools::install_local()
+    ```
+   If you have RStudio; open the `WetlandIBI.Rproj` file, then run:
+   ```r
+   install.packages("devtools")
+   devtools::install_local()
+   ```
 
 ## 7. Launching the MacroIBI App
 
