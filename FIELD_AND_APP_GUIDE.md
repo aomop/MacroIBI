@@ -2,12 +2,7 @@
 
 This guide walks you through the macroinvertebrate sampling protocol developed by the MPCA and how to process and identify your samples with the MacroIBI R/Shiny application.
 
-## 1. Field Planning
-
-1. **Timing.** Sample during the index window from June through early July so larvae are mature enough to identify but wetlands still hold water. Sampling later in summer can leave ponds too dry or colonized by transient invertebrates.
-2. **Habitat choice.** Prefer the emergent vegetation zone because it has the highest richness. If it is missing, sample (in order) floating‐leaf plants, submerged plants, then shallow open water. Record which zones you use on your field form.
-
-## 2. Equipment Checklist
+## 1. Equipment Checklist
 
 Required Field Equipment:
 - Two D‑frame dip nets with 500µm mesh
@@ -39,9 +34,15 @@ Required Lab Equipment:
 - Dissection kit for manipuating organisms under magnification (foreceps, needles/pointers)
 - A computer with R and the macroibi package installed
 
-## 3. Collecting Macroinvertebrate Samples
+## 2. Collecting Macroinvertebrate Samples
 
-1. **Determine sampling area** Using the habitats listed in step 1.2, find the highest‑priority habitat available
+**Timing.** Sample during a window from June through early July so larvae are mature enough to identify but wetlands still hold water. 
+            Sampling later in summer can leave ponds too dry or colonized by transient invertebrates.
+            If more than one sampling event is planned, ensure they all take place within this window to minimize temporal effects.
+**Habitat choice.** Prefer the emergent vegetation zone because it has the highest richness. 
+                    If it is missing, sample (in order) floating‐leaf plants, submerged plants, then shallow open water. Record which zones you use on your field form.
+
+1. **Determine sampling area** Using the habitats listed above, find the highest‑priority habitat available
     - Work within a 10–15 m radius within the identified area (this may be smaller depending on the size of the habitat)
 2. **Sample** Each sample consists of two "efforts"; for each effort, make 3–5 strong sweeps through the water column and vegetation, reaching out and pulling the net back quickly.
     - Avoid scraping mud; if you do, dump out the sample and repeat the effort in a new spot.
@@ -53,7 +54,7 @@ Required Lab Equipment:
 
 *Depending on size of the crew, having some members begin the second round of sampling while others sort can save a lot of time.*
 
-## 4. Sorting Samples in the Field
+## 3. Sorting Samples in the Field
 
 **During the 10 minute sorting window:**
 1. Rinse vegetation with site water so invertebrates drop into the pans. Spread plant material apart so organisms can crawl or fall into the water below.
@@ -67,7 +68,7 @@ Required Lab Equipment:
 3. Label inside and outside the jar with site ID, date, sample number, jar number (if multiple), and crew initials.
 4. Keep preserved jars in a designated hazardous‑materials room. Check periodically for evaporation and top up with 80% alcohol; replace lids if needed to prevent further loss.
 
-## 5. Preparing for Lab Identification
+## 4. Preparing for Lab Identification
 
 1. **Setup the software** Ensure R and the MacroIBI package are installed on your computer. See section 6 for details.
 2. **Set up the Workspace** Set up a clean bench with the required lab equipment layed out in section 2.
@@ -81,7 +82,7 @@ Required Lab Equipment:
     - If samples have been combined, all counts can be entered into the "Dipnet 1" box
     - See section 7 for more details on using the app.
 
-## 6. Installing the MacroIBI R Package
+## 5. Installing the MacroIBI R Package
 
 1. Install R [https://cran.r-project.org] if you do not have it.
 2. Install RStudio (Optional, but highly recommended) [https://posit.co/download/rstudio-desktop/]
@@ -110,7 +111,7 @@ Required Lab Equipment:
    devtools::install_local()
    ```
 
-## 7. Using the App
+## 6. Using the App
 
 Start the dashboard by loading the package and running:
 
@@ -119,11 +120,12 @@ library(macroibi)
 run_macroibi()
 ```
 
-A browser window titled **Wetland IBI Dashboard** will open.
+A browser window titled **Wetland IBI Dashboard** will open. A popup will appear asking you to enter a title and date for the sample. 
+Enter the sample information, then hit the green "Let's go!" button. You may also "Continue without Metadata" if you plan to upload data or reload an autosave.
 
 ## Step 1: Turn On Autosave (Data Tab)
 
-*After entering a title and date*, find the **Autosave Settings** panel on the left side of the **Data** tab and enable autosaving.
+After entering a title and date, find the **Autosave Settings** panel on the left side of the **Data** tab and enable autosaving.
 The app will periodically cache your progress in a user-specific autosave directory so that long identification sessions are protected.
 You can re-load these autosave files with the "Load Autosave" button.
 
@@ -183,7 +185,7 @@ Upload any previously exported raw‑data CSV to restore progress.
 ### Clearing Data
 Use the **Clear All Data** button if you need to reset, but ***BEWARE***!! If your data is not saved this cannot be undone!
 
-## 8. Practical Tips
+## 7. Practical Tips
 
 - Whether counts are entered per-dipnet or as a whole will not affect the calculation
 - If you split a large sample into multiple jars, combine them during identification
