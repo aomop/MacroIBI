@@ -48,7 +48,7 @@ Required Lab Equipment:
 2. **Sample** Each sample consists of two "efforts"; for each effort, make 3–5 strong sweeps through the water column and vegetation, reaching out and pulling the net back quickly.
     - Avoid scraping mud; if you do, dump out the sample and repeat the effort in a new spot.
 3. **Sort** After two efforts have been completed (one in each dipnet), dump both efforts onto the hardware cloth over the plastic bin
-    - Set a timer for 10 minutes. Up to four people can now sort through the sample using foreceps, separating macroinvertebrates from the vegetation (see section 4 for details).
+    - Set a timer for 10 minutes. Up to four people can now sort through the sample using foreceps, separating macroinvertebrates from the vegetation (see section 3 for details).
 4. **Repeat** Repeat steps 2 and 3 for the second sample. Stay in the same previously identified area, but try to sample new spots.
     - This sample can be combined with the first or kept separate depending on preference.
     - The second sample is not meant to be a duplicate, but rather sample the area more broadly. Both samples will be combined in the calculation stage regardless.
@@ -71,8 +71,8 @@ Required Lab Equipment:
 
 ## 4. Preparing for Lab Identification
 
-1. **Setup the software** Ensure R and the MacroIBI package are installed on your computer. See section 6 for details.
-2. **Set up the Workspace** Set up a clean bench with the required lab equipment layed out in section 2.
+1. **Setup the software** Ensure R and the MacroIBI package are installed on your computer. See section 5 for details.
+2. **Set up the Workspace** Set up a clean bench with the required lab equipment layed out in section 1.
 3. **Identify + Count** This protocol requires that every organism in the sample is identified and counted.
     - Identifiers will need magnification to make many of the IDs accurately; some taxa can be ID'd with the naked eye
     - All taxa must be identified at least to the Family level, Genus ideally, and Species if possible.
@@ -81,7 +81,7 @@ Required Lab Equipment:
     - If the sample cannot be fully processed in one sitting or should otherwise remain preserved, water should not be used at any point during this process.
 4. **Enter Data** Periodically relay taxa counts to the data handler so they can enter the taxa and counts into the app.
     - If samples have been combined, all counts can be entered into the "Dipnet 1" box
-    - See section 7 for more details on using the app.
+    - See section 6 for more details on using the app.
 
 ## 5. Installing the MacroIBI R Package
 
