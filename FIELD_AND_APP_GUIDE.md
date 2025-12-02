@@ -39,6 +39,7 @@ Required Lab Equipment:
 **Timing.** Sample during a window from June through early July so larvae are mature enough to identify but wetlands still hold water. 
             Sampling later in summer can leave ponds too dry or colonized by transient invertebrates.
             If more than one sampling event is planned, ensure they all take place within this window to minimize temporal effects.
+
 **Habitat choice.** Prefer the emergent vegetation zone because it has the highest richness. 
                     If it is missing, sample (in order) floating‐leaf plants, submerged plants, then shallow open water. Record which zones you use on your field form.
 
