@@ -221,20 +221,20 @@ The app assigns each taxon to the correct group automatically.
 
 Each row displays:
 
-- taxon name  
-- **Dipnet 1 Count**  
-- **Dipnet 2 Count**  
-- **Sum Count** (auto-calculated)
+- Taxon name
+- Dipnet 1 Count 
+- Dipnet 2 Count
+- Sum Count (auto-calculated)
 
 Each group footer updates live:
 
-- **Total Taxa**  
-- **Percent of Total Sample**  
-- **Total Individuals**
+- Total Taxa
+- Percent of Total Sample 
+- Total Individuals
 
 ---
 
-### Step 3 — Review Metrics (Results Tab)
+### Step 3 — Review Metrics
 
 Switch to **Results** to see real-time IBI calculations.
 
