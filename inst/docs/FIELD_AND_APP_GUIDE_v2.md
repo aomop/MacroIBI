@@ -258,13 +258,16 @@ Available downloads:
 1. **Raw Data CSV**  
    For archiving or re-uploading into the app.
 
-2. **Table Image (PNG)**  
+2. **Results CSV**  
+   A basic CSV file with the final calculated scores
+
+3. **Table Image (PNG)**  
    A formatted metric table with titles and dates.
 
-3. **Data Summary (PDF)**  
+4. **Data Summary (PDF)**  
    A concise one-page snapshot of metrics.
 
-4. **Full Report (PDF)**  
+5. **Full Report (PDF)**  
    Comprehensive report including:  
    - current metrics  
    - comparisons to other autosaved sessions  
@@ -277,7 +280,7 @@ Available downloads:
 
 ### Taxonomic Hierarchy Viewer
 
-Use **Show/Hide Taxonomic Hierarchy** to view a taxonomic tree of selected taxa—helps verify correct grouping.
+Use **Show/Hide Taxonomic Hierarchy** to view a taxonomic tree of selected taxa; this helps verify correct grouping.
 
 ### Reloading Old Work
 
@@ -292,7 +295,7 @@ Upload any previously exported **Raw Data CSV** to restore tables exactly as sav
 
 ## 9. Practical Tips
 
-- Whether counts are entered per-dipnet or combined does **not** affect IBI scores.  
+- Whether counts are entered per-dipnet or combined does not affect IBI scores.  
 - If samples were split into multiple jars, combine them during identification.  
 - Keep your field form nearby when entering titles/dates for accurate report labeling.  
 - Re-enable autosave each time you begin a new identification session.  
