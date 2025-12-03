@@ -172,7 +172,7 @@ remotes::install_github("aomop/MacroIBI")
 - **HTML/PDF export issues:** Ensure [Pandoc](https://pandoc.org/) is available (bundled with RStudio) and that `webshot2` can find a headless browser (run `webshot2::install_phantomjs()` if needed).
 - **Blocked by network/SSL errors:** Retry on a reliable connection or download/clone the repo and install from the local path with `remotes::install_local()`.
 
-Please contact [Sam Swanson](sam.swanson@shakopeedakota.org) if you are encountering an issue.
+Please contact Sam Swanson at sam.swanson@shakopeedakota.org if you are having issues.
 
 ---
 
