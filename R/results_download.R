@@ -11,8 +11,8 @@ results_download_ui <- function(id, demo_mode) {
     shiny::downloadButton(ns("download_csv"), "Download Metric Data (CSV)", style = "background-color: #25b3ff", class = "but1"),
     if(!demo_mode){
       shiny::downloadButton(ns("download_img"), "Download Table Image (PNG)", style = "background-color: #6eacbd", class = "but2")
+      shiny::downloadButton(ns("download_small_report"), "Download Data Summary (PDF)", style = "background-color: #b6a67b", class = "but3")
     },
-    shiny::downloadButton(ns("download_small_report"), "Download Data Summary (PDF)", style = "background-color: #b6a67b", class = "but3"),
     shiny::downloadButton(ns("download_full_report"), "Download Full Report (PDF)", style = "background-color: #ff9f39", class = "but4")
   )
 }
