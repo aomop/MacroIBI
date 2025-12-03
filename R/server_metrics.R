@@ -22,9 +22,11 @@ ui_metric_scores <- function(id) {
 #' @param grand_total_observations Reactive expression for grand total observations.
 #' @return Reactive values for metric scores.
 #' @keywords internal
-server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, group_totals, grand_total_observations) {
+server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, group_totals, grand_total_observations, group_defs) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns # Namespace for managing IDs within this module
+    EOT_SECTION <- group_defs$section_id[group_defs$group_name == "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders"]
+    SNAIL_SECTION <- group_defs$section_id[group_defs$group_name == "Snails - Class Gastropoda"]
 
     # Initialize reactive values to store data for metrics
     metric_scores <- shiny::reactiveValues(
@@ -51,14 +53,15 @@ server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, gr
     shiny::observe({
       # Set metric values based on data retrieved from various sections
       metric_scores$data$metric_value <- c(
-        safe_reactive_value(unique_taxa_counts[["section_1"]]),
-        safe_reactive_value(unique_taxa_counts[["section_7"]]),
+        safe_reactive_value(unique_taxa_counts[[EOT_SECTION]]),       # EOT
+        safe_reactive_value(unique_taxa_counts[[SNAIL_SECTION]]),     # Snails (now via constant)
         sum(purrr::map_dbl(shiny::reactiveValuesToList(unique_taxa_counts), safe_reactive_value), na.rm = TRUE),
         calculate_corixids_ratio(selected_genera, group_totals, taxonomy),
-        if(grand_total_observations() > 0){
-          safe_reactive_value(group_totals[["section_1"]]) / grand_total_observations()
+        if (grand_total_observations() > 0) {
+          safe_reactive_value(group_totals[[EOT_SECTION]]) / grand_total_observations()
         } else (0)
       )
+      
       # Determine which rows require inverse scoring
       increase_rows <- grepl("Increase", metric_scores$data$response)
       

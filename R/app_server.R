@@ -235,7 +235,8 @@ macroibi_server <- function(taxonomy, group_list) {
       taxonomy = taxonomy,
       unique_taxa_counts = unique_taxa_counts,
       group_totals = group_totals,
-      grand_total_observations = grand_total_observations
+      grand_total_observations = grand_total_observations,
+      group_defs = group_defs
     )
     
     download_module_server(
