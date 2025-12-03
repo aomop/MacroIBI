@@ -4,7 +4,7 @@
 \alias{macroibi_server}
 \title{Internal server}
 \usage{
-macroibi_server(taxonomy, group_list)
+macroibi_server(taxonomy, group_list, demo_mode = FALSE)
 }
 \arguments{
 \item{taxonomy}{Taxonomy data frame.}

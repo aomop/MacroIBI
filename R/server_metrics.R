@@ -22,12 +22,16 @@ ui_metric_scores <- function(id) {
 #' @param grand_total_observations Reactive expression for grand total observations.
 #' @return Reactive values for metric scores.
 #' @keywords internal
-server_metrics <- function(id, selected_genera, taxonomy, unique_taxa_counts, group_totals, grand_total_observations, group_defs) {
+server_metrics <- function(id, selected_genera, taxonomy,
+                           unique_taxa_counts, group_totals,
+                           grand_total_observations, group_defs) {
+  
   shiny::moduleServer(id, function(input, output, session) {
-    ns <- session$ns # Namespace for managing IDs within this module
+    ns <- session$ns
+    
     EOT_SECTION <- group_defs$section_id[group_defs$group_name == "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders"]
     SNAIL_SECTION <- group_defs$section_id[group_defs$group_name == "Snails - Class Gastropoda"]
-
+    
     # Initialize reactive values to store data for metrics
     metric_scores <- shiny::reactiveValues(
       data = data.frame(

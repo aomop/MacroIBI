@@ -3,10 +3,18 @@
 #' @param id Module identifier.
 #' @return A Shiny UI fragment.
 #' @keywords internal
-autosave_module_ui <- function(id) {
+autosave_module_ui <- function(id, demo_mode = FALSE) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),
+    if (demo_mode) {
+      shiny::div(
+        class = "small text-muted mb-2",
+        shiny::strong("Demo mode:"),
+        " Auto-save is disabled on shinyapps.io. Use the sample auto-saves below to explore the workflow."
+      )
+    } else {
+      shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE)
+    },
     shiny::actionButton(ns("load_autosave"), "Load Auto-Save"),
     shiny::textOutput(ns("autosave_status"))
   )
@@ -23,6 +31,8 @@ autosave_module_ui <- function(id) {
 #' @param auto_save_interval Interval in seconds between autosaves.
 #' @param group_defs Data frame with columns section_id, group_id, group_name
 #'   mapping modules to stable taxonomic groups.
+#' @param demo_mode Logical indicating whether the app is running in demo mode
+#'   on shinyapps.io.
 #' @keywords internal
 autosave_module_server <- function(
     id,
@@ -32,7 +42,8 @@ autosave_module_server <- function(
     shared_reactives,
     metric_scores,
     auto_save_interval = 30,
-    group_defs) {
+    group_defs,
+    demo_mode = FALSE) {
   
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -50,8 +61,14 @@ autosave_module_server <- function(
       )
     )
     
-    if (!dir.exists(auto_save_path)) dir.create(auto_save_path, recursive = TRUE)
+    # Ensure autosave directories exist
+    if (!dir.exists(auto_save_path))   dir.create(auto_save_path,   recursive = TRUE)
     if (!dir.exists(metric_save_path)) dir.create(metric_save_path, recursive = TRUE)
+    
+    # If we're in demo mode, seed the autosave folders with packaged demo files.
+    if (demo_mode) {
+      seed_demo_autosaves_from_inst(auto_save_path, metric_save_path)
+    }
     
     update_autosave_status <- function(message) {
       output$autosave_status <- shiny::renderText({
@@ -59,20 +76,30 @@ autosave_module_server <- function(
       })
     }
     
-    shiny::observeEvent(input$enable_autosave, {
-      if (isFALSE(input$enable_autosave)) {
-        message("Auto-save feature disabled by user")
-      } else {
-        message("Auto-save feature enabled by user")
-      }
-    }, ignoreInit = TRUE)
+    is_autosave_enabled <- function() {
+      !demo_mode && isTRUE(input$enable_autosave)
+    }
+    
+    if (!demo_mode) {
+      shiny::observeEvent(input$enable_autosave, {
+        if (isFALSE(input$enable_autosave)) {
+          message("Auto-save feature disabled by user")
+        } else {
+          message("Auto-save feature enabled by user")
+        }
+      }, ignoreInit = TRUE)
+    }
     
     auto_save_timer <- shiny::reactiveTimer(auto_save_interval * 1000)
-    
+
     ## --- Periodic autosave --------------------------------------------------
     shiny::observe({
-      if (!input$enable_autosave) {
-        update_autosave_status("Auto-save feature is disabled.")
+      if (!is_autosave_enabled()) {
+        if (demo_mode) {
+          update_autosave_status("Auto-save feature is disabled in the demo version.")
+        } else {
+          update_autosave_status("Auto-save feature is disabled.")
+        }
         return()
       }
       
@@ -236,7 +263,6 @@ autosave_module_server <- function(
               })
             }
           }
-          
         } else if ("Group" %in% colnames(other_data)) {
           # Legacy autosave schema: Group column contains section IDs
           split_data <- split(other_data, other_data$Group)
