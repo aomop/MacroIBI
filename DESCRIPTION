@@ -23,16 +23,16 @@ Imports:
     rmarkdown,
     uuid,
     tools,
-    rlang
-Suggests:
-    testthat (>= 3.0.0),
-    shinytest2,
+    rlang,
     knitr,
     grid,
     gridExtra,
     kableExtra,
     tidyr,
     ggplot2
+Suggests:
+    testthat (>= 3.0.0),
+    shinytest2
 Remotes:
     github::aomop/MacroIBI
 Roxygen: list(markdown = TRUE)

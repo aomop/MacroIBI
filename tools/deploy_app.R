@@ -10,4 +10,5 @@ rsconnect::deployApp(
   appName       = "MacroIBI",
   account       = "smsc2",
   server        = "shinyapps.io",
+  appFiles      = "app.R"
 )
