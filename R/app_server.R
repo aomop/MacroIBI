@@ -49,7 +49,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
         if (isTRUE(demo_mode)) {
           demo_banner <- paste0(
             "<p><strong>Demo Mode:</strong> You're viewing a hosted demo with reduced features. Auto-save is disabled and uploads are limited, but you can explore the workflow using the bundled example files.</p>",
-            "<p class='mb-0'>Download the full desktop app for the complete experience.</p>"
+            "<p class='mb-0'>Install the R package from https://github.com/aomop/MacroIBI to access all features<br></p>"
           )
         }
         autosave_instruction <- "<li><strong>Autosave:</strong> The autosave feature is turned off by default. Enable it by clicking the checkbox on the left if you wish to use it.</li>"
