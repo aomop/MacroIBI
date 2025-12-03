@@ -11,6 +11,7 @@ Imports:
     shiny,
     shinyjs,
     shinybusy,
+    shinycssloaders,
     bslib,
     viridis,
     DT,
@@ -22,8 +23,7 @@ Imports:
     rmarkdown,
     uuid,
     tools,
-    rlang,
-    pkgload
+    rlang
 Suggests:
     testthat (>= 3.0.0),
     shinytest2,

@@ -8,3 +8,4 @@
 ^app\.R$
 ^rsconnect$
 ^\.rscignore$
+^tools/

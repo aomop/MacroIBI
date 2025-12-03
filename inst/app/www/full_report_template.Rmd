@@ -50,17 +50,31 @@ The IBI score ranges from 0 to 50, with 0 indicating substantial impairment and 
 # Discussion
 ```{r metric table, echo=FALSE, fig.align="center", dpi=500, out.width = "100%"}
 metrics <- params$data %>%
-  select(metric_name, metric_value, metric_score, adj_score) %>%
-  mutate(across(c(metric_value, metric_score, adj_score), ~round(.x, 4)),
-    metric_value = replace_na(as.character(metric_value), ""),
-    metric_score = replace_na(as.character(metric_score), "")
+  dplyr::select(
+    .data$metric_name,
+    .data$metric_value,
+    .data$metric_score,
+    .data$adj_score
   ) %>%
-  rename("Metric Name" = "metric_name",
-         "Metric Value" = "metric_value",
-         "Metric Score" = "metric_score",
-         "Adjusted Score" = "adj_score")
+  dplyr::mutate(
+    dplyr::across(
+      c("metric_value", "metric_score", "adj_score"),
+      ~ round(.x, 4)
+    ),
+    metric_value = replace_na(as.character(.data$metric_value), ""),
+    metric_score = replace_na(as.character(.data$metric_score), "")
+  ) %>%
+  dplyr::rename(
+    "Metric Name"    = "metric_name",
+    "Metric Value"   = "metric_value",
+    "Metric Score"   = "metric_score",
+    "Adjusted Score" = "adj_score"
+  )
 
-table_text <- paste0("Table 1: All values and calculated metrics for ", params$user_title)
+table_text <- paste0(
+  "Table 1: All values and calculated metrics for ",
+  params$user_title
+)
 
 knitr::asis_output(paste0(
   "\\begin{center}\n",
@@ -68,10 +82,14 @@ knitr::asis_output(paste0(
   "\\end{center}\n"
 ))
 
-kable(metrics, booktabs = TRUE, format = "latex", longtable = FALSE, linesep = "") %>%
+kable(metrics,
+      booktabs  = TRUE,
+      format    = "latex",
+      longtable = FALSE,
+      linesep   = "") %>%
   kable_styling(
     latex_options = c("striped", "hold_position"),
-    font_size = 10
+    font_size     = 10
   )
 ```
 
@@ -186,22 +204,39 @@ if(!is.null(eot_abund) && !is.na(eot_abund)) {
 The boxplots in figure 1 compare the metric scores from `r params$user_title` with scores collected from other wetlands by the natural resources department. The NRD makes an effort to conduct all IBI surveys with the same temporal and spatial conditions to ensure meaningful comparisons.
 
 ```{r comparison-boxplot, warning = FALSE, echo = FALSE}
-comparison_other <- subset(params$comparison_metrics, metric_name != "IBI Score (0-50)")
-current_other    <- subset(params$data, metric_name != "IBI Score (0-50)")
+comparison_other <- subset(params$comparison_metrics,
+                           metric_name != "IBI Score (0-50)")
+current_other    <- subset(params$data,
+                           metric_name != "IBI Score (0-50)")
 
-figure1_text <- escape_latex(paste0("Distributions of calculated metric scores from all surveyed sites. Red lines indicate scores from ", params$user_title))
+figure1_text <- escape_latex(paste0(
+  "Distributions of calculated metric scores from all surveyed sites. ",
+  "Red lines indicate scores from ", params$user_title
+))
 
-comp_boxes <- ggplot(comparison_other, aes(x = metric_name, y = adj_score)) +
+comp_boxes <- ggplot(
+  comparison_other,
+  aes(x = .data$metric_name, y = .data$adj_score)
+) +
   geom_boxplot() +
   labs(x = "", y = "Adjusted Score") +
-  geom_segment(data = current_other,
-               aes(x = as.numeric(factor(metric_name,
-                                         levels = unique(comparison_other$metric_name))) - 0.4,
-                   xend = as.numeric(factor(metric_name,
-                                           levels = unique(comparison_other$metric_name))) + 0.4,
-                   y = adj_score,
-                   yend = adj_score),
-               color = "red", size = 1) +
+  geom_segment(
+    data = current_other,
+    aes(
+      x    = as.numeric(factor(
+               .data$metric_name,
+               levels = unique(comparison_other$metric_name)
+             )) - 0.4,
+      xend = as.numeric(factor(
+               .data$metric_name,
+               levels = unique(comparison_other$metric_name)
+             )) + 0.4,
+      y    = .data$adj_score,
+      yend = .data$adj_score
+    ),
+    color = "red",
+    size  = 1
+  ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -227,51 +262,85 @@ cat(paste0(
 metric_summary <- merge(
   aggregate(adj_score ~ metric_name, comparison_other, median),
   current_other[, c("metric_name", "adj_score")],
-  by = "metric_name",
+  by       = "metric_name",
   suffixes = c("_median", "_current")
 ) %>%
-  mutate(metric_name = gsub(": ", "", metric_name))
+  dplyr::mutate(
+    metric_name = gsub(": ", "", .data$metric_name)
+  )
 
-higher_metrics <- metric_summary$metric_name[metric_summary$adj_score_current > metric_summary$adj_score_median * 1.25]
-lower_metrics  <- metric_summary$metric_name[metric_summary$adj_score_current < metric_summary$adj_score_median * 0.75]
+higher_metrics <- metric_summary$metric_name[
+  metric_summary$adj_score_current >
+    metric_summary$adj_score_median * 1.25
+]
 
-general_comparison <- median(metric_summary$adj_score_current / metric_summary$adj_score_median, na.rm = TRUE)
+lower_metrics <- metric_summary$metric_name[
+  metric_summary$adj_score_current <
+    metric_summary$adj_score_median * 0.75
+]
+
+general_comparison <- median(
+  metric_summary$adj_score_current /
+    metric_summary$adj_score_median,
+  na.rm = TRUE
+)
 
 however <- FALSE
 
-if(general_comparison >= 1.25) {
-  cat("The metric scores for this wetland are generally higher than other sampled wetlands, indicating relatively better conditions overall.\n\n")
-} else if(general_comparison <= 0.75) {
-  cat("The metric scores for this wetland are generally lower than other sampled wetlands, suggesting relatively poorer conditions or higher impairment.\n\n")
+if (general_comparison >= 1.25) {
+  cat("The metric scores for this wetland are generally higher than ",
+      "those of other sampled wetlands, indicating relatively better ",
+      "conditions overall.\n\n", sep = "")
+} else if (general_comparison <= 0.75) {
+  cat("The metric scores for this wetland are generally lower than ",
+      "those of other sampled wetlands, suggesting relatively poorer ",
+      "conditions or higher impairment.\n\n", sep = "")
 } else {
-  cat("The metric scores for this wetland are generally similar to other sampled wetlands.\n\n")
+  cat("The metric scores for this wetland are generally similar to ",
+      "other sampled wetlands.\n\n", sep = "")
 }
 
-if(length(higher_metrics) > 0 && general_comparison >= 1.25) {
-  cat("Metrics that were notably higher than average include: ", paste(higher_metrics, collapse = ", "), ".\n\n", sep = "")
-}
-
-if(length(higher_metrics) > 0 && general_comparison <= 0.75 || length(higher_metrics) > 0 && abs(general_comparison - 1) <= 0.1) {
-  cat("However, these metrics were notably higher than average: ", paste(higher_metrics, collapse = ", "), ".\n\n", sep = "")
+if (length(higher_metrics) > 0 & general_comparison <= 0.75) {
+  cat("However, these metrics were notably higher than average: ",
+      paste(higher_metrics, collapse = ", "), ".\n\n", sep = "")
   however <- TRUE
 }
 
-if(length(lower_metrics) > 0 && general_comparison <= 0.75) {
-  cat("Metrics that were notably lower than average include: ", paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
+if (length(higher_metrics) > 0 & general_comparison >= 1.25 &
+    however == FALSE ||
+    length(higher_metrics) > 0 &&
+    abs(general_comparison - 1) <= 0.1 & however == FALSE) {
+  cat("These metrics were notably higher than average: ",
+      paste(higher_metrics, collapse = ", "), ".\n\n", sep = "")
+  however <- TRUE
 }
 
-if(length(lower_metrics) > 0 & general_comparison >= 1.25 & however == FALSE|| 
-   length(lower_metrics) > 0 && abs(general_comparison - 1) <= 0.1 & however == FALSE) {
-  cat("However, these metrics were notably lower than average: ", paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
+if (length(lower_metrics) > 0 & general_comparison <= 0.75 &
+    however == FALSE) {
+  cat("These metrics were notably lower than average: ",
+      paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
+  however <- TRUE
 }
 
-if(length(lower_metrics) > 0 & general_comparison >= 1.25 & however == TRUE|| 
-   length(lower_metrics) > 0 && abs(general_comparison - 1) <= 0.1 & however == TRUE) {
-  cat("Additionally, these metrics were notably lower than average: ", paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
+if (length(lower_metrics) > 0 & general_comparison >= 1.25 &
+    however == FALSE ||
+    length(lower_metrics) > 0 &&
+    abs(general_comparison - 1) <= 0.1 & however == FALSE) {
+  cat("However, these metrics were notably lower than average: ",
+      paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
 }
 
-if(length(higher_metrics) == 0 && length(lower_metrics) == 0) {
-  cat("There are no metrics with notably higher or lower scores compared to other sites.\n\n")
+if (length(lower_metrics) > 0 & general_comparison >= 1.25 &
+    however == TRUE ||
+    length(lower_metrics) > 0 &&
+    abs(general_comparison - 1) <= 0.1 & however == TRUE) {
+  cat("Additionally, these metrics were notably lower than average: ",
+      paste(lower_metrics, collapse = ", "), ".\n\n", sep = "")
+}
+
+if (length(higher_metrics) == 0 && length(lower_metrics) == 0) {
+  cat("There are no metrics with notably higher or lower scores ",
+      "compared to other sites.\n\n", sep = "")
 }
 ```
 
@@ -283,18 +352,34 @@ if(length(higher_metrics) == 0 && length(lower_metrics) == 0) {
 The boxplot in figure 2 compares the total IBI score from `r params$user_title` with other wetlands surveyed by the natural resources department.
 
 ```{r total-boxplot, warning = FALSE, echo = FALSE}
-comparison_total <- subset(params$comparison_metrics, metric_name == "IBI Score (0-50)")
-current_total    <- subset(params$data, metric_name == "IBI Score (0-50)")
+comparison_total <- subset(params$comparison_metrics,
+                           metric_name == "IBI Score (0-50)")
+current_total    <- subset(params$data,
+                           metric_name == "IBI Score (0-50)")
 
-figure2_text <- escape_latex(paste0("Distribution of total IBI score from all surveyed sites. The red line indicates the total score for ", params$user_title))
+figure2_text <- escape_latex(paste0(
+  "Distribution of total IBI scores from all surveyed sites. ",
+  "The red line indicates the total score for ", params$user_title
+))
 
-total_box <- ggplot(comparison_total, aes(x = metric_name, y = adj_score)) +
+total_box <- ggplot(
+  comparison_total,
+  aes(x = .data$metric_name, y = .data$adj_score)
+) +
   geom_boxplot() +
   labs(x = "", y = "Total Adjusted Score") +
-  geom_segment(data = current_total,
-               # Since there's only one box, we can hardcode the x-range:
-               aes(x = 0.6, xend = 1.4, y = adj_score, yend = adj_score),
-               color = "red", size = 1) +
+  geom_segment(
+    data = current_total,
+    # Since there's only one box, we can hardcode the x-range:
+    aes(
+      x    = 0.6,
+      xend = 1.4,
+      y    = .data$adj_score,
+      yend = .data$adj_score
+    ),
+    color = "red",
+    size  = 1
+  ) +
   theme_minimal()
 
 tot_path <- "total-boxplot.pdf"

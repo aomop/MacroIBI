@@ -6,6 +6,9 @@
 \usage{
 run_macroibi(demo_mode = FALSE)
 }
+\arguments{
+\item{demo_mode}{Logical; if \code{TRUE}, runs the app in demo mode with sample data.}
+}
 \value{
 A \code{shiny.appobj} that can be passed to \code{shiny::runApp()}.
 }

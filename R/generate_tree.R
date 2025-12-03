@@ -278,7 +278,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       
       level_df <- level_df[!duplicated(level_df$level),
                            c("level", "rank_index", "x")]
-      level_df <- subset(level_df, level %in% axis_levels)
+      level_df <- level_df[level_df$level %in% axis_levels, , drop = FALSE]
       level_df <- level_df[order(level_df$rank_index), ]
       
       clade_positions <- setNames(level_df$x, level_df$level)

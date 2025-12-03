@@ -10,7 +10,8 @@ server_metrics(
   taxonomy,
   unique_taxa_counts,
   group_totals,
-  grand_total_observations
+  grand_total_observations,
+  group_defs
 )
 }
 \arguments{

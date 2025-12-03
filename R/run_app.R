@@ -4,6 +4,7 @@
 #' MacroIBI Shiny application object.
 #'
 #' @return A `shiny.appobj` that can be passed to `shiny::runApp()`.
+#' @param demo_mode Logical; if `TRUE`, runs the app in demo mode with sample data.
 #' @examples
 #' if (interactive()) {
 #'   run_macroibi()
