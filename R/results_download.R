@@ -220,7 +220,6 @@ results_download_server <- function(
               raw_data = prepared_data()$raw_data,
               taxonomy = taxonomy
             ),
-            browser(),
             envir = new.env(parent = asNamespace("macroibi"))
           )
           
