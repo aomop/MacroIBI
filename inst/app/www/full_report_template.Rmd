@@ -35,6 +35,7 @@ library(kableExtra)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+options(kableExtra.latex.load_packages = FALSE)
 ```
 
 # **IBI Overview**
