@@ -146,38 +146,14 @@ Record the zone(s) used.
 
 1. Install **R**: <https://cran.r-project.org>  
 2. Install **RStudio** (highly recommended): <https://posit.co/download/rstudio-desktop/>  
-3. Download or clone the MacroIBI repository.
-
-### If Using Git
-
-- Open bash, then run:
-```bash
-cd "/desired/directory/path" # Change this
-git clone https://github.com/aomop/MacroIBI.git
-```
-
-### If Downloading as ZIP
-
-- Click the green **Code** button -> “Download ZIP”  
-- Extract the ZIP contents.
+3. Install the MacroIBI package via `remotes`
 
 ### Install the App
 
-**Without RStudio:**
-- Open R, then run:
+- In R:
 ```r
-setwd("PATH/TO/MacroIBI-main/") # Change this
-install.packages("devtools")
-devtools::install_local()
-```
-
-**With RStudio:**
-
-- Open `Wetland_IBI.Rproj`
-- In the console, run:
-```r
-install.packages("devtools")
-devtools::install_local()
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("aomop/MacroIBI")
 ```
 
 ---
