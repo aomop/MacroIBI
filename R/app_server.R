@@ -4,7 +4,7 @@
 #' @keywords internal
 #' @import rlang
 #' @import shinycssloaders
-macroibi_server <- function(taxonomy, group_list) {
+macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
   function(input, output, session) {
     group_totals <- reactiveValues()
     unique_taxa_counts <- reactiveValues()
@@ -42,20 +42,30 @@ macroibi_server <- function(taxonomy, group_list) {
     })
     
     modal_shown <- reactiveVal(FALSE)
-    
+
     shiny::observe({
       if (!modal_shown()) {
+        demo_banner <- ""
+        if (isTRUE(demo_mode)) {
+          demo_banner <- "<p><strong>Demo Mode:</strong> Auto-save is disabled for this hosted preview. Use the provided auto-saved examples to explore the workflow.</p>"
+        }
+        autosave_instruction <- "<li><strong>Autosave:</strong> The autosave feature is turned off by default. Enable it by clicking the checkbox on the left if you wish to use it.</li>"
+        if (isTRUE(demo_mode)) {
+          autosave_instruction <- "<li><strong>Autosave:</strong> Auto-save is disabled in this demo. Use the Load Auto-Save button to explore sample datasets.</li>"
+        }
+
         showModal(
           modalDialog(
-            HTML(
-              "<h2>Welcome to the Macroinvertebrate IBI Calculator!</h2>
-            <p>This Shiny app calculates the Macroinvertebrate Index of Biotic Integrity (IBI) using protocols developed in collaboration with the Shakopee Mdewakanton Sioux Community.</p>
-            <p><strong>Before You Begin:</strong></p>
-            <ul>
-            <li><strong>Title and Date:</strong> Please provide a valid title (wetland name) and sampling date to generate meaningful filenames. These details can be updated later.</li>
-            <li><strong>Autosave:</strong> The autosave feature is turned off by default. Enable it by clicking the checkbox on the left if you wish to use it.</li>
-            </ul>"
-            ),
+            HTML(paste0(
+              "<h2>Welcome to the Macroinvertebrate IBI Calculator!</h2>",
+              demo_banner,
+              "<p>This Shiny app calculates the Macroinvertebrate Index of Biotic Integrity (IBI) using protocols developed in collaboration with the Shakopee Mdewakanton Sioux Community.</p>",
+              "<p><strong>Before You Begin:</strong></p>",
+              "<ul>",
+              "<li><strong>Title and Date:</strong> Please provide a valid title (wetland name) and sampling date to generate meaningful filenames. These details can be updated later.</li>",
+              autosave_instruction,
+              "</ul>"
+            )),
             fluidRow(
               column(5, textInput("user_title", label = "Wetland Name:", value = shared_reactives$user_title)),
               column(5, textInput("user_date", label = "Date of Sampling:", value = shared_reactives$user_date)),
@@ -253,7 +263,8 @@ macroibi_server <- function(taxonomy, group_list) {
       shared_reactives = shared_reactives,
       metric_scores = metric_scores,
       auto_save_interval = 30,
-      group_defs = group_defs
+      group_defs = group_defs,
+      demo_mode = demo_mode
     )
     
     upload_module_server(
