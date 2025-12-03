@@ -15,7 +15,7 @@ Imports:
     bslib,
     viridis,
     DT,
-    webshot,
+    webshot2,
     htmltools,
     purrr,
     dplyr,

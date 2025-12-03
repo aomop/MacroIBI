@@ -122,46 +122,78 @@ results_download_server <- function(
     # Download Table as Image
     output$download_img <- shiny::downloadHandler(
       filename = function() {
-        paste0("table_", shared_reactives$user_title, "_", shared_reactives$user_date, ".png")
+        paste0(
+          "table_",
+          shared_reactives$user_title, "_",
+          shared_reactives$user_date,
+          ".png"
+        )
       },
       content = function(file) {
         shiny::withProgress(message = "Generating Image...", value = 0, {
           shiny::incProgress(0.1, detail = "Rendering title...")
-        title_text <- shiny::tags$h2(
-          shiny::HTML(paste0(
-            "<span style='color: #2C3E50; font-size: 24px; font-weight: bold; display: block; margin-bottom: 0px;'>
-    Macroinvertebrate Index of Biotic Integrity for</span>", 
-            "<span style='color: #2C3E50; font-size: 32px; font-weight: bold; text-decoration: underline; display: block; margin-top: 5px; margin-bottom: 5px;'>",
-            shared_reactives$user_title, "</span>"
-          )),
-          style = "text-align: center; margin-bottom: 5px;"
-        )
-        shiny::incProgress(0.3, detail = "Rendering date...")
-        date_text <- shiny::tags$p(
-          shiny::HTML(paste0(
-            "<span style='color: #555555; font-size: 18px; display: block; margin-top: 0px;'>
-    Sampled on<strong> ", add_ordinal_suffix(format(as.Date(shared_reactives$user_date, format = "%m/%d/%y"), "%B %d, %Y"), style = "%B %d, %Y"), "</strong>", 
-            "  |  Calculated on<strong> ", add_ordinal_suffix(format(Sys.Date(), "%B %d, %Y"), style = "%B %d, %Y"), "</strong>",
-            "</span>"
-          )),
-          style = "text-align: center; margin-top: 5px;"
-        )
-        shiny::incProgress(0.5, detail = "Putting it all together...")
-        full_html <- shiny::tags$html(
-          shiny::tags$head(shiny::tags$style("#results_section { padding: 20px; }")),
-          shiny::tags$body(
-            shiny::tags$div(id = "results_section", title_text, date_text, table())
+          
+          title_text <- shiny::tags$h2(
+            shiny::HTML(paste0(
+              "<span style='color: #2C3E50; font-size: 24px; font-weight: bold; display: block; margin-bottom: 0px;'>
+Macroinvertebrate Index of Biotic Integrity for</span>", 
+              "<span style='color: #2C3E50; font-size: 32px; font-weight: bold; text-decoration: underline; display: block; margin-top: 5px; margin-bottom: 5px;'>",
+              shared_reactives$user_title, "</span>"
+            )),
+            style = "text-align: center; margin-bottom: 5px;"
           )
-        )
-        shiny::incProgress(0.7, detail = "Saving html file...")
-        temp_html <- tempfile(fileext = ".html")
-        htmltools::save_html(full_html, temp_html)
-        shiny::incProgress(0.9, detail = "Converting html to png...")
-        # Capture as PNG using 'selector' argument
-        webshot::webshot(temp_html, file = file, delay = 0.5, zoom = 2, selector = "#results_section")
-        shiny::incProgress(1, detail = "Rendering complete!")
+          
+          shiny::incProgress(0.3, detail = "Rendering date...")
+          date_text <- shiny::tags$p(
+            shiny::HTML(paste0(
+              "<span style='color: #555555; font-size: 18px; display: block; margin-top: 0px;'>
+Sampled on<strong> ",
+              add_ordinal_suffix(
+                format(
+                  as.Date(shared_reactives$user_date, format = "%m/%d/%y"),
+                  "%B %d, %Y"
+                ),
+                style = "%B %d, %Y"
+              ),
+              "</strong>",
+              "  |  Calculated on<strong> ",
+              add_ordinal_suffix(format(Sys.Date(), "%B %d, %Y"), style = "%B %d, %Y"),
+              "</strong>",
+              "</span>"
+            )),
+            style = "text-align: center; margin-top: 5px;"
+          )
+          
+          shiny::incProgress(0.5, detail = "Putting it all together...")
+          full_html <- shiny::tags$html(
+            shiny::tags$head(shiny::tags$style("#results_section { padding: 20px; }")),
+            shiny::tags$body(
+              shiny::tags$div(id = "results_section", title_text, date_text, table())
+            )
+          )
+          
+          shiny::incProgress(0.7, detail = "Saving html file...")
+          temp_html <- tempfile(fileext = ".html")
+          htmltools::save_html(full_html, temp_html)
+          
+          shiny::incProgress(0.9, detail = "Converting html to png...")
+          
+          # Use file:// URL so Chrome can open the local file
+          url <- paste0("file://", normalizePath(temp_html))
+          
+          webshot2::webshot(
+            url,
+            file      = file,
+            vwidth    = 1200,
+            vheight   = 800,
+            selector  = "#results_section",  # <- key bit
+            delay     = 0.5,
+            zoom      = 2
+          )
+          
+          shiny::incProgress(1, detail = "Rendering complete!")
+        })
       }
-        )}
     )
     
     output$download_full_report <- shiny::downloadHandler(

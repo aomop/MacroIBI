@@ -35,6 +35,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(rlang)
+options(kableExtra.latex.load_packages = FALSE)
 ```
 
 ```{r, echo=FALSE, warning = FALSE, message = FALSE}
