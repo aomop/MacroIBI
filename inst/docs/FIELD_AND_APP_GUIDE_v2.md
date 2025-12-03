@@ -163,7 +163,7 @@ remotes::install_github("aomop/MacroIBI")
   library(macroibi)
   run_macroibi(demo_mode = TRUE)
   ```
-- If the app opens and the demo dataset appears under **Autosave** > **Load Demo Dataset**, installation is complete.
+- If the app opens and the demo datasets appear in **Autosave** > **Load Autosave**, installation is complete.
 
 ### Troubleshooting tips
 
@@ -171,6 +171,8 @@ remotes::install_github("aomop/MacroIBI")
 - **Compilation toolchain missing (Windows):** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) if prompted during installation.
 - **HTML/PDF export issues:** Ensure [Pandoc](https://pandoc.org/) is available (bundled with RStudio) and that `webshot2` can find a headless browser (run `webshot2::install_phantomjs()` if needed).
 - **Blocked by network/SSL errors:** Retry on a reliable connection or download/clone the repo and install from the local path with `remotes::install_local()`.
+
+Please contact [Sam Swanson](sam.swanson@shakopeedakota.org) if you are encountering an issue.
 
 ---
 
