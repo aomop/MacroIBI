@@ -8,19 +8,17 @@ A demo version of the app is available to preview at [https://smsc2.shinyapps.io
 Install the package locally to access all features.
 
 ## Installation
-Ensure R and RStudio are installed.
+Ensure R and RStudio are installed, then run:
 ```r
-install.packages("rsconnect")
-rsconnect::install_github("aomop/MacroIBI")
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("aomop/MacroIBI")
 ```
 
 ## Running the App
-
+From the console, run:
 ```r
 library(macroibi)
 run_macroibi()
-# launch in a browser:
-run_macroibi(browser = TRUE)
 ```
 
 The app bundles its static assets and taxonomy reference data inside the package. Autosave files are written to a per-user data directory obtained via `tools::R_user_dir("macroibi", "data")`.
