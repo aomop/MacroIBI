@@ -21,7 +21,7 @@ geometry: margin=1in
 params:
   user_title: "Default Title"
   user_date: "Default Date"
-  report_date: !r add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
+  report_date: !r macroibi:::add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
   data: NA
   comparison_metrics: NA
   table_img: NA
@@ -38,7 +38,7 @@ library(ggplot2)
 ```
 
 # **IBI Overview**
-This report provides a summary of the biotic integrity of `r params$user_title`, based on macroinvertebrate organisms collected on `r add_ordinal_suffix(params$user_date, style = "%m/%d/%Y")`. The Index of Biotic Integrity (IBI) method seeks to quantify
+This report provides a summary of the biotic integrity of `r params$user_title`, based on macroinvertebrate organisms collected on `r macroibi:::add_ordinal_suffix(params$user_date, style = "%m/%d/%Y")`. The Index of Biotic Integrity (IBI) method seeks to quantify
 water quality and ecological impairment based on biotic factors, such as fish or macroinvertebrates. This
 specific IBI protocol was developed for the Shakopee Mdewakanton Sioux Community, and as such, should
 not be compared to data collected under different protocols.

@@ -33,6 +33,8 @@ Suggests:
     kableExtra,
     tidyr,
     ggplot2
+Remotes:
+    github::aomop/MacroIBI
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
