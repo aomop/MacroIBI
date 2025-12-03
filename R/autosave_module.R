@@ -44,10 +44,10 @@ autosave_module_server <- function(
     auto_save_interval = 30,
     group_defs,
     demo_mode = FALSE) {
-
+  
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    
     summarized_data <- shiny::reactive(
       rbind(
         metric_scores$data,
@@ -61,19 +61,25 @@ autosave_module_server <- function(
       )
     )
     
-    if (!dir.exists(auto_save_path)) dir.create(auto_save_path, recursive = TRUE)
+    # Ensure autosave directories exist
+    if (!dir.exists(auto_save_path))   dir.create(auto_save_path,   recursive = TRUE)
     if (!dir.exists(metric_save_path)) dir.create(metric_save_path, recursive = TRUE)
+    
+    # If we're in demo mode, seed the autosave folders with packaged demo files.
+    if (demo_mode) {
+      seed_demo_autosaves_from_inst(auto_save_path, metric_save_path)
+    }
     
     update_autosave_status <- function(message) {
       output$autosave_status <- shiny::renderText({
         paste0(message, " (Last updated: ", Sys.time(), ")")
       })
     }
-
+    
     is_autosave_enabled <- function() {
       !demo_mode && isTRUE(input$enable_autosave)
     }
-
+    
     if (!demo_mode) {
       shiny::observeEvent(input$enable_autosave, {
         if (isFALSE(input$enable_autosave)) {
@@ -83,7 +89,7 @@ autosave_module_server <- function(
         }
       }, ignoreInit = TRUE)
     }
-
+    
     auto_save_timer <- shiny::reactiveTimer(auto_save_interval * 1000)
 
     ## --- Periodic autosave --------------------------------------------------

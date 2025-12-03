@@ -51,7 +51,7 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode =
         ),
         mainPanel(
           fluidRow(
-            column(12, shinycssloaders::withSpinner(uiOutput("display_info")))
+            column(12, uiOutput("display_info"))
           ),
           lapply(seq_along(group_list), function(i) {
             ui_taxon_section(

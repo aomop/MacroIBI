@@ -29,8 +29,8 @@ server_metrics <- function(id, selected_genera, taxonomy,
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    EOT_SECTION <- group_defs$section_id[group_defs$group_name == "EOT Orders"]
-    SNAIL_SECTION <- group_defs$section_id[group_defs$group_name == "Snails"]
+    EOT_SECTION <- group_defs$section_id[group_defs$group_name == "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders"]
+    SNAIL_SECTION <- group_defs$section_id[group_defs$group_name == "Snails - Class Gastropoda"]
     
     # Initialize reactive values to store data for metrics
     metric_scores <- shiny::reactiveValues(
