@@ -10,9 +10,8 @@ Install the package locally to access all features.
 ## Installation
 Ensure R and RStudio are installed.
 ```r
-# from the project root
-install.packages("devtools")
-devtools::install_local()
+install.packages("rsconnect")
+rsconnect::install_github("aomop/MacroIBI")
 ```
 
 ## Running the App
