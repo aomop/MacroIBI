@@ -3,5 +3,4 @@
 # Or use the blue button on top of this file
 
 options( "golem.app.prod" = TRUE)
-library(macroibi)
 macroibi::run_macroibi(demo_mode = TRUE) # add parameters here (if any)

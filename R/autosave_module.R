@@ -341,16 +341,22 @@ demo_autosave_templates <- function() {
         group_id = c(
           "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
           "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
           "beetles_order_coleoptera",
           "beetles_order_coleoptera",
+          "flies_and_midges_order_diptera",
           "flies_and_midges_order_diptera",
           "flies_and_midges_order_diptera"
         ),
         group_name = c(
           "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
           "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
           "Beetles - Order Coleoptera",
           "Beetles - Order Coleoptera",
+          "Flies and Midges - Order Diptera",
           "Flies and Midges - Order Diptera",
           "Flies and Midges - Order Diptera"
         ),
@@ -358,15 +364,18 @@ demo_autosave_templates <- function() {
         Taxon = c(
           "Brachycercus",
           "Brachycercus berneri",
+          "Rhyacophila",
+          "Hexagenia",
           "Jambhala",
           "Cyclotrypema",
           "Proegmenomyia",
-          "Panacris"
+          "Panacris",
+          "Chironomus"
         ),
-        Dipnet1 = c(8, 12, 5, 4, 18, 10),
-        Dipnet2 = c(6, 9, 3, 2, 15, 9),
-        tsn = c("101468", "609588", "838231", "719678", "625633", "625628"),
-        parentTsn = c("776915", "101468", "837915", "719592", "130185", "130185"),
+        Dipnet1 = c(10, 14, 9, 7, 6, 5, 16, 11, 8),
+        Dipnet2 = c(8, 12, 7, 5, 4, 3, 14, 9, 7),
+        tsn = c("101468", "609588", "115191", "620119", "838231", "719678", "625633", "625628", "555282"),
+        parentTsn = c("776915", "101468", "115089", "115193", "837915", "719592", "130185", "130185", "625633"),
         stringsAsFactors = FALSE
       ),
       metrics = data.frame(
@@ -383,9 +392,9 @@ demo_autosave_templates <- function() {
         fifth = c(4, 12, 0.35, 18, 5, NA),
         ninety_fifth = c(18, 68, 0.88, 72, 16, NA),
         max = c(20, 80, 1.0, 85, 20, NA),
-        metric_value = c(14, 54, 0.72, 61, 12, NA),
-        metric_score = c(9, 8, 8, 9, 8, NA),
-        adj_score = c(9, 8, 8, 9, 8, 42),
+        metric_value = c(16, 62, 0.84, 68, 14, NA),
+        metric_score = c(10, 9, 9, 9, 9, NA),
+        adj_score = c(10, 9, 9, 9, 9, 46),
         stringsAsFactors = FALSE
       )
     ),
@@ -396,32 +405,38 @@ demo_autosave_templates <- function() {
         group_id = c(
           "true_bugs_order_hemiptera",
           "true_bugs_order_hemiptera",
+          "true_bugs_order_hemiptera",
           "other_aquatic_insects",
           "other_aquatic_insects",
           "beetles_order_coleoptera",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
           "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders"
         ),
         group_name = c(
           "True Bugs - Order Hemiptera",
           "True Bugs - Order Hemiptera",
+          "True Bugs - Order Hemiptera",
           "Other Aquatic Insects",
           "Other Aquatic Insects",
           "Beetles - Order Coleoptera",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
           "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders"
         ),
         section_id = NA_character_,
         Taxon = c(
           "Electrovelia",
           "Electrovelia baltica",
+          "Trichocorixa",
           "Chauliodes",
           "Chauliodes pectinicornis",
           "Jambhala nekula",
-          "Brachycercus harrisella"
+          "Brachycercus harrisella",
+          "Cheumatopsyche"
         ),
-        Dipnet1 = c(7, 11, 5, 6, 9, 10),
-        Dipnet2 = c(6, 9, 4, 5, 7, 8),
-        tsn = c("1014630", "1015620", "115024", "115027", "844485", "101469"),
-        parentTsn = c("721743", "1014630", "666126", "115024", "838231", "101468"),
+        Dipnet1 = c(9, 13, 7, 6, 8, 7, 11, 6),
+        Dipnet2 = c(8, 11, 6, 5, 7, 6, 9, 5),
+        tsn = c("1014630", "1015620", "103508", "115024", "115027", "844485", "101469", "115168"),
+        parentTsn = c("721743", "1014630", "103506", "666126", "115024", "838231", "101468", "115143"),
         stringsAsFactors = FALSE
       ),
       metrics = data.frame(
@@ -438,9 +453,9 @@ demo_autosave_templates <- function() {
         fifth = c(2, 4, 0.4, 20, 6, NA),
         ninety_fifth = c(25, 12, 0.85, 70, 17, NA),
         max = c(35, 15, 1.0, 85, 20, NA),
-        metric_value = c(6, 10, 0.69, 48, 13, NA),
-        metric_score = c(9, 8, 7, 8, 8, NA),
-        adj_score = c(9, 8, 7, 8, 8, 40),
+        metric_value = c(14, 9, 0.63, 38, 10, NA),
+        metric_score = c(7, 8, 7, 7, 7, NA),
+        adj_score = c(7, 8, 7, 7, 7, 36),
         stringsAsFactors = FALSE
       )
     ),
@@ -454,6 +469,8 @@ demo_autosave_templates <- function() {
           "snails_class_gastropoda",
           "snails_class_gastropoda",
           "flies_and_midges_order_diptera",
+          "flies_and_midges_order_diptera",
+          "crustaceans_subclass_eumalacostraca",
           "crustaceans_subclass_eumalacostraca"
         ),
         group_name = c(
@@ -462,6 +479,8 @@ demo_autosave_templates <- function() {
           "Snails - Class Gastropoda",
           "Snails - Class Gastropoda",
           "Flies and Midges - Order Diptera",
+          "Flies and Midges - Order Diptera",
+          "Crustaceans - Subclass Eumalacostraca",
           "Crustaceans - Subclass Eumalacostraca"
         ),
         section_id = NA_character_,
@@ -471,12 +490,14 @@ demo_autosave_templates <- function() {
           "Campeloma",
           "Campeloma decisum",
           "Proegmenomyia metallica",
-          "Procambarus clarkii"
+          "Chironomus calligraphus",
+          "Procambarus clarkii",
+          "Orconectes virilis"
         ),
-        Dipnet1 = c(6, 10, 4, 7, 16, 9),
-        Dipnet2 = c(5, 8, 3, 6, 14, 7),
-        tsn = c("70346", "70355", "81322", "81323", "627210", "6667"),
-        parentTsn = c("70345", "70346", "81321", "81322", "625633", "6655"),
+        Dipnet1 = c(4, 8, 3, 6, 18, 14, 10, 5),
+        Dipnet2 = c(3, 6, 2, 4, 15, 12, 8, 4),
+        tsn = c("70346", "70355", "81322", "81323", "627210", "555282", "6667", "6729"),
+        parentTsn = c("70345", "70346", "81321", "81322", "625633", "625633", "6655", "6655"),
         stringsAsFactors = FALSE
       ),
       metrics = data.frame(
@@ -493,9 +514,9 @@ demo_autosave_templates <- function() {
         fifth = c(8, 15, 0.45, 12, 6, NA),
         ninety_fifth = c(24, 65, 0.9, 38, 18, NA),
         max = c(28, 80, 1.0, 45, 20, NA),
-        metric_value = c(19, 22, 0.76, 21, 15, NA),
-        metric_score = c(8, 9, 8, 7, 8, NA),
-        adj_score = c(8, 9, 8, 7, 8, 40),
+        metric_value = c(11, 34, 0.52, 14, 7, NA),
+        metric_score = c(6, 6, 6, 5, 6, NA),
+        adj_score = c(6, 6, 6, 5, 6, 29),
         stringsAsFactors = FALSE
       )
     )
