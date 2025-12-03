@@ -144,7 +144,7 @@ get_ordered_taxa <- function(df, parent = NA) {
 }
 
 ordered_taxa <- get_ordered_taxa(tree_data)
-
+browser()
 # Build expanded table
 
 taxa_expanded <- params$taxonomy %>%
