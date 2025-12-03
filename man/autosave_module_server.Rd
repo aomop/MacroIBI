@@ -12,7 +12,8 @@ autosave_module_server(
   shared_reactives,
   metric_scores,
   auto_save_interval = 30,
-  group_defs
+  group_defs,
+  demo_mode = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ autosave_module_server(
 
 \item{group_defs}{Data frame with columns section_id, group_id, group_name
 mapping modules to stable taxonomic groups.}
+
+\item{demo_mode}{Logical indicating whether the app is running in demo mode
+on shinyapps.io.}
 }
 \description{
 Autosave module server

@@ -4,7 +4,7 @@
 \alias{run_macroibi}
 \title{Launch the MacroIBI Shiny application}
 \usage{
-run_macroibi()
+run_macroibi(demo_mode = FALSE)
 }
 \value{
 A \code{shiny.appobj} that can be passed to \code{shiny::runApp()}.

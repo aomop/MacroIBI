@@ -4,7 +4,7 @@
 \alias{autosave_module_ui}
 \title{Autosave module UI}
 \usage{
-autosave_module_ui(id)
+autosave_module_ui(id, demo_mode = FALSE)
 }
 \arguments{
 \item{id}{Module identifier.}

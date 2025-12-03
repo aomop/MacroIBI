@@ -4,7 +4,7 @@
 \alias{macroibi_ui}
 \title{Internal UI builder}
 \usage{
-macroibi_ui(theme, group_list, group_colors, www_prefix)
+macroibi_ui(theme, group_list, group_colors, www_prefix, demo_mode = FALSE)
 }
 \description{
 Internal UI builder
