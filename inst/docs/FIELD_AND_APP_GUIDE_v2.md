@@ -156,6 +156,22 @@ if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 remotes::install_github("aomop/MacroIBI")
 ```
 
+### Quick verification
+
+- Confirm installation by launching the demo mode, which loads bundled example data without touching local files:
+  ```r
+  library(macroibi)
+  run_macroibi(demo_mode = TRUE)
+  ```
+- If the app opens and the demo dataset appears under **Autosave** > **Load Demo Dataset**, installation is complete.
+
+### Troubleshooting tips
+
+- **`remotes` not found:** Install it first with `install.packages("remotes")`.
+- **Compilation toolchain missing (Windows):** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) if prompted during installation.
+- **HTML/PDF export issues:** Ensure [Pandoc](https://pandoc.org/) is available (bundled with RStudio) and that `webshot2` can find a headless browser (run `webshot2::install_phantomjs()` if needed).
+- **Blocked by network/SSL errors:** Retry on a reliable connection or download/clone the repo and install from the local path with `remotes::install_local()`.
+
 ---
 
 ## 7. Using the MacroIBI App
@@ -220,10 +236,23 @@ Displayed metrics include:
 - Snail richness  
 - All-taxa richness  
 - Corixid ratio  
-- Abundance of EOT  
-- **Overall IBI score (0–50)**  
+- Abundance of EOT
+- **Overall IBI score (0–50)**
 
 Hover over *“How are these calculated?”* for metric formulas.
+
+#### Metric definitions and scoring (offline reference)
+
+- **Total Individuals** — Sum of all individuals entered across both dipnets and all taxonomic groups.
+- **EOT richness** — Number of unique taxa in Dragonflies, Mayflies, Damselflies, and Caddisflies (EOT Orders).
+- **Snail richness** — Number of unique taxa in Gastropoda.
+- **All-taxa richness** — Sum of unique taxa across all groups entered in the app.
+- **Corixid ratio** — \(\text{Corixidae individuals} / (\text{all true bugs} + \text{beetles})\); higher ratios indicate potential nutrient loading, so scoring decreases as the ratio rises.
+- **Abundance of EOT** — \(\text{Total EOT individuals} / \text{Total individuals}\).
+- **IBI Score (0–50)** — Sum of five adjusted metric scores (each 0–10). Scores are scaled between anchor percentiles observed in reference data:
+  - *Decrease with disturbance:* EOT richness (1–12 taxa), snail richness (1–10 taxa), all-taxa richness (10–40 taxa), abundance of EOT (0–0.16). Values below the minimum score 0; values at/above the upper anchor score 10.
+  - *Increase with disturbance:* Corixid ratio uses anchors 0 (best) to 1.0 (worst) with a 5th–95th percentile band of 0–0.82 guiding the scale; values above the maximum anchor score 0.
+  - The final IBI score is the sum of the capped component scores (maximum 50).
 
 ---
 
@@ -231,10 +260,11 @@ Hover over *“How are these calculated?”* for metric formulas.
 
 Available downloads:
 
-1. **Raw Data CSV**  
+1. **Raw Data CSV**
    For archiving or re-uploading into the app.
+   Use only CSVs exported from MacroIBI without external edits; uploading unrelated or manually prepared files can break metric calculations.
 
-2. **Results CSV**  
+2. **Results CSV**
    A basic CSV file with the final calculated scores
 
 3. **Table Image (PNG)**  
