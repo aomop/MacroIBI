@@ -6,7 +6,6 @@ output:
   pdf_document:
     keep_tex: true
 header-includes:
-  - \usepackage[table]{xcolor}
   - \usepackage{booktabs}
   - \usepackage[fontsize=11pt]{scrextend}
   - \usepackage{titlesec}
@@ -35,7 +34,6 @@ library(kableExtra)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
-options(kableExtra.latex.load_packages = FALSE)
 ```
 
 # **IBI Overview**

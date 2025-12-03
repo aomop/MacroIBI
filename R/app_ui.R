@@ -86,7 +86,7 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode =
           onmouseout = "this.querySelector('div').style.display = 'none';"
         )
       ),
-      div(results_download_ui("results_download"))
+      div(results_download_ui("results_download", demo_mode))
     )
   )
 }

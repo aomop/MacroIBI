@@ -11,7 +11,6 @@ header-includes:
   - \usepackage[familydefault,light]{Chivo}
   - \usepackage[T1]{fontenc}
   - \usepackage{titling}
-  - \usepackage[table]{xcolor}
   - \pretitle{\begin{flushright}}
   - \posttitle{\end{flushright}}
   - \predate{\begin{flushright}}
@@ -35,7 +34,6 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(rlang)
-options(kableExtra.latex.load_packages = FALSE)
 ```
 
 ```{r, echo=FALSE, warning = FALSE, message = FALSE}
