@@ -12,7 +12,7 @@
 #' @importFrom bslib bs_theme
 #' @importFrom viridis viridis
 #' @export
-run_macroibi <- function() {
+run_macroibi <- function(demo_mode = FALSE) {
   init_app_state()
 
   shiny::addResourcePath(get_app_path("www_prefix"), get_app_path("www_path"))
@@ -26,7 +26,7 @@ run_macroibi <- function() {
   )
 
   shiny::shinyApp(
-    ui = macroibi_ui(theme, group_list, group_colors, get_app_path("www_prefix")),
-    server = macroibi_server(taxonomy, group_list)
+    ui = macroibi_ui(theme, group_list, group_colors, get_app_path("www_prefix"), demo_mode),
+    server = macroibi_server(taxonomy, group_list, demo_mode)
   )
 }

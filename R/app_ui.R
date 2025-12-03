@@ -1,6 +1,6 @@
 #' Internal UI builder
 #' @keywords internal
-macroibi_ui <- function(theme, group_list, group_colors, www_prefix) {
+macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode = FALSE) {
   bslib::page_navbar(
     theme = theme,
     title = "Wetland IBI Dashboard",
@@ -45,7 +45,7 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix) {
           bslib::card(
             title = "Autosave Settings",
             class = "mt-3",
-            autosave_module_ui("reload_autosave")
+            autosave_module_ui("reload_autosave", demo_mode)
           ),
           actionButton("clear_all", "Clear All Data", icon = icon("trash"), class = "btn-danger")
         ),

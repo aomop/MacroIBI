@@ -3,10 +3,18 @@
 #' @param id Module identifier.
 #' @return A Shiny UI fragment.
 #' @keywords internal
-autosave_module_ui <- function(id) {
+autosave_module_ui <- function(id, demo_mode = FALSE) {
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE),
+    if (demo_mode) {
+      shiny::div(
+        class = "small text-muted mb-2",
+        shiny::strong("Demo mode:"),
+        " Auto-save is disabled on shinyapps.io. Use the sample auto-saves below to explore the workflow."
+      )
+    } else {
+      shiny::checkboxInput(ns("enable_autosave"), "Enable Auto-Save", value = FALSE)
+    },
     shiny::actionButton(ns("load_autosave"), "Load Auto-Save"),
     shiny::textOutput(ns("autosave_status"))
   )
@@ -23,6 +31,8 @@ autosave_module_ui <- function(id) {
 #' @param auto_save_interval Interval in seconds between autosaves.
 #' @param group_defs Data frame with columns section_id, group_id, group_name
 #'   mapping modules to stable taxonomic groups.
+#' @param demo_mode Logical indicating whether the app is running in demo mode
+#'   on shinyapps.io.
 #' @keywords internal
 autosave_module_server <- function(
     id,
@@ -32,11 +42,16 @@ autosave_module_server <- function(
     shared_reactives,
     metric_scores,
     auto_save_interval = 30,
-    group_defs) {
-  
+    group_defs,
+    demo_mode = FALSE) {
+
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
+
+    if (demo_mode) {
+      seed_demo_autosaves(auto_save_path, metric_save_path)
+    }
+
     summarized_data <- shiny::reactive(
       rbind(
         metric_scores$data,
@@ -58,21 +73,31 @@ autosave_module_server <- function(
         paste0(message, " (Last updated: ", Sys.time(), ")")
       })
     }
-    
-    shiny::observeEvent(input$enable_autosave, {
-      if (isFALSE(input$enable_autosave)) {
-        message("Auto-save feature disabled by user")
-      } else {
-        message("Auto-save feature enabled by user")
-      }
-    }, ignoreInit = TRUE)
-    
+
+    is_autosave_enabled <- function() {
+      !demo_mode && isTRUE(input$enable_autosave)
+    }
+
+    if (!demo_mode) {
+      shiny::observeEvent(input$enable_autosave, {
+        if (isFALSE(input$enable_autosave)) {
+          message("Auto-save feature disabled by user")
+        } else {
+          message("Auto-save feature enabled by user")
+        }
+      }, ignoreInit = TRUE)
+    }
+
     auto_save_timer <- shiny::reactiveTimer(auto_save_interval * 1000)
-    
+
     ## --- Periodic autosave --------------------------------------------------
     shiny::observe({
-      if (!input$enable_autosave) {
-        update_autosave_status("Auto-save feature is disabled.")
+      if (!is_autosave_enabled()) {
+        if (demo_mode) {
+          update_autosave_status("Auto-save feature is disabled in the demo version.")
+        } else {
+          update_autosave_status("Auto-save feature is disabled.")
+        }
         return()
       }
       
@@ -236,7 +261,6 @@ autosave_module_server <- function(
               })
             }
           }
-          
         } else if ("Group" %in% colnames(other_data)) {
           # Legacy autosave schema: Group column contains section IDs
           split_data <- split(other_data, other_data$Group)
@@ -305,5 +329,218 @@ autosave_module_server <- function(
         shiny::removeModal()
       }
     })
+  })
+}
+
+demo_autosave_templates <- function() {
+  list(
+    list(
+      title = "Prairie Pothole Demo",
+      date = "2023-06-15",
+      taxa = data.frame(
+        group_id = c(
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "beetles_order_coleoptera",
+          "beetles_order_coleoptera",
+          "flies_and_midges_order_diptera",
+          "flies_and_midges_order_diptera",
+          "flies_and_midges_order_diptera"
+        ),
+        group_name = c(
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Beetles - Order Coleoptera",
+          "Beetles - Order Coleoptera",
+          "Flies and Midges - Order Diptera",
+          "Flies and Midges - Order Diptera",
+          "Flies and Midges - Order Diptera"
+        ),
+        section_id = NA_character_,
+        Taxon = c(
+          "Brachycercus",
+          "Brachycercus berneri",
+          "Rhyacophila",
+          "Hexagenia",
+          "Jambhala",
+          "Cyclotrypema",
+          "Proegmenomyia",
+          "Panacris",
+          "Chironomus"
+        ),
+        Dipnet1 = c(10, 14, 9, 7, 6, 5, 16, 11, 8),
+        Dipnet2 = c(8, 12, 7, 5, 4, 3, 14, 9, 7),
+        tsn = c("101468", "609588", "115191", "620119", "838231", "719678", "625633", "625628", "555282"),
+        parentTsn = c("776915", "101468", "115089", "115193", "837915", "719592", "130185", "130185", "625633"),
+        stringsAsFactors = FALSE
+      ),
+      metrics = data.frame(
+        metric_name = c(
+          "EPT Taxa Richness",
+          "% Ephemeroptera Individuals",
+          "Taxa Evenness",
+          "% Sensitive Taxa",
+          "Clinger Taxa Richness",
+          "IBI Score (0-50)"
+        ),
+        response = c("Increase", "Increase", "Increase", "Increase", "Increase", "Decrease"),
+        min = c(2, 5, 0.2, 10, 3, NA),
+        fifth = c(4, 12, 0.35, 18, 5, NA),
+        ninety_fifth = c(18, 68, 0.88, 72, 16, NA),
+        max = c(20, 80, 1.0, 85, 20, NA),
+        metric_value = c(16, 62, 0.84, 68, 14, NA),
+        metric_score = c(10, 9, 9, 9, 9, NA),
+        adj_score = c(10, 9, 9, 9, 9, 46),
+        stringsAsFactors = FALSE
+      )
+    ),
+    list(
+      title = "Floodplain Marsh Demo",
+      date = "2024-07-02",
+      taxa = data.frame(
+        group_id = c(
+          "true_bugs_order_hemiptera",
+          "true_bugs_order_hemiptera",
+          "true_bugs_order_hemiptera",
+          "other_aquatic_insects",
+          "other_aquatic_insects",
+          "beetles_order_coleoptera",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders",
+          "dragonflies_mayflies_damselflies_and_caddisflies_eot_orders"
+        ),
+        group_name = c(
+          "True Bugs - Order Hemiptera",
+          "True Bugs - Order Hemiptera",
+          "True Bugs - Order Hemiptera",
+          "Other Aquatic Insects",
+          "Other Aquatic Insects",
+          "Beetles - Order Coleoptera",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders",
+          "Dragonflies, Mayflies, Damselflies and Caddisflies - EOT Orders"
+        ),
+        section_id = NA_character_,
+        Taxon = c(
+          "Electrovelia",
+          "Electrovelia baltica",
+          "Trichocorixa",
+          "Chauliodes",
+          "Chauliodes pectinicornis",
+          "Jambhala nekula",
+          "Brachycercus harrisella",
+          "Cheumatopsyche"
+        ),
+        Dipnet1 = c(9, 13, 7, 6, 8, 7, 11, 6),
+        Dipnet2 = c(8, 11, 6, 5, 7, 6, 9, 5),
+        tsn = c("1014630", "1015620", "103508", "115024", "115027", "844485", "101469", "115168"),
+        parentTsn = c("721743", "1014630", "103506", "666126", "115024", "838231", "101468", "115143"),
+        stringsAsFactors = FALSE
+      ),
+      metrics = data.frame(
+        metric_name = c(
+          "% Corixidae",
+          "Functional Feeding Groups",
+          "Taxa Evenness",
+          "% Sensitive Taxa",
+          "Clinger Taxa Richness",
+          "IBI Score (0-50)"
+        ),
+        response = c("Decrease", "Increase", "Increase", "Increase", "Increase", "Decrease"),
+        min = c(0, 2, 0.2, 12, 4, NA),
+        fifth = c(2, 4, 0.4, 20, 6, NA),
+        ninety_fifth = c(25, 12, 0.85, 70, 17, NA),
+        max = c(35, 15, 1.0, 85, 20, NA),
+        metric_value = c(14, 9, 0.63, 38, 10, NA),
+        metric_score = c(7, 8, 7, 7, 7, NA),
+        adj_score = c(7, 8, 7, 7, 7, 36),
+        stringsAsFactors = FALSE
+      )
+    ),
+    list(
+      title = "Shallow Lake Demo",
+      date = "2022-09-20",
+      taxa = data.frame(
+        group_id = c(
+          "other_non_insect_invertebrates",
+          "other_non_insect_invertebrates",
+          "snails_class_gastropoda",
+          "snails_class_gastropoda",
+          "flies_and_midges_order_diptera",
+          "flies_and_midges_order_diptera",
+          "crustaceans_subclass_eumalacostraca",
+          "crustaceans_subclass_eumalacostraca"
+        ),
+        group_name = c(
+          "Other Non-Insect Invertebrates",
+          "Other Non-Insect Invertebrates",
+          "Snails - Class Gastropoda",
+          "Snails - Class Gastropoda",
+          "Flies and Midges - Order Diptera",
+          "Flies and Midges - Order Diptera",
+          "Crustaceans - Subclass Eumalacostraca",
+          "Crustaceans - Subclass Eumalacostraca"
+        ),
+        section_id = NA_character_,
+        Taxon = c(
+          "Valvata",
+          "Valvata bicarinata",
+          "Campeloma",
+          "Campeloma decisum",
+          "Proegmenomyia metallica",
+          "Chironomus calligraphus",
+          "Procambarus clarkii",
+          "Orconectes virilis"
+        ),
+        Dipnet1 = c(4, 8, 3, 6, 18, 14, 10, 5),
+        Dipnet2 = c(3, 6, 2, 4, 15, 12, 8, 4),
+        tsn = c("70346", "70355", "81322", "81323", "627210", "555282", "6667", "6729"),
+        parentTsn = c("70345", "70346", "81321", "81322", "625633", "625633", "6655", "6655"),
+        stringsAsFactors = FALSE
+      ),
+      metrics = data.frame(
+        metric_name = c(
+          "Taxa Richness",
+          "% Tolerant Taxa",
+          "Taxa Evenness",
+          "% Predators",
+          "Clinger Taxa Richness",
+          "IBI Score (0-50)"
+        ),
+        response = c("Increase", "Decrease", "Increase", "Increase", "Increase", "Decrease"),
+        min = c(5, 10, 0.25, 8, 4, NA),
+        fifth = c(8, 15, 0.45, 12, 6, NA),
+        ninety_fifth = c(24, 65, 0.9, 38, 18, NA),
+        max = c(28, 80, 1.0, 45, 20, NA),
+        metric_value = c(11, 34, 0.52, 14, 7, NA),
+        metric_score = c(6, 6, 6, 5, 6, NA),
+        adj_score = c(6, 6, 6, 5, 6, 29),
+        stringsAsFactors = FALSE
+      )
+    )
+  )
+}
+
+seed_demo_autosaves <- function(auto_save_path, metric_save_path) {
+  dir.create(auto_save_path, recursive = TRUE, showWarnings = FALSE)
+  dir.create(metric_save_path, recursive = TRUE, showWarnings = FALSE)
+
+  purrr::walk(demo_autosave_templates(), function(template) {
+    autosave_file <- file.path(auto_save_path, paste0("autosave_", template$title, ".rds"))
+    metric_file <- file.path(metric_save_path, paste0("metrics_", template$title, ".rds"))
+
+    if (!file.exists(autosave_file)) {
+      autosave_data <- template$taxa
+      autosave_data$Title <- template$title
+      autosave_data$Date <- template$date
+      autosave_data$schema_version <- "2.0.0"
+      saveRDS(autosave_data, autosave_file)
+    }
+
+    if (!file.exists(metric_file)) {
+      saveRDS(template$metrics, metric_file)
+    }
   })
 }

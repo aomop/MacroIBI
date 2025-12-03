@@ -4,4 +4,4 @@
 
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
 options( "golem.app.prod" = TRUE)
-macroibi::run_macroibi() # add parameters here (if any)
+macroibi::run_macroibi(demo_mode = TRUE) # add parameters here (if any)
