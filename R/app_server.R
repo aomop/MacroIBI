@@ -45,45 +45,110 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
 
     shiny::observe({
       if (!modal_shown()) {
-        demo_banner <- ""
+        
+        # --- Optional demo banner ------------------------------------------------
+        demo_banner <- NULL
         if (isTRUE(demo_mode)) {
-          demo_banner <- paste0(
-            "<p><strong>Demo Mode:</strong> You're viewing a hosted demo with reduced features. Auto-save is disabled and uploads are limited, but you can explore the workflow using the bundled example files.</p>",
-            "<p class='mb-0'>Install the R package from https://github.com/aomop/MacroIBI to access all features<br></p>"
-          )
-        }
-        autosave_instruction <- "<li><strong>Autosave:</strong> The autosave feature is turned off by default. Enable it by clicking the checkbox on the left if you wish to use it.</li>"
-        if (isTRUE(demo_mode)) {
-          autosave_instruction <- "<li><strong>Autosave:</strong> Auto-save is disabled in this demo. Use the Load Auto-Save button to explore sample datasets.</li>"
-        }
-
-        showModal(
-          modalDialog(
-            HTML(paste0(
-              "<h2>Welcome to the Macroinvertebrate IBI Calculator!</h2>",
-              demo_banner,
-              "<p>This Shiny app calculates the Macroinvertebrate Index of Biotic Integrity (IBI) using protocols developed in collaboration with the Shakopee Mdewakanton Sioux Community.</p>",
-              "<p><strong>Before You Begin:</strong></p>",
-              "<ul>",
-              "<li><strong>Title and Date:</strong> Please provide a valid title (wetland name) and sampling date to generate meaningful filenames. These details can be updated later.</li>",
-              autosave_instruction,
-              "</ul>"
-            )),
-            fluidRow(
-              column(5, textInput("user_title", label = "Wetland Name:", value = shared_reactives$user_title)),
-              column(5, textInput("user_date", label = "Date of Sampling:", value = shared_reactives$user_date)),
-              column(2, div(
-                style = "margin-top: 28px;"
-              ))
+          demo_banner <- shiny::tagList(
+            shiny::p(
+              shiny::strong("Demo Mode:"),
+              " You're viewing a hosted demo with reduced features. ",
+              "Auto-save is disabled and uploads are limited, but you can explore the workflow ",
+              "using the bundled example files."
             ),
-            HTML("<p><i>*To enable data saving, please enter a valid title and date. If you choose to continue without it, data saving will be disabled
-          </i></p>"),
-            footer = tagList(
-              modalButton("Continue without Metadata"),
-              actionButton("submit_btn", "Let's go!", class = "btn btn-primary")
+            shiny::p(
+              "Install the R package from ",
+              shiny::a(
+                href   = "https://github.com/aomop/MacroIBI",
+                target = "_blank",
+                "github.com/aomop/MacroIBI"
+              ),
+              " to access all features."
             )
           )
+        }
+        
+        # --- Shared intro content -----------------------------------------------
+        intro_block <- shiny::tagList(
+          shiny::HTML("<h2>Welcome to the Macroinvertebrate IBI Calculator!</h2>"),
+          shiny::HTML(
+            "<p>This Shiny app calculates the Macroinvertebrate Index of Biotic Integrity (IBI) 
+        using protocols developed in collaboration with the Shakopee Mdewakanton Sioux Community.</p>"
+          ),
+          demo_banner
         )
+        
+        # --- Non-demo: full instructions + inputs -------------------------------
+        autosave_instruction <- shiny::HTML(
+          "<li><strong>Autosave:</strong> The autosave feature is turned off by default. 
+      Enable it by clicking the checkbox on the left if you wish to use it.</li>"
+        )
+        
+        full_body <- shiny::tagList(
+          intro_block,
+          shiny::HTML("<p><strong>Before You Begin:</strong></p>"),
+          shiny::HTML("<ul>"),
+          shiny::HTML(
+            "<li><strong>Title and Date:</strong> Please provide a valid title (wetland name) and 
+        sampling date to generate meaningful filenames. These details can be updated later.</li>"
+          ),
+          autosave_instruction,
+          shiny::HTML("</ul>"),
+          shiny::fluidRow(
+            shiny::column(
+              5,
+              shiny::textInput(
+                "user_title",
+                label = "Wetland Name:",
+                value = shared_reactives$user_title
+              )
+            ),
+            shiny::column(
+              5,
+              shiny::textInput(
+                "user_date",
+                label = "Date of Sampling:",
+                value = shared_reactives$user_date
+              )
+            ),
+            shiny::column(
+              2,
+              shiny::div(style = "margin-top: 28px;")
+            )
+          ),
+          shiny::HTML(
+            "<p><i>*To enable data saving, please enter a valid title and date. 
+        If you choose to continue without it, data saving will be disabled.</i></p>"
+          )
+        )
+        
+        # --- Demo-only body: intro + demo banner only ---------------------------
+        demo_body <- intro_block
+        
+        # --- Footer depends on demo_mode ----------------------------------------
+        modal_footer <- if (isTRUE(demo_mode)) {
+          # Simple OK button for demo
+          shiny::tagList(
+            shiny::modalButton("OK")
+          )
+        } else {
+          shiny::tagList(
+            shiny::modalButton("Continue without Metadata"),
+            shiny::actionButton("submit_btn", "Let's go!", class = "btn btn-primary")
+          )
+        }
+        
+        # --- Choose which body to show ------------------------------------------
+        body_content <- if (isTRUE(demo_mode)) demo_body else full_body
+        
+        shiny::showModal(
+          shiny::modalDialog(
+            body_content,
+            footer    = modal_footer,
+            easyClose = FALSE
+          )
+        )
+        
         modal_shown(TRUE)
       }
     })
