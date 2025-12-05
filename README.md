@@ -4,21 +4,34 @@ A Shiny application for calculating a macroinvertebrate-based Index of Biotic In
 
 **Please see the [FIELD AND APP GUIDE](inst/docs/FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
 
+A demo version of the app is available to preview at [https://smsc2.shinyapps.io/MacroIBI/](https://smsc2.shinyapps.io/MacroIBI/).
+Install the package locally to access all features.
+
+## Prerequisites and quickstart
+
+- **Supported R:** 4.2.0 or newer
+- **Key packages installed automatically:** shiny, bslib, DT, webshot2, dplyr, readr, rmarkdown, ggplot2, and other listed Imports in [`DESCRIPTION`](DESCRIPTION)
+- **Quick start:**
+  ```r
+  if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+  remotes::install_github("aomop/MacroIBI")   # install
+  library(macroibi)
+  run_macroibi()                              # launch the app
+  tools::R_user_dir("macroibi", "data")      # view autosave folder used by the app
+  ```
+
 ## Installation
-Ensure R and RStudio are installed.
+Ensure R and RStudio are installed, then run:
 ```r
-# from the project root
-install.packages("devtools")
-devtools::install_local()
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("aomop/MacroIBI")
 ```
 
 ## Running the App
-
+From the console, run:
 ```r
 library(macroibi)
 run_macroibi()
-# launch in a browser:
-run_macroibi(browser = TRUE)
 ```
 
 The app bundles its static assets and taxonomy reference data inside the package. Autosave files are written to a per-user data directory obtained via `tools::R_user_dir("macroibi", "data")`.
@@ -31,6 +44,7 @@ The app bundles its static assets and taxonomy reference data inside the package
 - Import previously saved CSV data to repopulate taxon tables
 - Export results as CSV, PNG table image, and PDF reports
 - Visualize selected taxa as an annotated phylogenetic tree
+- **Raw/Imported CSV scope:** The exported Raw Data CSV is intended only for datasets created within MacroIBI. Avoid modifying it externally or feeding unrelated/prepared data from other systems back into the app.
 
 ## Project Structure
 
@@ -44,6 +58,11 @@ The app bundles its static assets and taxonomy reference data inside the package
 ```r
 devtools::test()
 ```
+
+## Support & contributions
+
+- **Questions and issues:** Please open an issue at <https://github.com/aomop/MacroIBI/issues>. We aim to respond within **5 business days**.
+- **Contributions:** Fork the repo, open a pull request with a concise description of the change, and include any relevant testing notes. Bug fixes and documentation improvements are welcome.
 
 ## License
 
