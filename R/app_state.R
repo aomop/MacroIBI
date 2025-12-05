@@ -45,6 +45,22 @@ get_app_path <- function(key) {
 #' @return A taxonomy data frame.
 #' @keywords internal
 load_taxonomy <- function() {
-  taxonomy_path <- file.path(get_app_path("extdata_path"), "taxonomy.rds")
-  readRDS(taxonomy_path)
+  taxonomy_path <- file.path(get_app_path("extdata_path"), "taxonomy_20251205.rds")
+  readRDS(taxonomy_path) %>%
+    dplyr::mutate(
+      Group = factor(
+        .data$Group,
+        levels = c(
+          "Dragonflies, Mayflies, Damselflies, and Caddisflies - EOT Orders",
+          "Beetles - Order Coleoptera",
+          "Flies and Midges - Order Diptera",
+          "True Bugs - Order Hemiptera",
+          "Other Aquatic Insects",
+          "Snails - Class Gastropoda",
+          "Leeches - Order Hirudinida",
+          "Crustaceans - Subclass Eumalacostraca",
+          "Other Non-Insect Invertebrates"
+        )
+      )
+    )
 }
