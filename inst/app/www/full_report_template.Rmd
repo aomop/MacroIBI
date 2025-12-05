@@ -12,6 +12,7 @@ header-includes:
   - \usepackage{wrapfig}
   - \usepackage{float}
   - \usepackage{placeins}
+  - \usepackage[table]{xcolor}
   - \titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
   - \titlespacing*{\section}{0pt}{0.5em}{0.2em}
   - \titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{0.5em}{}
