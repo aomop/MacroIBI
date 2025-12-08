@@ -158,12 +158,13 @@ remotes::install_github("aomop/MacroIBI")
 
 ### Quick verification
 
-- Confirm installation by launching the demo mode, which loads bundled example data without touching local files:
+- Confirm installation by launching the demo mode, which loads bundled example data:
   ```r
   library(macroibi)
   run_macroibi(demo_mode = TRUE)
   ```
-- If the app opens and the demo datasets appear in **Autosave** > **Load Autosave**, installation is complete.
+- The app will open with a message about limited features. Click ok, then find and click the **Load Autosave** button on the left.
+- If the demo files are available in the Autosave Menu, the app is working correctly. You may now close the demo app and launch the real app using `run_macroibi()`; `demo_mode` defaults to `FALSE`
 
 ### Troubleshooting tips
 
