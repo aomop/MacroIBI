@@ -190,7 +190,9 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     
     observe({
       all_choices <- taxonomy |>
-        dplyr::filter(!is.na(.data$taxon), .data$taxon != "") |>
+        dplyr::filter(!is.na(.data$taxon), 
+                      .data$taxon != "", 
+                      !is.na(.data$Group)) |>
         dplyr::mutate(
           name = paste0(
             "<strong>", .data$taxon, "</strong> <span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>", .data$level, "</span>"

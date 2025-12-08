@@ -4,7 +4,7 @@
 \alias{results_download_ui}
 \title{Results download UI}
 \usage{
-results_download_ui(id)
+results_download_ui(id, demo_mode)
 }
 \arguments{
 \item{id}{Module identifier.}

@@ -29,7 +29,8 @@ Imports:
     gridExtra,
     kableExtra,
     tidyr,
-    ggplot2
+    ggplot2,
+    magrittr
 Suggests:
     testthat (>= 3.0.0),
     shinytest2
