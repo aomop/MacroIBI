@@ -63,6 +63,7 @@ devtools::test()
 
 - **Questions and issues:** Please open an issue at <https://github.com/aomop/MacroIBI/issues>.
 - **Contributions:** Fork the repo, open a pull request with a concise description of the change, and include any relevant testing notes. Find more details in the [contributing guidelines](https://github.com/aomop/MacroIBI/blob/main/CONTRIBUTING.md).
+- **Security:** I cannot fathom what security issues may arise from use of this app, but if you find one, please follow the steps outlined in the [security](SECURITY.md) document.
 
 ## License
 
