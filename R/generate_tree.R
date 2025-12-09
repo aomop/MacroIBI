@@ -71,7 +71,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       # Normalize input TSNs
       selected_tsns <- unique(as.character(selected_tsns))
       
-      # Ensure character columns
+      # Ensure key columns are character
       tax_tbl <- tax_tbl %>%
         dplyr::mutate(
           tsn       = as.character(.data$tsn),
@@ -90,6 +90,11 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         dplyr::select(.data$tsn, .data$parentTsn, .data$taxon, .data$level) %>%
         dplyr::mutate(
           selected = .data$tsn %in% selected_tsns
+        ) %>%
+        # Keep only nodes with a valid rank level
+        dplyr::filter(
+          !is.na(.data$level),
+          .data$level %in% rank_levels
         )
       
       nodes
@@ -111,12 +116,19 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
     # Helper: compute layout (x,y) for each node
     # --------------------------------------------------------------------
     layout_tree <- function(nodes) {
+      # Keep a copy of the full nodes table for lineage calculation
+      nodes_full <- nodes
+      
       # Map taxonomic level to a numeric rank index and drop unknown levels
       nodes <- nodes %>%
         dplyr::mutate(
           rank_index = match(.data$level, rank_levels)
         ) %>%
         dplyr::filter(!is.na(.data$rank_index))
+      
+      if (nrow(nodes) == 0L) {
+        return(NULL)
+      }
       
       # If we have fewer than 2 selected taxa, no tree to draw
       selected_tsns <- nodes %>%
@@ -127,41 +139,31 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       if (length(selected_tsns) <= 1L) return(NULL)
       
       # --------------------------------------------------------------------
-      # 1) Find LCA of all selected taxa
+      # 1) Find LCA of all selected taxa using collect_lineage()
       # --------------------------------------------------------------------
-      parent_lookup <- nodes$parentTsn
-      names(parent_lookup) <- nodes$tsn
+      anc_list <- lapply(
+        selected_tsns,
+        function(tsn) collect_lineage(tsn, tax_tbl = nodes_full)
+      )
       
-      get_ancestors <- function(tsn) {
-        tsn <- as.character(tsn)
-        out <- character()
-        seen <- character()
-        cur  <- tsn
-        
-        while (!is.na(cur) && nzchar(cur) && !(cur %in% seen)) {
-          seen <- c(seen, cur)
-          out  <- c(out, cur)
-          
-          p <- parent_lookup[[cur]]
-          if (is.null(p) || is.na(p) || p == "") break
-          
-          cur <- as.character(p)
-        }
-        out
-      }
+      # Drop any empty ancestor vectors
+      anc_list_nonempty <- anc_list[lengths(anc_list) > 0]
       
-      anc_list   <- lapply(selected_tsns, get_ancestors)
-      common_anc <- Reduce(intersect, anc_list)
-      
-      if (length(common_anc) == 0L) {
-        # Paranoid fallback
+      if (length(anc_list_nonempty) == 0L) {
+        # Fallback: keep from the minimum rank_index downward
         min_rank_to_keep <- min(nodes$rank_index, na.rm = TRUE)
       } else {
-        lca_idx  <- which(nodes$tsn %in% common_anc)
-        lca_rank <- max(nodes$rank_index[lca_idx], na.rm = TRUE)
+        common_anc <- Reduce(intersect, anc_list_nonempty)
         
-        # keep from LCA parent's level "down"
-        min_rank_to_keep <- max(1L, lca_rank - 1L)
+        if (length(common_anc) == 0L) {
+          # No common ancestor found in this subset, fallback
+          min_rank_to_keep <- min(nodes$rank_index, na.rm = TRUE)
+        } else {
+          lca_idx  <- which(nodes$tsn %in% common_anc)
+          lca_rank <- max(nodes$rank_index[lca_idx], na.rm = TRUE)
+          # Keep from one level above the LCA "downward"
+          min_rank_to_keep <- max(1L, lca_rank - 1L)
+        }
       }
       
       # --------------------------------------------------------------------
@@ -181,9 +183,17 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       
       if (length(selected_tsns) <= 1L) return(NULL)
       
-      # Build edge table
+      # --------------------------------------------------------------------
+      # 3) Build edge table (safe)
+      # --------------------------------------------------------------------
+      node_tsns <- nodes$tsn
+      
       edges <- nodes %>%
-        dplyr::filter(!is.na(.data$parentTsn), .data$parentTsn != "") %>%
+        dplyr::filter(
+          !is.na(.data$parentTsn),
+          .data$parentTsn != "",
+          .data$parentTsn %in% node_tsns
+        ) %>%
         dplyr::transmute(
           parent = .data$parentTsn,
           child  = .data$tsn
@@ -232,7 +242,7 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
       }
       
       # --------------------------------------------------------------------
-      # 3) Build coords and assign y
+      # 4) Build coords and assign y (with safe indexing)
       # --------------------------------------------------------------------
       coords <- nodes %>%
         dplyr::select(tsn = .data$tsn, x = .data$x) %>%
@@ -241,11 +251,22 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
         )
       
       spacing <- 1
-      coords$y[match(leaf_order, coords$tsn)] <- seq_along(leaf_order) * spacing
+      
+      leaf_idx <- match(leaf_order, coords$tsn)
+      valid    <- !is.na(leaf_idx)
+      leaf_idx <- leaf_idx[valid]
+      
+      if (length(leaf_idx) == 0L) {
+        return(NULL)
+      }
+      
+      coords$y[leaf_idx] <- seq_along(leaf_idx) * spacing
       
       # Propagate y up: parents at mean(child y)
       changed <- TRUE
+      iter    <- 0L
       while (changed) {
+        iter    <- iter + 1L
         changed <- FALSE
         
         for (p in unique(edges$parent)) {
@@ -262,6 +283,11 @@ taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
               changed <- TRUE
             }
           }
+        }
+        
+        if (iter > 1000L) {
+          # Safety valve to avoid infinite loops in pathological graphs
+          break
         }
       }
       

@@ -46,8 +46,15 @@ get_app_path <- function(key) {
 #' @keywords internal
 load_taxonomy <- function() {
   taxonomy_path <- file.path(get_app_path("extdata_path"), "taxonomy_20251208.rds")
+  
   readRDS(taxonomy_path) %>%
     dplyr::mutate(
+      # Replace "" with NA in all character columns
+      dplyr::across(
+        .cols = dplyr::where(is.character),
+        .fns  = ~ dplyr::na_if(.x, "")
+      ),
+      # Re-level Group as a factor
       Group = factor(
         .data$Group,
         levels = c(
