@@ -9,3 +9,4 @@
 ^rsconnect$
 ^\.rscignore$
 ^tools/
+^docs/
