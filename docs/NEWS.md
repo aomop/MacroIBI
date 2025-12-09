@@ -5,7 +5,7 @@
 
 ---
 
-# macroibi v1.0.0
+# macroibi 1.0.0
 ### 12/08/2025
 - **New:** Added full documentation and user-friendly installation instructions to support new users.
 - **New:** Added practical guides and explanatory material for the field sampling protocol used to collect MacroIBI data.
@@ -15,7 +15,7 @@
 
 ---
 
-# macroibi v0.3.0
+# macroibi 0.3.0
 ### 12/05/2025
 - **Fix:** Updated LaTeX dependencies in report templates, restoring reliable PDF report generation across environments.
 - **Refactor:** Removed dependencies on `treeio`, `ggtree`, `phylo`, and `ape` packages and reimplemented tree-generation logic internally, reducing heavy dependencies and improving render stability.
@@ -24,7 +24,7 @@
 
 ---
 
-# macroibi v0.2.0
+# macroibi 0.2.0
 ### 12/03/2025
 - **New:** Added `demo_mode` argument to `run_macroibi()` allowing a safe, limited-feature demonstration version of the application.
 - **New:** Included shippable demo autosave files for training and demonstration.
@@ -33,7 +33,7 @@
 
 ---
 
-# macroibi v0.1.0
+# macroibi 0.1.0
 ### 11/26/2025
 - **Initial package version.**
 - Converted the original standalone Shiny app into an installable R package.
