@@ -189,31 +189,68 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     })
     
     observe({
-      all_choices <- taxonomy |>
-        dplyr::filter(!is.na(.data$taxon), 
-                      .data$taxon != "", 
-                      !is.na(.data$Group)) |>
+      # Whether to include out-of-region taxa
+      show_out <- isTRUE(input$show_out_of_region)
+      
+      choices_df <- taxonomy %>%
+        dplyr::filter(
+          !is.na(.data$taxon),
+          .data$taxon != "",
+          !is.na(.data$Group)
+        ) %>%
+        # Normalize in_region (which is currently character) to a logical
         dplyr::mutate(
+          # Treat strings like "TRUE"/"True"/"T"/"1" as TRUE,
+          # "FALSE"/"False"/"F"/"0" as FALSE, everything else as NA
+          in_region_flag = dplyr::case_when(
+            .data$in_region %in% c(TRUE, "TRUE", "True", "T", "1")   ~ TRUE,
+            .data$in_region %in% c(FALSE, "FALSE", "False", "F", "0") ~ FALSE,
+            TRUE ~ NA
+          ),
+          # For NA or weird values, default to TRUE (unknown → allowed)
+          in_region_flag = dplyr::coalesce(.data$in_region_flag, TRUE)
+        )
+      
+      # (a) Hide out-of-region taxa by default
+      if (!show_out) {
+        choices_df <- choices_df %>%
+          dplyr::filter(.data$in_region_flag)
+      }
+      
+      # (b) Add red caution flag for out-of-region taxa when they are shown
+      choices_df <- choices_df %>%
+        dplyr::mutate(
+          # Red warning icon for out-of-region taxa
+          caution_flag = dplyr::if_else(
+            !.data$in_region_flag,
+            "<span style='color:#d9534f; font-weight:bold; margin-right:4px;' title='Outside region'>&#9888;</span>",
+            ""
+          ),
           name = paste0(
-            "<strong>", .data$taxon, "</strong> <span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>", .data$level, "</span>"
+            .data$caution_flag,
+            "<strong>", .data$taxon, "</strong> ",
+            "<span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>",
+            .data$level,
+            "</span>"
           ),
           value = .data$taxon
-        ) |>
-        dplyr::select(dplyr::all_of(c("value", "name")))
+        ) %>%
+        dplyr::select(.data$value, .data$name)
       
       shiny::updateSelectizeInput(
         session, "main_taxon_select",
-        choices = c(NA, setNames(all_choices$value, all_choices$name)),
-        server = TRUE,
+        choices = c(NA, stats::setNames(choices_df$value, choices_df$name)),
+        server  = TRUE,
         options = list(
           render = I('{
-          option: function(item, escape) {
-            return "<div>" + item.label + "</div>";
-          },
-          item: function(item, escape) {
-            return "<div>" + escape(item.value) + "</div>";
-          }
-        }')
+        option: function(item, escape) {
+          // item.label is the HTML label we constructed in R
+          return "<div>" + item.label + "</div>";
+        },
+        item: function(item, escape) {
+          return "<div>" + escape(item.value) + "</div>";
+        }
+      }')
         )
       )
     })
@@ -221,14 +258,14 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     shiny::observeEvent(input$main_taxon_select, {
       selected_taxon_data <- input$main_taxon_select
       
-      taxon_group <- taxonomy |>
-        dplyr::filter(.data$taxon == .env$selected_taxon_data) |>
-        dplyr::pull(.data$Group) |>
+      taxon_group <- taxonomy %>%
+        dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
+        dplyr::pull(.data$Group) %>%
         unique()
       
-      taxon_info <- taxonomy |>
-        dplyr::filter(.data$taxon == .env$selected_taxon_data) |>
-        dplyr::select(dplyr::all_of(c("taxon", "tsn", "parentTsn"))) |>
+      taxon_info <- taxonomy %>%
+        dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
+        dplyr::select(dplyr::all_of(c("taxon", "tsn", "parentTsn"))) %>%
         unique()
       
       if (length(taxon_group) == 1) {

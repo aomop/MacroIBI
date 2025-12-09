@@ -36,6 +36,11 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode =
               create = FALSE
             )
           ),
+          shiny::checkboxInput(
+            "show_out_of_region",
+            "Include taxa that occur outside of North America",
+            value = FALSE
+          ),
           bslib::card(
             title = "Upload/Download",
             class = "mt-3",

@@ -45,7 +45,7 @@ get_app_path <- function(key) {
 #' @return A taxonomy data frame.
 #' @keywords internal
 load_taxonomy <- function() {
-  taxonomy_path <- file.path(get_app_path("extdata_path"), "taxonomy_20251205.rds")
+  taxonomy_path <- file.path(get_app_path("extdata_path"), "taxonomy_20251208.rds")
   readRDS(taxonomy_path) %>%
     dplyr::mutate(
       Group = factor(

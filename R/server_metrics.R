@@ -108,8 +108,8 @@ server_metrics <- function(id, selected_genera, taxonomy,
         options = list(dom = 't', paging = FALSE, ordering = FALSE),
         rownames = FALSE,
         colnames = c("Metric Name", "Response to Disturbance", "Metric Value", "Metric Score", "Adjusted Score")
-      ) |>
-        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) |>
+      ) %>%
+        DT::formatStyle("metric_name", target = "row", fontWeight = DT::styleEqual("IBI Score (0-50)", "bold")) %>%
         DT::formatRound(c("metric_value", "metric_score", "adj_score"), digits = 2)
     })
     
