@@ -61,8 +61,8 @@ devtools::test()
 
 ## Support & contributions
 
-- **Questions and issues:** Please open an issue at <https://github.com/aomop/MacroIBI/issues>. We aim to respond within **5 business days**.
-- **Contributions:** Fork the repo, open a pull request with a concise description of the change, and include any relevant testing notes. Bug fixes and documentation improvements are welcome.
+- **Questions and issues:** Please open an issue at <https://github.com/aomop/MacroIBI/issues>.
+- **Contributions:** Fork the repo, open a pull request with a concise description of the change, and include any relevant testing notes. Find more details in the [contributing guidelines](https://github.com/aomop/MacroIBI/blob/main/CONTRIBUTING.md).
 
 ## License
 
