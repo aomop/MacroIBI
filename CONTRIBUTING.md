@@ -103,8 +103,9 @@ devtools::document()
 ## Code of Conduct
 
 - Be respectful and constructive  
-- Assume good intent  
-- Collaborate openly  
+- Collaborate openly
+
+Read the full Code of Conduct (here)[https://github.com/aomop/MacroIBI/blob/main/CODE_OF_CONDUCT.md].
 
 ---
 
