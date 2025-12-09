@@ -2,7 +2,7 @@
 
 A Shiny application for calculating a macroinvertebrate-based Index of Biotic Integrity (IBI) for wetlands, packaged for easy installation.
 
-**Please see the [FIELD AND APP GUIDE](inst/docs/FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
+**Please see the [FIELD AND APP GUIDE](docs/FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
 
 A demo version of the app is available to preview at [https://smsc2.shinyapps.io/MacroIBI/](https://smsc2.shinyapps.io/MacroIBI/).
 Install the package locally to access all features.
