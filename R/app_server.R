@@ -259,8 +259,6 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
       }
     })
     
-    output$grand_total_output <- renderText({ grand_total_observations() })
-    
     lapply(seq_along(group_list), function(i) {
       module_id <- paste0("section_", i)
       group_results <- server_taxon_section(
@@ -284,6 +282,24 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
       grand_total_observations = grand_total_observations,
       group_defs = group_defs
     )
+    
+    quality_class <- shiny::reactive({
+      p <- summarize_metric_scores(metric_scores$data) %>%
+        dplyr::pull(adj_score)
+      
+      t <- p[length(p)]
+      
+      dplyr::case_when(
+        t >= 38 ~ "4 (Excellent)",
+        t >= 28 ~ "3 (Good)",
+        t >= 20 ~ "2 (Fair)",
+        t >= 10 ~ "1 (Poor)",
+        TRUE   ~ NA
+      )
+    })
+    
+    output$ram_quality_class <- renderText({ quality_class() })
+    output$grand_total_output <- renderText({ grand_total_observations() })
     
     download_module_server(
       "download_module",

@@ -69,7 +69,15 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode =
     bslib::nav_panel(
       title = "Results",
       value = "results_tab",
-      h4("Total Individuals: ", textOutput("grand_total_output")),
+      fluidRow(
+        column(6, 
+               h4("Total Individuals: ", textOutput("grand_total_output"))
+               ),
+        column(6, 
+               h4("RAM Quality Class: ", textOutput("ram_quality_class")),
+               align = 'right'
+        ),
+      ),
       div(
         ui_metric_scores("metrics"),
         div(
