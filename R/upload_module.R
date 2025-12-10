@@ -32,23 +32,15 @@ upload_module_server <- function(
     shiny::observeEvent(input$reload_data, {
       shiny::req(input$reload_data)
       
-      # Read the uploaded CSV
       data <- readr::read_csv(input$reload_data$datapath)
       
       shared_reactives$server_update <- TRUE
       
-      # Update Title and Date from the uploaded data, if present
-      if ("Title" %in% colnames(data)) {
-        shared_reactives$user_title <- data$Title[1]
-      }
+      split <- split_uploaded_results(data)
       
-      if ("Date" %in% colnames(data)) {
-        shared_reactives$user_date <- data$Date[1]
-      }
-      
-      # Store remaining data in shared_reactives, excluding meta columns
-      other_data <- data[, !(colnames(data) %in% c("Title", "Date", "schema_version")), drop = FALSE]
-      shared_reactives$uploaded_data <- other_data
+      shared_reactives$user_title   <- split$meta$title
+      shared_reactives$user_date    <- split$meta$date
+      shared_reactives$uploaded_data <- split$taxa
     })
     
     ## --- Process Uploaded Data ----------------------------------------------
@@ -56,87 +48,44 @@ upload_module_server <- function(
       shiny::req(shared_reactives$uploaded_data)
       data <- shared_reactives$uploaded_data
       
-      # New schema: group_id / group_name / section_id
-      if ("group_id" %in% colnames(data) && "section_id" %in% colnames(data)) {
-        
-        split_by_group <- split(data, data$group_id)
-        
-        for (gid in names(split_by_group)) {
-          group_data <- split_by_group[[gid]]
-          
-          meta <- group_defs[group_defs$group_id == gid, , drop = FALSE]
-          if (nrow(meta) == 0L) {
-            next
-          }
-          
-          section_id <- meta$section_id[1]
-          
-          if (!is.null(selected_genera[[section_id]])) {
-            shiny::isolate({
-              current_group <- selected_genera[[section_id]]()
-              
-              if (is.null(current_group)) {
-                current_group <- list(data = list())
-              }
-              
-              current_group$data <- lapply(seq_len(nrow(group_data)), function(i) {
-                list(
-                  id        = i,
-                  taxon     = group_data$Taxon[i],
-                  dipnet1   = group_data$Dipnet1[i],
-                  dipnet2   = group_data$Dipnet2[i],
-                  tsn       = group_data$tsn[i],
-                  parentTsn = group_data$parentTsn[i]
-                )
-              })
-              
-              selected_genera[[section_id]] <- shiny::reactiveVal(current_group)
-            })
-          }
+      # 1) Turn raw data frame into per-section row-lists
+      taxa_by_section <- tryCatch(
+        normalize_uploaded_taxa(data, group_defs),
+        error = function(e) {
+          shiny::showNotification(
+            "Uploaded file does not contain expected grouping columns.",
+            type = "error",
+            closeButton = TRUE
+          )
+          return(NULL)
         }
-        
-      } else if ("Group" %in% colnames(data)) {
-        # Legacy schema: Group column contains section IDs (e.g., "section_1")
-        split_data <- split(data, data$Group)
-        
-        for (group_name in names(split_data)) {
-          if (startsWith(group_name, "section_")) {
-            group_data <- split_data[[group_name]]
-            
-            if (!is.null(selected_genera[[group_name]])) {
-              shiny::isolate({
-                current_group <- selected_genera[[group_name]]()
-                
-                if (is.null(current_group)) {
-                  current_group <- list(data = list())
-                }
-                
-                current_group$data <- lapply(seq_len(nrow(group_data)), function(i) {
-                  list(
-                    id        = i,
-                    taxon     = group_data$Taxon[i],
-                    dipnet1   = group_data$Dipnet1[i],
-                    dipnet2   = group_data$Dipnet2[i],
-                    tsn       = group_data$tsn[i],
-                    parentTsn = group_data$parentTsn[i]
-                  )
-                })
-                
-                selected_genera[[group_name]] <- shiny::reactiveVal(current_group)
-              })
-            }
-          }
-        }
-        
-      } else {
-        shiny::showNotification(
-          "Uploaded file does not contain expected grouping columns.",
-          type = "error",
-          closeButton = TRUE
-        )
+      )
+      
+      if (is.null(taxa_by_section)) {
+        return()
       }
       
-      # Notify the user about the successful update
+      # 2) For each section_id in the normalized list, update selected_genera
+      for (section_id in names(taxa_by_section)) {
+        if (!is.null(selected_genera[[section_id]])) {
+          shiny::isolate({
+            section_obj <- selected_genera[[section_id]]
+            
+            # Handle reactive() wrapper if present, consistent with the rest of the app
+            if (is.function(section_obj)) {
+              section_obj <- section_obj()
+            }
+            
+            if (is.null(section_obj)) {
+              section_obj <- shiny::reactiveValues(data = list())
+            }
+            
+            # Overwrite only the $data field with the uploaded rows
+            section_obj$data <- taxa_by_section[[section_id]]
+          })
+        }
+      }
+      
       shiny::showNotification(
         "Successfully updated with user uploaded data!",
         closeButton = TRUE,

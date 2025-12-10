@@ -64,16 +64,8 @@ results_download_server <- function(
     }
     
     summarized_data <- shiny::reactive(
-      rbind(
-      metric_scores$data,
-      data.frame(
-        metric_name = "IBI Score (0-50)",
-        response = "Decrease",
-        min = NA, fifth = NA, ninety_fifth = NA, max = NA,
-        metric_value = NA, metric_score = NA,
-        adj_score = sum(metric_scores$data$adj_score, na.rm = TRUE)
-      )
-    ))
+      summarize_metric_scores(metric_scores$data)
+    )
     
     shared_data <- shiny::reactiveVal()
 
@@ -89,20 +81,11 @@ results_download_server <- function(
     )
     
     prepared_data <- shiny::reactive({
-      # Get the summarized data (current location's metrics)
-      df1 <- summarized_data()  
-      
-      df2 <- combined_metrics
-  
-      # Determine common levels across both datasets
-      common_levels <- unique(c(df1$metric_name, df2$metric_name))
-      
-      # Set the factor levels for metric_name in both data frames
-      df1$metric_name <- factor(df1$metric_name, levels = common_levels)
-      df2$metric_name <- factor(df2$metric_name, levels = common_levels)
-      
-      # Return a list containing both
-      list(summarized_data = df1, combined_metrics = df2, raw_data = shared_data())
+      prepare_results_data(
+        summarized_df = summarized_data(),
+        combined_df   = combined_metrics,
+        raw_data      = shared_data()
+      )
     })
     
     table <- shiny::reactive(
@@ -272,5 +255,3 @@ Sampled on<strong> ",
     )
   })
 }
-
-

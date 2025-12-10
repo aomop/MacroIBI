@@ -1,5 +1,5 @@
-test_that("run_macroibi returns a shiny app", {
-  app <- run_macroibi()
+test_that("run_macroibi returns a shiny app (demo mode)", {
+  app <- run_macroibi(demo_mode = TRUE)
   expect_s3_class(app, "shiny.appobj")
 })
 

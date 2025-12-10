@@ -21,7 +21,7 @@ geometry: margin=1in
 params:
   user_title: "Default Title"
   user_date: "Default Date"
-  report_date: !r macroibi:::add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
+  report_date: !r add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
   data: NA
   comparison_metrics: NA
   table_img: NA
@@ -38,7 +38,7 @@ library(ggplot2)
 ```
 
 # **IBI Overview**
-This report provides a summary of the biotic integrity of `r params$user_title`, based on macroinvertebrate organisms collected on `r macroibi:::add_ordinal_suffix(params$user_date, style = "%m/%d/%Y")`. The Index of Biotic Integrity (IBI) method seeks to quantify
+This report provides a summary of the biotic integrity of `r params$user_title`, based on macroinvertebrate organisms collected on `r add_ordinal_suffix(params$user_date, style = "%m/%d/%Y")`. The Index of Biotic Integrity (IBI) method seeks to quantify
 water quality and ecological impairment based on biotic factors, such as fish or macroinvertebrates. This
 specific IBI protocol was developed for the Shakopee Mdewakanton Sioux Community, and as such, should
 not be compared to data collected under different protocols.
@@ -107,13 +107,18 @@ total_score <- params$data$adj_score[params$data$metric_name == "IBI Score (0-50
 ```{r total score interpretation, echo = FALSE, results = 'asis'}
 if(!is.null(total_score) && !is.na(total_score)) {
   if(total_score >= 38) {
-    cat("A total IBI score of ", round(total_score, 2), " indicates that the wetland is in excellent condition with minimal impairment. The high score reflects a robust and diverse macroinvertebrate community, suggesting high water quality and ecological integrity.\n\n")
-  } else if(total_score >= 25) {
-    cat("With a total IBI score of ", round(total_score, 2), ", the wetland shows moderate impairment. While the macroinvertebrate community is still relatively diverse, there are signs of ecological stress that could be related to habitat degradation or pollution.\n\n")
-  } else if(total_score >= 10) {
-    cat("A total IBI score of ", round(total_score, 2), " suggests significant impairment. This low score highlights notable ecological degradation and suggests that the wetland is considerably impaired, potentially from pollutants or habitat disruption.\n\n")
-  } else if(total_score < 10) {
-    cat("Invalid IBI Score; score too low\n\n")
+    cat("A total IBI score of ", round(total_score, 2), " suggests minimal impariment; this wetland is in excellent condition. The high score reflects a robust and diverse macroinvertebrate community,
+        suggesting high water quality and ecological integrity.\n\n")
+    } else if(total_score >= 28) {
+      cat("A total IBI score of ", round(total_score, 2), " suggests minor impairment; this wetland is in good condition. The macroinvertebrate community is relatively diverse, though there are some
+          signs of ecological stress that could be related to habitat degradation or pollution.\n\n")
+    } else if(total_score >= 20) {
+      cat("A total IBI score of ", round(total_score, 2), " indicates some impairment; this wetland is in moderate condition. The macroinvertebrate community has lost some diversity and sensitivity,
+          but clearer signs of ecological stress are likely not present.\n\n")
+    } else if(total_score >= 10) {
+      cat("A total IBI score of ", round(total_score, 2), " suggests significant impairment; this wetland is in poor condition. This low score highlights notable ecological degradation and suggests              that the wetland is considerably impaired, potentially from pollutants or habitat disruption.\n\n")
+    } else if(total_score < 10) {
+      cat("Invalid IBI Score; score too low\n\n")
   }
 } else {
   "IBI score data is not available at this time.\n\n"

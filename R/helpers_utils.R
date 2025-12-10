@@ -77,71 +77,6 @@ safe_reactive_value <- function(reactive_val, default = 0) {
   })
 }
 
-#' Calculate a metric score
-#'
-#' @param values Metric values.
-#' @param min_values Minimum values for scaling.
-#' @param max_values Maximum values for scaling.
-#' @param scale_factor Scaling factor.
-#' @param inverse Whether to invert the scale.
-#' @return Numeric scores.
-#' @keywords internal
-calculate_metric_score <- function(values, min_values, max_values, scale_factor = 10, inverse = FALSE) {
-  ifelse(
-    !is.na(values) & !is.na(min_values) & !is.na(max_values) & (max_values - min_values != 0),
-    if (inverse) {
-      scale_factor - ((values - min_values) / (max_values - min_values) * scale_factor)
-    } else {
-      ((values - min_values) / (max_values - min_values) * scale_factor)
-    },
-    NA
-  )
-}
-
-#' Calculate the Corixids ratio metric
-#'
-#' @param selected_genera Reactive values of selected taxa.
-#' @param group_totals Reactive values of group totals.
-#' @param taxonomy Taxonomy data frame.
-#' @return Numeric ratio.
-#' @keywords internal
-calculate_corixids_ratio <- function(selected_genera, group_totals, taxonomy) {
-  tryCatch({
-    count_beetles <- safe_reactive_value(group_totals[["section_2"]])
-    count_bugs <- safe_reactive_value(group_totals[["section_4"]])
-
-    corixids_taxa <- dplyr::pull(dplyr::filter(taxonomy, .data$Family == "Corixidae"), .data$taxon)
-
-    selected_data <- selected_genera[["section_4"]]()
-    if (is.list(selected_data$data) & length(selected_data$data) == 0) {
-      return(0)
-    }
-
-    count_corixids <- sum(sapply(selected_data$data, function(row) {
-      tryCatch({
-        if (row[["taxon"]] %in% corixids_taxa) {
-          dipnet1 <- row[["dipnet1"]]
-          dipnet2 <- row[["dipnet2"]]
-          sum(dipnet1, dipnet2, na.rm = TRUE)
-        } else {
-          0
-        }
-      }, error = function(e) {
-        0
-      })
-    }), na.rm = TRUE)
-
-    total_beetles_bugs <- count_beetles + count_bugs
-    if (total_beetles_bugs > 0) {
-      count_corixids / total_beetles_bugs
-    } else {
-      0
-    }
-  }, error = function(e) {
-    0
-  })
-}
-
 #' Escape LaTeX characters
 #'
 #' @param x Character vector to escape.
@@ -154,3 +89,44 @@ escape_latex <- function(x) {
   x <- gsub("\\^", "\\\\textasciicircum{}", x, fixed = TRUE)
   x <- gsub("'", "\\\\textquotesingle{}", x, fixed = TRUE)
 }
+
+#' Sanitize group ID for stable use in file names/IDs
+#' @keywords internal
+sanitize_group_id <- function(x) {
+  x <- tolower(x)
+  x <- gsub("[^a-z0-9]+", "_", x)
+  x <- gsub("^_+|_+$", "", x)
+  x
+}
+
+#' Pipe operator
+#'
+#' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.
+#'
+#' @name %>%
+#' @rdname pipe
+#' @keywords internal
+#' @export
+#' @importFrom magrittr %>%
+#' @usage lhs \%>\% rhs
+#' @param lhs A value or the magrittr placeholder.
+#' @param rhs A function call using the magrittr semantics.
+#' @return The result of calling `rhs(lhs)`.
+NULL
+
+#' Internal: packages used in report templates
+#'
+#' @name report_deps
+#' 
+#' @description
+#'  These packages are used inside the R Markdown templates in inst/.
+#' This block exists so R CMD check sees that the Imports are actually used.
+#'
+#' @keywords internal
+#' @import ggplot2
+#' @import grid
+#' @import gridExtra
+#' @import kableExtra
+#' @import knitr
+#' @import tidyr
+NULL

@@ -13,22 +13,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     toggle_state <- reactiveVal(TRUE)
     shared_reactives <- reactiveValues(user_title = NULL, user_date = NULL, server_update = TRUE)
     
-    # --------------------------------------------------------------------
-    # Stable mapping from section IDs to group IDs/names
-    # --------------------------------------------------------------------
-    sanitize_group_id <- function(x) {
-      x <- tolower(x)
-      x <- gsub("[^a-z0-9]+", "_", x)
-      x <- gsub("^_+|_+$", "", x)
-      x
-    }
-    
-    group_defs <- data.frame(
-      section_id = paste0("section_", seq_along(group_list)),
-      group_id   = sanitize_group_id(group_list),
-      group_name = group_list,
-      stringsAsFactors = FALSE
-    )
+    group_defs <- build_group_defs(group_list)
     
     total_unique_taxa <- shiny::reactive({
       counts <- shiny::reactiveValuesToList(unique_taxa_counts)
@@ -37,8 +22,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     
     grand_total_observations <- shiny::reactive({
       counts <- shiny::reactiveValuesToList(group_totals)
-      if (length(counts) < length(group_list)) return(0)
-      sum(purrr::map_dbl(counts, reactive_handler), na.rm = TRUE)
+      sum_group_totals(counts, expected_groups = length(group_list))
     })
     
     modal_shown <- reactiveVal(FALSE)
@@ -189,53 +173,8 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     })
     
     observe({
-      # Whether to include out-of-region taxa
       show_out <- isTRUE(input$show_out_of_region)
-      
-      choices_df <- taxonomy %>%
-        dplyr::filter(
-          !is.na(.data$taxon),
-          .data$taxon != "",
-          !is.na(.data$Group)
-        ) %>%
-        # Normalize in_region (which is currently character) to a logical
-        dplyr::mutate(
-          # Treat strings like "TRUE"/"True"/"T"/"1" as TRUE,
-          # "FALSE"/"False"/"F"/"0" as FALSE, everything else as NA
-          in_region_flag = dplyr::case_when(
-            .data$in_region %in% c(TRUE, "TRUE", "True", "T", "1")   ~ TRUE,
-            .data$in_region %in% c(FALSE, "FALSE", "False", "F", "0") ~ FALSE,
-            TRUE ~ NA
-          ),
-          # For NA or weird values, default to TRUE (unknown → allowed)
-          in_region_flag = dplyr::coalesce(.data$in_region_flag, TRUE)
-        )
-      
-      # (a) Hide out-of-region taxa by default
-      if (!show_out) {
-        choices_df <- choices_df %>%
-          dplyr::filter(.data$in_region_flag)
-      }
-      
-      # (b) Add red caution flag for out-of-region taxa when they are shown
-      choices_df <- choices_df %>%
-        dplyr::mutate(
-          # Red warning icon for out-of-region taxa
-          caution_flag = dplyr::if_else(
-            !.data$in_region_flag,
-            "<span style='color:#d9534f; font-weight:bold; margin-right:4px;' title='Outside region'>&#9888;</span>",
-            ""
-          ),
-          name = paste0(
-            .data$caution_flag,
-            "<strong>", .data$taxon, "</strong> ",
-            "<span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>",
-            .data$level,
-            "</span>"
-          ),
-          value = .data$taxon
-        ) %>%
-        dplyr::select(.data$value, .data$name)
+      choices_df <- build_taxon_choices(taxonomy, show_out_of_region = show_out)
       
       shiny::updateSelectizeInput(
         session, "main_taxon_select",
@@ -244,7 +183,6 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
         options = list(
           render = I('{
         option: function(item, escape) {
-          // item.label is the HTML label we constructed in R
           return "<div>" + item.label + "</div>";
         },
         item: function(item, escape) {
@@ -256,24 +194,15 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     })
     
     shiny::observeEvent(input$main_taxon_select, {
-      selected_taxon_data <- input$main_taxon_select
+      res <- resolve_selected_taxon(
+        taxonomy          = taxonomy,
+        group_list        = group_list,
+        selected_taxon_data = input$main_taxon_select
+      )
       
-      taxon_group <- taxonomy %>%
-        dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
-        dplyr::pull(.data$Group) %>%
-        unique()
-      
-      taxon_info <- taxonomy %>%
-        dplyr::filter(.data$taxon == .env$selected_taxon_data) %>%
-        dplyr::select(dplyr::all_of(c("taxon", "tsn", "parentTsn"))) %>%
-        unique()
-      
-      if (length(taxon_group) == 1) {
-        section_id <- paste0("section_", which(group_list == taxon_group))
-        selected_taxon(list(taxon = selected_taxon_data,
-                            section_id = section_id,
-                            tsn = taxon_info$tsn,
-                            parentTsn = taxon_info$parentTsn))
+      # Only update if we got a valid result
+      if (!is.null(res$taxon)) {
+        selected_taxon(res)
       }
     })
     

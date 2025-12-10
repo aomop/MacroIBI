@@ -9,7 +9,9 @@ taxonomic_tree_server(id, selected_genera, taxonomy_df)
 \arguments{
 \item{id}{Module identifier.}
 
-\item{selected_genera}{Reactive values of selected genera.}
+\item{selected_genera}{Reactive for the current group's selected genera.
+This should be a reactive that returns an object with a \verb{$data} field,
+where \verb{$data} is a list of taxon rows (each row a list with \code{tsn}, etc.).}
 
 \item{taxonomy_df}{Reactive taxonomy data frame.}
 }

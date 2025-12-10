@@ -141,38 +141,7 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     # Calculate unique taxa, considering hierarchical relationships
     calculate_unique_taxa <- shiny::reactive({
       selected_taxa <- purrr::map_chr(selected_genera$data, "taxon")
-      if (length(selected_taxa) == 0) {
-        return(0)
-      }
-      
-      selected_df <- taxonomy_data[taxonomy_data$taxon %in% selected_taxa, ]
-      selected_df$unique <- TRUE  # Assume all taxa are unique initially
-      
-      # Loop through taxa and mark parents of any other taxa as not unique
-      for (i in seq_len(nrow(selected_df))) {
-        current_row <- selected_df[i, ]
-        
-        for (j in seq_len(nrow(selected_df))) {
-          if (i == j) next
-          
-          other_row <- selected_df[j, ]
-          
-          # Check if current_row is a parent of other_row
-          if ((!is.na(current_row$Order) && current_row$Order == other_row$Order) &&
-              (is.na(current_row$Suborder) || (!is.na(other_row$Suborder) && current_row$Suborder == other_row$Suborder)) &&
-              (is.na(current_row$Superfamily) || (!is.na(other_row$Superfamily) && current_row$Superfamily == other_row$Superfamily)) &&
-              (is.na(current_row$Family) || (!is.na(other_row$Family) && current_row$Family == other_row$Family)) &&
-              (is.na(current_row$Genus) || (!is.na(other_row$Genus) && current_row$Genus == other_row$Genus)) &&
-              (is.na(current_row$Species) || (!is.na(other_row$Species) && current_row$Species == other_row$Species))) {
-            
-            # Mark parent row as not unique if it is a parent of other_row
-            selected_df$unique[i] <- FALSE
-            break
-          }
-        }
-      }
-      
-      sum(selected_df$unique, na.rm = TRUE)
+      compute_unique_taxa(selected_taxa, taxonomy_data)
     })
     
     ## --- Render Summary Outputs ---

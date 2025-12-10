@@ -59,20 +59,7 @@ autosave_module_server <- function(
     # Summarized metrics (used for metric autosaves in non-demo mode)
     # ------------------------------------------------------------------------
     summarized_data <- shiny::reactive(
-      rbind(
-        metric_scores$data,
-        data.frame(
-          metric_name  = "IBI Score (0-50)",
-          response     = "Decrease",
-          min          = NA, 
-          fifth        = NA, 
-          ninety_fifth = NA, 
-          max          = NA,
-          metric_value = NA, 
-          metric_score = NA,
-          adj_score    = sum(metric_scores$data$adj_score, na.rm = TRUE)
-        )
-      )
+      build_summarized_metrics(metric_scores$data)
     )
     
     # ------------------------------------------------------------------------
@@ -134,52 +121,26 @@ autosave_module_server <- function(
         )
         
         # Collect data from all group sections
-        section_ids <- names(shiny::reactiveValuesToList(selected_genera))
+        # Take a snapshot of selected_genera as a plain list, then strip off reactives
+        section_snapshot <- lapply(
+          shiny::reactiveValuesToList(selected_genera),
+          function(section_obj) {
+            # Each entry is a reactiveVal(list(data = ...)), so dereference it here
+            if (is.function(section_obj)) {
+              # If the snapshot still contains wrapped reactiveVals, call them
+              section_obj()
+            } else {
+              section_obj
+            }
+          }
+        )
         
-        all_data <- lapply(section_ids, function(section_id) {
-          if (!startsWith(section_id, "section_")) {
-            return(NULL)
-          }
-          
-          meta <- group_defs[group_defs$section_id == section_id, , drop = FALSE]
-          if (nrow(meta) == 0L) {
-            return(NULL)
-          }
-          
-          group_id   <- meta$group_id[1]
-          group_name <- meta$group_name[1]
-          
-          group_reactive <- selected_genera[[section_id]]
-          group_data     <- shiny::isolate(group_reactive()$data)
-          
-          if (is.null(group_data) || length(group_data) == 0L) {
-            return(NULL)
-          }
-          
-          do.call(
-            rbind,
-            lapply(group_data, function(row) {
-              data.frame(
-                group_id   = group_id,
-                group_name = group_name,
-                section_id = section_id,
-                Taxon      = row$taxon,
-                Dipnet1    = row$dipnet1,
-                Dipnet2    = row$dipnet2,
-                tsn        = row$tsn,
-                parentTsn  = row$parentTsn,
-                stringsAsFactors = FALSE
-              )
-            })
-          )
-        })
+        combined_data <- build_autosave_df(section_snapshot, group_defs)
         
-        if (length(all_data) == 0L || all(vapply(all_data, is.null, logical(1)))) {
+        if (is.null(combined_data) || nrow(combined_data) == 0L) {
           update_autosave_status("No data to auto-save.")
           return()
         }
-        
-        combined_data <- do.call(rbind, all_data)
         
         if (!is.null(combined_data) && nrow(combined_data) > 0L) {
           if (!is.null(shared_reactives$user_title) && nzchar(shared_reactives$user_title)) {
@@ -297,86 +258,49 @@ autosave_module_server <- function(
         # Drop non-taxa columns before splitting
         other_data <- data[, !(colnames(data) %in% c("Title", "Date", "schema_version")), drop = FALSE]
         
-        # --------------------------------------------------------------------
-        # New schema: group_id / section_id
-        # --------------------------------------------------------------------
-        if ("group_id" %in% colnames(other_data) && "section_id" %in% colnames(other_data)) {
-          
-          split_by_group <- split(other_data, other_data$group_id)
-          
-          for (gid in names(split_by_group)) {
-            group_data <- split_by_group[[gid]]
-            
-            meta <- group_defs[group_defs$group_id == gid, , drop = FALSE]
-            if (nrow(meta) == 0L) {
-              next
-            }
-            
-            section_id <- meta$section_id[1]
-            
-            if (!is.null(selected_genera[[section_id]])) {
-              shiny::isolate({
-                current_group <- selected_genera[[section_id]]()
-                
-                if (is.null(current_group)) {
-                  current_group <- list(data = list())
-                }
-                
-                current_group$data <- lapply(seq_len(nrow(group_data)), function(i) {
-                  list(
-                    id        = i,
-                    taxon     = group_data$Taxon[i],
-                    dipnet1   = group_data$Dipnet1[i],
-                    dipnet2   = group_data$Dipnet2[i],
-                    tsn       = group_data$tsn[i],
-                    parentTsn = group_data$parentTsn[i]
-                  )
-                })
-                
-                selected_genera[[section_id]] <- shiny::reactiveVal(current_group)
-              })
-            }
+        # Use pure helper to rebuild per-section data structure
+        section_data <- tryCatch(
+          build_sections_from_autosave(other_data, group_defs),
+          error = function(e) {
+            shiny::showNotification(
+              paste("Auto-save file is missing expected columns:", e$message),
+              type = "error",
+              closeButton = TRUE
+            )
+            NULL
           }
-          
-          # --------------------------------------------------------------------
-          # Legacy autosave schema: Group column contains section IDs
-          # --------------------------------------------------------------------
-        } else if ("Group" %in% colnames(other_data)) {
-          split_data <- split(other_data, other_data$Group)
-          
-          for (group_name in names(split_data)) {
-            if (startsWith(group_name, "section_")) {
-              group_data <- split_data[[group_name]]
+        )
+        
+        if (is.null(section_data)) {
+          shiny::removeModal()
+          return(invisible(NULL))
+        }
+        
+        message("Loaded sections from autosave: ", paste(names(section_data), collapse = ", "))
+        
+        # Push loaded data back into selected_genera
+        for (section_id in names(section_data)) {
+          # Only update sections that actually exist in selected_genera
+          if (!is.null(selected_genera[[section_id]])) {
+            shiny::isolate({
+              # This is a reactive() that returns a reactiveValues object
+              current_group <- selected_genera[[section_id]]()
               
-              if (!is.null(selected_genera[[group_name]])) {
-                shiny::isolate({
-                  current_group <- selected_genera[[group_name]]()
-                  if (is.null(current_group)) {
-                    current_group <- list(data = list())
-                  }
-                  
-                  current_group$data <- lapply(seq_len(nrow(group_data)), function(i) {
-                    list(
-                      id        = i,
-                      taxon     = group_data$Taxon[i],
-                      dipnet1   = group_data$Dipnet1[i],
-                      dipnet2   = group_data$Dipnet2[i],
-                      tsn       = group_data$tsn[i],
-                      parentTsn = group_data$parentTsn[i]
-                    )
-                  })
-                  
-                  selected_genera[[group_name]] <- shiny::reactiveVal(current_group)
-                })
+              # Sanity check: should be a reactivevalues
+              if (!inherits(current_group, "reactivevalues")) {
+                message("Warning: selected_genera[[", section_id, "]]() did not return a reactivevalues object.")
+              } else {
+                # Overwrite the data slot with the loaded rows
+                current_group$data <- section_data[[section_id]]$data
+                
+                # IMPORTANT:
+                # - We do NOT call selected_genera[[section_id]](current_group)
+                #   because it's a reactive(), not a reactiveVal.
+                # - We do NOT reassign selected_genera[[section_id]] <- ...
+                #   because that would break the existing reactive wiring.
               }
-            }
+            })
           }
-        } else {
-          shiny::showNotification(
-            "Auto-save file is missing expected grouping columns.",
-            type = "error",
-            closeButton = TRUE
-          )
         }
         
         shiny::removeModal()

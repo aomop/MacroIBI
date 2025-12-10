@@ -3,8 +3,6 @@
 Thank you for your interest in contributing to MacroIBI!  
 This project is primarily developed and maintained internally, but community contributions are welcome where appropriate.
 
-These guidelines outline how to report issues, request features, and submit code changes in a consistent and maintainable way.
-
 ## Before Contributing
 Please read the [Code of Conduct](https://github.com/aomop/MacroIBI/blob/main/CODE_OF_CONDUCT.md).
 
@@ -49,6 +47,7 @@ If you would like to submit a PR:
 - Follow the existing style in the codebase.
 - Use clear function names, descriptive comments, and consistent formatting.
 - Keep changes focused.
+- All code must clear `devtools::check()` AND `devtools::test()` before being considered for implementation.
 
 #### **For R Code**
 - Use `devtools::load_all()` for local testing.
@@ -96,6 +95,47 @@ Rebuild docs with:
 
 ```r
 devtools::document()
+```
+
+## Note: Working with `selected_genera`
+The MacroIBI app stores all user-entered taxa and dipnet counts inside a nested reactive structure called `selected_genera`. Because this object is central to the IBI workflow, and because it is a reactive list of reactive lists, it's important to understand how to work with it safely.
+
+selected_genera is a reactiveValues container.
+Each entry corresponds to a taxon section in the UI (e.g., Beetles, Dragonflies, Gastropods, etc.).
+
+Each section entry is itself either:
+- a reactive() returning a reactiveValues object, or
+- a reactiveValues object directly (depending on how that section is initialized).
+
+Inside each section object, the primary field of interest is `$data`; a list of row-lists representing user input for that taxonomic group.
+
+You can think of the structure like this:
+
+```scss
+selected_genera  # reactiveValues
+
+|- "section_1" -> reactive() -> reactiveValues:
+|      $data = list(
+|        list(taxon="...", dipnet1=..., dipnet2=..., tsn=...,parentTsn=...),
+|        list(...),
+|        ...
+|      )
+|- "section_2" -> reactive() -> reactiveValues:
+|      $data = list(...)
+|- etc. (one section per taxon group)
+```
+Since each entry may be a function or a reactiveValues object, you should always check the type and handle both cases:
+
+```r
+section_obj <- selected_genera[[section_id]]
+
+# If it's a reactive() / reactiveVal(), call it
+if (is.function(section_obj)) {
+  section_obj <- section_obj()
+}
+
+# Now section_obj is the underlying reactiveValues
+rows <- section_obj$data
 ```
 
 ---
