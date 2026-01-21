@@ -2,39 +2,47 @@
 
 A Shiny application for calculating a macroinvertebrate-based Index of Biotic Integrity (IBI) for wetlands, packaged for easy installation.
 
-**Please see the [FIELD AND APP GUIDE](FIELD_AND_APP_GUIDE_v2.md) for questions about sampling protocol or how to use the app**
+**New to R?** See the [FIELD AND APP GUIDE](FIELD_AND_APP_GUIDE_v2.md) for step-by-step installation instructions with screenshots and troubleshooting tips.
 
-A demo version of the app is available to preview at [https://smsc2.shinyapps.io/MacroIBI/](https://smsc2.shinyapps.io/MacroIBI/).
-Install the package locally to access all features.
+**Try before installing:** A demo version is available at [https://smsc2.shinyapps.io/MacroIBI/](https://smsc2.shinyapps.io/MacroIBI/) (some features disabled). Install locally for full functionality.
 
-## Prerequisites and quickstart
+---
 
-- **Supported R:** 4.2.0 or newer
-- **Key packages installed automatically:** shiny, bslib, DT, webshot2, dplyr, readr, rmarkdown, ggplot2, and other listed Imports in [`DESCRIPTION`](DESCRIPTION)
-- **Quick start:**
-  ```r
-  if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-  remotes::install_github("aomop/MacroIBI")   # install
-  library(macroibi)
-  run_macroibi()                              # launch the app
-  tools::R_user_dir("macroibi", "data")      # view autosave folder used by the app
-  ```
+## Quick Start
 
-## Installation
-Ensure R and RStudio are installed, then run:
+### Requirements
+- **R 4.2.0 or newer** — Download from <https://cran.r-project.org>
+- **RStudio** (recommended) — Download from <https://posit.co/download/rstudio-desktop/>
+- **Rtools** (Windows only) — Download from <https://cran.r-project.org/bin/windows/Rtools/>
+
+### Install MacroIBI
+Open RStudio and type these commands in the Console (press Enter after each):
+
 ```r
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+install.packages("remotes")
 remotes::install_github("aomop/MacroIBI")
 ```
 
-## Running the App
-From the console, run:
+### Launch the App
 ```r
 library(macroibi)
 run_macroibi()
 ```
 
-The app bundles its static assets and taxonomy reference data inside the package. Autosave files are written to a per-user data directory obtained via `tools::R_user_dir("macroibi", "data")`.
+A browser window will open with the Wetland IBI Dashboard.
+
+### Where Are My Files Saved?
+Autosaves are stored in your user data folder:
+- **Windows:** `C:\Users\[YourName]\AppData\Local\R\macroibi\data\`
+- **Mac:** `~/Library/Application Support/macroibi/data/`
+
+---
+
+## For Experienced R Users
+
+All dependencies install automatically. The package exports two functions:
+- `run_macroibi()` — Launch the app
+- `run_macroibi(demo_mode = TRUE)` — Launch with bundled demo data (no file writes)
 
 ## Key Features
 
