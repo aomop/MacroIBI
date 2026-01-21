@@ -142,38 +142,225 @@ Record the zone(s) used.
 
 ---
 
-## 6. Installing the MacroIBI R Package
+## 6. Installing the MacroIBI App
 
-1. Install **R**: <https://cran.r-project.org>  
-2. Install **RStudio** (highly recommended): <https://posit.co/download/rstudio-desktop/>  
-3. Install the MacroIBI package via `remotes`
+This section walks you through installing everything you need to run MacroIBI. **No prior experience with R or programming is required.** Follow each step in order.
 
-### Install the App
+### What You're Installing
 
-- In R:
+You need two free programs:
+
+| Program | What It Does |
+|---------|--------------|
+| **R** | The engine that powers the app. You won't interact with it directly. |
+| **RStudio** | The program you'll actually use. It provides a user-friendly interface for running R commands. |
+
+Think of R as the engine and RStudio as the dashboard of a car — you need both, but you only interact with the dashboard.
+
+---
+
+### Step 1: Install R
+
+1. Go to **<https://cran.r-project.org>**
+2. Click the download link for your operating system:
+   - **Windows:** Click "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
+   - **Mac:** Click "Download R for macOS" → Choose the version for your Mac (Apple Silicon or Intel)
+3. Open the downloaded file and run the installer
+4. **Accept all default options** — just keep clicking "Next" or "Continue"
+
+![CRAN download page showing where to click](images/01-cran-download.png)
+
+**✓ Success:** The installer finishes without errors. You don't need to open R directly.
+
+---
+
+### Step 2: Install RStudio
+
+1. Go to **<https://posit.co/download/rstudio-desktop/>**
+2. Scroll down to "All Installers" and click the download for your operating system
+3. Open the downloaded file and run the installer
+4. **Accept all default options**
+
+![RStudio download page](images/02-rstudio-download.png)
+
+**✓ Success:** RStudio appears in your applications/programs.
+
+---
+
+### Step 3: Install Rtools (Windows Only — Required)
+
+> **Mac users:** Skip to Step 4.
+
+**This step is required on Windows.** Rtools allows R to install packages that need compilation.
+
+1. Go to **<https://cran.r-project.org/bin/windows/Rtools/>**
+2. Download "Rtools44" (or the version matching your R version)
+3. Run the installer
+4. **Accept all default options**
+
+![Rtools download page](images/03-rtools-download.png)
+
+**✓ Success:** The installer completes. You won't see Rtools anywhere — it works behind the scenes.
+
+---
+
+### Step 4: Open RStudio
+
+- **Windows:** Click the Start menu and search for "RStudio", then click to open
+- **Mac:** Open Finder → Applications → RStudio
+
+When RStudio opens, you'll see a window divided into panels. Look for the **Console** — it's the panel with a `>` symbol where you can type commands. This is usually in the bottom-left area.
+
+![RStudio interface with Console highlighted](images/04-rstudio-console.png)
+
+---
+
+### Step 5: Install the MacroIBI Package
+
+Now you'll type commands in the Console. Here's how:
+
+1. **Click in the Console** (next to the `>` symbol)
+2. **Type or copy-paste** the command shown below
+3. **Press Enter** to run it
+4. **Wait** for the `>` to reappear before typing the next command
+
+#### First command — Install the "remotes" helper package:
+
 ```r
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+install.packages("remotes")
+```
+
+You'll see text scrolling as R downloads and installs the package. **This is normal.**
+
+**✓ Success:** You see a message containing `package 'remotes' successfully unpacked` and the `>` prompt returns.
+
+#### Second command — Install MacroIBI:
+
+```r
 remotes::install_github("aomop/MacroIBI")
 ```
 
-### Quick verification
+This downloads MacroIBI from the internet. It may take 1-2 minutes. You'll see lots of text — **this is normal.**
 
-- Confirm installation by launching the demo mode, which loads bundled example data:
-  ```r
-  library(macroibi)
-  run_macroibi(demo_mode = TRUE)
-  ```
-- The app will open with a message about limited features. Click ok, then find and click the **Load Autosave** button on the left.
-- If the demo files are available in the Autosave Menu, the app is working correctly. You may now close the demo app and launch the real app using `run_macroibi()`; `demo_mode` defaults to `FALSE`
+**✓ Success:** The console says `* DONE (macroibi)` and the `>` prompt returns.
 
-### Troubleshooting tips
+![Successful MacroIBI installation in RStudio](images/05-install-success.png)
 
-- **`remotes` not found:** Install it first with `install.packages("remotes")`.
-- **Compilation toolchain missing (Windows):** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) if prompted during installation.
-- **HTML/PDF export issues:** Ensure [Pandoc](https://pandoc.org/) is available (bundled with RStudio) and that `webshot2` can find a headless browser (run `webshot2::install_phantomjs()` if needed).
-- **Blocked by network/SSL errors:** Retry on a reliable connection or download/clone the repo and install from the local path with `remotes::install_local()`.
+> **If you see red text mentioning "Rtools":** Go back to Step 3 and install Rtools, then try this command again.
 
-Please contact Sam Swanson at sam.swanson@shakopeedakota.org if you are having issues.
+---
+
+### Step 6: Launch the App
+
+Type these two commands (press Enter after each):
+
+```r
+library(macroibi)
+run_macroibi()
+```
+
+**✓ Success:** A web browser window opens showing the "Wetland IBI Dashboard". You're ready to use the app!
+
+![MacroIBI app running in browser](images/06-app-running.png)
+
+---
+
+### Quick Verification (Optional)
+
+To confirm everything works, try the demo mode:
+
+```r
+library(macroibi)
+run_macroibi(demo_mode = TRUE)
+```
+
+Click "OK" on the demo message, then click **Load Autosave** on the left sidebar. If you see demo files listed, everything is working correctly.
+
+---
+
+### Closing the App
+
+When you're done:
+- **Close the browser tab**, OR
+- **In RStudio**, click the red **Stop** button (🛑) in the Console area, OR
+- **Press the Escape key** while clicked in the Console
+
+---
+
+### Don't Panic: Understanding Console Messages
+
+When running R commands, you'll see various messages in the Console. Here's what they mean:
+
+| What You See | What It Means | Action Needed |
+|--------------|---------------|---------------|
+| **Black text scrolling by** | Normal progress messages | None — just wait |
+| **Blue text** | Informational notes | None — just informational |
+| **Red text with "Warning"** | A heads-up, but not an error | Usually none — warnings often don't prevent success |
+| **Red text with "Error"** | Something went wrong | See troubleshooting below |
+
+> **Key point:** Red text doesn't always mean failure! Warnings are common and usually harmless. Only "Error" messages indicate a real problem.
+
+---
+
+### Troubleshooting
+
+#### "Error: package 'remotes' is not available"
+Run `install.packages("remotes")` first, then try again.
+
+#### Red text mentioning "Rtools" or "compilation" (Windows)
+Install Rtools from Step 3, restart RStudio, and try again.
+
+#### "Cannot open URL" or network errors
+Check your internet connection. If you're on a work network, try from home or contact IT about firewall restrictions.
+
+#### PDF/image export not working
+The PDF export feature requires additional software. In the Console, run:
+```r
+webshot2::install_phantomjs()
+```
+
+#### App won't start / "could not find function"
+Make sure you ran `library(macroibi)` first. You need to run this command every time you open RStudio.
+
+#### "Object not found" errors while using the app
+Try closing and relaunching the app. If the problem persists, clear your data and re-enter it.
+
+#### Still stuck?
+Contact Sam Swanson at sam.swanson@shakopeedakota.org — happy to help!
+
+---
+
+### Quick Reference Card
+
+Copy this and keep it handy:
+
+```
+╔═══════════════════════════════════════════════════════════╗
+║           MacroIBI QUICK REFERENCE                        ║
+╠═══════════════════════════════════════════════════════════╣
+║  TO START THE APP (every time):                           ║
+║  ─────────────────────────────────────────────────────    ║
+║  1. Open RStudio                                          ║
+║  2. In the Console, type:                                 ║
+║                                                           ║
+║       library(macroibi)                                   ║
+║       run_macroibi()                                      ║
+║                                                           ║
+║  TO CLOSE THE APP:                                        ║
+║  ─────────────────────────────────────────────────────    ║
+║  • Close the browser tab, OR                              ║
+║  • Press Escape in the RStudio Console                    ║
+║                                                           ║
+║  AUTOSAVE LOCATION:                                       ║
+║  ─────────────────────────────────────────────────────    ║
+║  Windows: C:\Users\[You]\AppData\Local\R\macroibi\data\   ║
+║  Mac: ~/Library/Application Support/macroibi/data/        ║
+║                                                           ║
+║  NEED HELP?                                               ║
+║  ─────────────────────────────────────────────────────    ║
+║  Contact: sam.swanson@shakopeedakota.org                  ║
+╚═══════════════════════════════════════════════════════════╝
+```
 
 ---
 
