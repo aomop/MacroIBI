@@ -21,7 +21,7 @@ geometry: margin=1in
 params:
   user_title: "Default Title"
   user_date: "Default Date"
-  report_date: !r add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
+  report_date: "Default Generation Date"
   data: NA
   comparison_metrics: NA
   table_img: NA

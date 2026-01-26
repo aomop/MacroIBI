@@ -210,6 +210,7 @@ Sampled on<strong> ",
             params = list(
               user_title = shared_reactives$user_title,
               user_date = shared_reactives$user_date,
+              report_date = add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d"),
               data = prepared_data()$summarized_data,
               comparison_metrics = prepared_data()$combined_metrics
             ),
@@ -241,6 +242,7 @@ Sampled on<strong> ",
             params = list(
               user_title = shared_reactives$user_title,
               user_date = shared_reactives$user_date,
+              report_date = add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d"),
               metric_data = prepared_data()$summarized_data,
               comparison_metrics = prepared_data()$combined_metrics,
               raw_data = prepared_data()$raw_data,

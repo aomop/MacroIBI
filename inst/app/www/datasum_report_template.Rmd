@@ -19,7 +19,7 @@ header-includes:
 params:
   user_title: "Default Title"
   user_date: "Default Date"
-  report_date: !r add_ordinal_suffix(Sys.Date(), style = "%Y-%m-%d")
+  report_date: "Default Generation Date"
   metric_data: NA
   comparison_metrics: NA
   raw_data: NA
