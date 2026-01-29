@@ -24,6 +24,7 @@ params:
   comparison_metrics: NA
   raw_data: NA
   taxonomy: NA
+  quality_class: NA
 ---
 
 ```{r packages, echo=FALSE, warning = FALSE, message = FALSE}
@@ -65,18 +66,29 @@ table_text <- paste0(
   params$user_title
 )
 
+# Tighter caption spacing
 asis_output(paste0(
   "\\begin{center}\n",
-  "\\textit{", escape_latex(table_text), "}\\par\n",
-  "\\end{center}\n"
+  "\\textit{", escape_latex(table_text), "}\n",
+  "\\end{center}\n",
+  "\\vspace{-0.3cm}\n"
 ))
 
 kable(metrics, booktabs = TRUE, format = "latex",
       longtable = FALSE, linesep = "") %>%
   kable_styling(
     latex_options = c("striped", "hold_position"),
-    font_size = 10
+    font_size = 9  # slightly smaller
   )
+
+# Quality class - minimal spacing
+asis_output(paste0(
+  "\\vspace{0.2cm}\n",
+  "\\begin{center}\n",
+  "\\textbf{", escape_latex(paste0("RAM Quality Class: ", params$quality_class)), "}\n",
+  "\\end{center}\n",
+  "\\vspace{0.2cm}\n"
+))
 ```
 
 ```{r boxplots, echo=FALSE, warning = FALSE, message = FALSE, include = FALSE}
@@ -149,10 +161,12 @@ ggsave(filename = plotpath, plot = plots)
 
 ```{r, echo = FALSE}
 knitr::asis_output(paste0(
+  "\\vspace{-0.3cm}\n",  # pull it up
   "\\resizebox{\\textwidth}{!}{%\n",
   "\\begin{minipage}{\\textwidth}\n",
   "\\includegraphics{", plotpath, "}\n",
-  "\\textit{", escape_latex(figure1_text), "}\\par\n",
+  "\\vspace{0.1cm}\n",  # tight caption spacing
+  "\\small\\textit{", escape_latex(figure1_text), "}\\par\n",  # smaller caption
   "\\end{minipage}%\n",
   "}\n"
 ))

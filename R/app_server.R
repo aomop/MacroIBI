@@ -335,6 +335,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
       shared_reactives = shared_reactives,
       selected_genera = selected_genera,
       taxonomy = taxonomy,
+      quality_class = quality_class(),
       metric_save_path = get_app_path("metric_autosave_dir"),
       group_defs = group_defs
     )

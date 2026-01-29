@@ -43,6 +43,7 @@ results_download_server <- function(
     shared_reactives,
     selected_genera,
     taxonomy,
+    quality_class,
     metric_save_path = get_app_path("metric_autosave_dir"),
     group_defs
 ) {
@@ -246,7 +247,8 @@ Sampled on<strong> ",
               metric_data = prepared_data()$summarized_data,
               comparison_metrics = prepared_data()$combined_metrics,
               raw_data = prepared_data()$raw_data,
-              taxonomy = taxonomy
+              taxonomy = taxonomy,
+              quality_class = quality_class
             ),
             envir = new.env(parent = asNamespace("macroibi"))
           )
