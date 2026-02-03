@@ -89,10 +89,17 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
             ),
             shiny::column(
               5,
-              shiny::textInput(
+              shiny::dateInput(
                 "user_date",
                 label = "Date of Sampling:",
-                value = shared_reactives$user_date
+                value = if (inherits(shared_reactives$user_date, "Date")) {
+                  shared_reactives$user_date
+                } else if (!is.null(shared_reactives$user_date) && nzchar(shared_reactives$user_date)) {
+                  parse_flexible_date(shared_reactives$user_date)
+                } else {
+                  Sys.Date()
+                },
+                format = "mm/dd/yyyy"
               )
             ),
             shiny::column(
@@ -145,7 +152,14 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     
     observe({
       if (!is.null(shared_reactives$user_date)) {
-        updateTextInput(session, "user_date", value = shared_reactives$user_date)
+        date_val <- if (inherits(shared_reactives$user_date, "Date")) {
+          shared_reactives$user_date
+        } else {
+          parse_flexible_date(shared_reactives$user_date)
+        }
+        if (!is.na(date_val)) {
+          shiny::updateDateInput(session, "user_date", value = date_val)
+        }
       }
     })
     
@@ -244,13 +258,31 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
             column(2, actionButton("edit_btn", "Edit", class = "btn btn-primary"))
           ),
           fluidRow(
-            column(10, tags$h5(style = "color: gray;", paste("Sampled:", shared_reactives$user_date)))
+            column(10, tags$h5(
+              style = "color: gray;",
+              paste("Sampled:", if (inherits(shared_reactives$user_date, "Date")) {
+                format(shared_reactives$user_date, "%B %d, %Y")
+              } else {
+                shared_reactives$user_date
+              })
+            ))
           )
         )
       } else {
         fluidRow(
           column(5, textInput("user_title", label = "Wetland Name:", value = shared_reactives$user_title)),
-          column(5, textInput("user_date", label = "Date of Sampling:", value = shared_reactives$user_date)),
+          column(5, dateInput(
+            "user_date",
+            label = "Date of Sampling:",
+            value = if (inherits(shared_reactives$user_date, "Date")) {
+              shared_reactives$user_date
+            } else if (!is.null(shared_reactives$user_date) && nzchar(shared_reactives$user_date)) {
+              parse_flexible_date(shared_reactives$user_date)
+            } else {
+              Sys.Date()
+            },
+            format = "mm/dd/yyyy"
+          )),
           column(2, div(
             style = "margin-top: 28px;",
             actionButton("submit_btn", "Submit", class = "btn btn-primary")

@@ -10,6 +10,7 @@ results_download_server(
   shared_reactives,
   selected_genera,
   taxonomy,
+  quality_class,
   metric_save_path = get_app_path("metric_autosave_dir"),
   group_defs
 )

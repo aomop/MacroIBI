@@ -5,6 +5,15 @@
 
 ---
 
+# macroibi 1.1.0
+### 02/03/2026
+- **New:** Added `generate_reports()` exported function for batch report generation from autosave files without running the Shiny app. Supports output types: `"csv"` (metric scores), `"csv_data"` (raw taxa), `"pdf_report"` (full report), `"pdf_summary"` (data summary), or `"all"`.
+- **Improvement:** Replaced free-text date input with a calendar date picker (`dateInput`), providing proper date validation while maintaining backwards compatibility with existing autosave files and uploaded CSV data containing string dates.
+- **Fix:** Download filenames now use ISO date format (YYYY-MM-DD) instead of raw user input, preventing invalid filenames when dates contain slashes (e.g., `07/10/2024`). Affected downloads: PNG table image, PDF full report, PDF data summary, and CSV data export.
+- **Docs:** Updated user documentation to be much more helpful.
+
+---
+
 # macroibi 1.0.0
 ### 12/08/2025
 - **New:** Added full documentation and user-friendly installation instructions to support new users.

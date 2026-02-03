@@ -52,3 +52,83 @@ prepare_results_data <- function(summarized_df, combined_df, raw_data = NULL) {
     raw_data         = raw_data
   )
 }
+
+#' Parse a date string flexibly
+#'
+#' Attempts to parse a date string using multiple common formats including
+#' ISO, US, and European date formats. Returns NA if no format matches.
+#'
+#' @param date_string A character string representing a date.
+#' @return A Date object, or NA if parsing fails.
+#'
+#' @details
+#' Supported formats (in order of precedence):
+#' \itemize{
+#'   \item ISO: YYYY-MM-DD, YYYY/MM/DD
+#'   \item US: MM-DD-YYYY, MM/DD/YYYY, MM-DD-YY, MM/DD/YY
+#'   \item Underscore: MM_DD_YYYY, MM_DD_YY
+#'   \item European: DD-MM-YYYY, DD/MM/YYYY
+#' }
+#'
+#' @keywords internal
+parse_flexible_date <- function(date_string) {
+    # Clean up the input
+    date_string <- trimws(date_string)
+    
+    # List of formats to try (order matters—more specific first)
+    formats <- c(
+      "%Y-%m-%d",   # 2024-07-10
+      "%Y/%m/%d",   # 2024/07/10
+      "%m-%d-%Y",   # 07-10-2024
+      "%m/%d/%Y",   # 07/10/2024
+      "%m-%d-%y",   # 07-10-24
+      "%m/%d/%y",   # 07/10/24
+      "%m_%d_%Y",   # 07_10_2024
+      "%m_%d_%y",   # 07_10_24
+      "%d-%m-%Y",   # 10-07-2024 (European)
+      "%d/%m/%Y"    # 10/07/2024 (European)
+    )
+    
+    for (fmt in formats) {
+      parsed <- as.Date(date_string, format = fmt)
+      if (!is.na(parsed)) {
+        return(parsed)
+      }
+    }
+    
+    # If nothing worked, return NA
+    NA
+  }
+
+#' Format a date for safe use in filenames
+#'
+#' Converts a Date object or date string to ISO format (YYYY-MM-DD)
+#' suitable for use in filenames. Falls back to sanitizing the raw
+#' string if parsing fails.
+#'
+#' @param date_input A Date object, character string, or NULL.
+#' @return A character string in YYYY-MM-DD format, or a sanitized
+#'   version of the input if parsing fails, or "unknown-date" if NULL.
+#' @keywords internal
+format_date_for_filename <- function(date_input) {
+  # Handle NULL/empty
+  if (is.null(date_input) || length(date_input) == 0L ||
+      identical(date_input, "") || identical(date_input, NA)) {
+    return("unknown-date")
+  }
+
+  # If already a Date, format directly
+  if (inherits(date_input, "Date")) {
+    return(format(date_input, "%Y-%m-%d"))
+  }
+
+  # Try parsing as string
+  date_parsed <- parse_flexible_date(as.character(date_input))
+
+  if (!is.na(date_parsed)) {
+    return(format(date_parsed, "%Y-%m-%d"))
+  }
+
+  # Fallback: sanitize raw input
+  gsub("[^A-Za-z0-9_-]", "_", as.character(date_input))
+}

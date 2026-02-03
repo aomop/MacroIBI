@@ -103,7 +103,16 @@ results_download_server <- function(
     # Download CSV
     output$download_csv <- shiny::downloadHandler(
       filename = function() {
-        paste0("results_", shared_reactives$user_title, "_", shared_reactives$user_date, ".csv")
+        date_parsed <- parse_flexible_date(shared_reactives$user_date)
+        
+        if (is.na(date_parsed)) {
+          # Fallback: sanitize the raw input if parsing fails
+          date_formatted <- gsub("[^A-Za-z0-9_-]", "_", shared_reactives$user_date)
+        } else {
+          date_formatted <- format(date_parsed, "%Y-%m-%d")
+        }
+        
+        paste0("results_", shared_reactives$user_title, "__", date_formatted, ".csv")
       },
       content = function(file) {
         shiny::withProgress(message = "Preparing CSV...", value = 0, {
@@ -120,7 +129,7 @@ results_download_server <- function(
         paste0(
           "table_",
           shared_reactives$user_title, "_",
-          shared_reactives$user_date,
+          format_date_for_filename(shared_reactives$user_date),
           ".png"
         )
       },
@@ -144,11 +153,11 @@ Macroinvertebrate Index of Biotic Integrity for</span>",
               "<span style='color: #555555; font-size: 18px; display: block; margin-top: 0px;'>
 Sampled on<strong> ",
               add_ordinal_suffix(
-                format(
-                  as.Date(shared_reactives$user_date, format = "%m/%d/%y"),
-                  "%B %d, %Y"
-                ),
-                style = "%B %d, %Y"
+                if (inherits(shared_reactives$user_date, "Date")) {
+                  shared_reactives$user_date
+                } else {
+                  parse_flexible_date(shared_reactives$user_date)
+                }
               ),
               "</strong>",
               "  |  Calculated on<strong> ",
@@ -193,7 +202,7 @@ Sampled on<strong> ",
     
     output$download_full_report <- shiny::downloadHandler(
       filename = function() {
-        paste0("Report_", shared_reactives$user_title, "_", shared_reactives$user_date, ".pdf")
+        paste0("Report_", shared_reactives$user_title, "_", format_date_for_filename(shared_reactives$user_date), ".pdf")
       },
       content = function(file) {
         shiny::withProgress(message = "Generating report...", value = 0, {
@@ -225,7 +234,7 @@ Sampled on<strong> ",
     
     output$download_small_report <- shiny::downloadHandler(
       filename = function() {
-        paste0("DataSummary_", shared_reactives$user_title, "_", shared_reactives$user_date, ".pdf")
+        paste0("DataSummary_", shared_reactives$user_title, "_", format_date_for_filename(shared_reactives$user_date), ".pdf")
       },
       content = function(file) {
         shiny::withProgress(message = "Generating report...", value = 0, {
