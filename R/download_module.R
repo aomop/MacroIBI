@@ -29,13 +29,14 @@ download_module_server <- function(
     selected_genera,
     shared_reactives,
     group_defs,
+    taxonomy_data,
     auto_save_interval = 30,
     auto_save_path = get_app_path("autosave_dir"),
     expose_data_reactive = NULL
 ) {
   shiny::moduleServer(id, function(input, output, session) {
     
-    assemble_data <- function() {
+    assemble_data <- function(taxonomy_data) {
       shiny::req(selected_genera)
       
       # Get current section IDs from reactiveValues
@@ -67,14 +68,15 @@ download_module_server <- function(
       assemble_download_data(
         selected_list    = selected_list,
         shared_reactives = shared_reactives,
-        group_defs       = group_defs
+        group_defs       = group_defs,
+        taxonomy_data    = taxonomy_data
       )
     }
     
     # Optional: expose assembled data to other modules
     if (!is.null(expose_data_reactive)) {
       shiny::observe({
-        data <- assemble_data()
+        data <- assemble_data(taxonomy_data)
         if (!is.null(data)) {
           expose_data_reactive(data)
         }
@@ -92,7 +94,7 @@ download_module_server <- function(
         )
       },
       content = function(file) {
-        data <- assemble_data()
+        data <- assemble_data(taxonomy_data)
         
         if (is.null(data)) {
           warning("No data to save. Skipping file creation.")

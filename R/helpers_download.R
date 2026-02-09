@@ -6,7 +6,7 @@
 #' @param group_defs Data frame with columns section_id, group_id, group_name.
 #' @return A data.frame or NULL if there are no rows.
 #' @keywords internal
-assemble_download_data <- function(selected_list, shared_reactives, group_defs) {
+assemble_download_data <- function(selected_list, shared_reactives, group_defs, taxonomy_data) {
   # Names in selected_list are your section IDs: section_1, section_2, ...
   section_ids <- names(selected_list)
   
@@ -46,6 +46,7 @@ assemble_download_data <- function(selected_list, shared_reactives, group_defs) 
           group_name = group_name,
           section_id = section_id,
           Taxon      = row$taxon,
+          Level      = taxonomy_data$level[taxonomy_data$tsn == row$tsn],
           Dipnet1    = row$dipnet1,
           Dipnet2    = row$dipnet2,
           tsn        = row$tsn,

@@ -337,7 +337,8 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
       "download_module",
       selected_genera = selected_genera,
       shared_reactives = shared_reactives,
-      group_defs = group_defs
+      group_defs = group_defs,
+      taxonomy_data = taxonomy
     )
     
     autosave_module_server(

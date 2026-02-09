@@ -78,7 +78,8 @@ results_download_server <- function(
       selected_genera = selected_genera,
       shared_reactives = shared_reactives,
       group_defs = group_defs,
-      expose_data_reactive = shared_data
+      expose_data_reactive = shared_data,
+      taxonomy_data = taxonomy
     )
     
     prepared_data <- shiny::reactive({
