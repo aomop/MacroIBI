@@ -9,8 +9,8 @@
 #'   autosave files. Defaults to `"all"`.
 #' @param output_type Character. The type of output to generate. One of:
 #'   \itemize{
-#'     \item `"csv"` - Metric scores as CSV
-#'     \item `"csv_data"` - Raw taxa data as CSV
+#'     \item `"metrics"` - Metric scores as CSV
+#'     \item `"raw_data"` - Raw taxa data as CSV
 #'     \item `"pdf_report"` - Full PDF report
 #'     \item `"pdf_summary"` - Data summary PDF
 #'     \item `"all"` - Generate all output types
@@ -44,7 +44,7 @@
 #' )
 #'
 #' # Generate CSV exports for all files
-#' generate_reports(output_type = "csv", output_path = "~/exports")
+#' generate_reports(output_type = "metrics", output_path = "~/exports")
 #' }
 #'
 #' @export
@@ -55,7 +55,7 @@ generate_reports <- function(
     autosave_path = NULL
 ) {
   # Validate output_type
-  valid_types <- c("csv", "csv_data", "pdf_report", "pdf_summary", "all")
+  valid_types <- c("metrics", "raw_data", "pdf_report", "pdf_summary", "all")
   if (!output_type %in% valid_types) {
     stop(
       "Invalid output_type: '", output_type, "'. ",
@@ -109,7 +109,7 @@ generate_reports <- function(
 
   # Determine which output types to generate
   if (output_type == "all") {
-    types_to_generate <- c("csv", "csv_data", "pdf_report", "pdf_summary")
+    types_to_generate <- c("metrics", "raw_data", "pdf_report", "pdf_summary")
   } else {
     types_to_generate <- output_type
   }
@@ -215,7 +215,8 @@ process_autosave_file <- function(
       date_for_filename = date_for_filename,
       metric_scores = metric_scores,
       taxa_data = taxa_data,
-      autosave_file = file
+      autosave_file = file,
+      taxonomy = taxonomy
     )
   })
 
@@ -377,6 +378,7 @@ calculate_corixid_ratio_static <- function(
 #' @param metric_scores Calculated metric scores data frame.
 #' @param taxa_data Raw taxa data.
 #' @param autosave_file Original autosave filename.
+#' @param taxonomy Taxonomy data frame for Level lookup.
 #' @return Data frame with result.
 #' @keywords internal
 generate_single_output <- function(
@@ -387,26 +389,35 @@ generate_single_output <- function(
     date_for_filename,
     metric_scores,
     taxa_data,
-    autosave_file
+    autosave_file,
+    taxonomy
 ) {
   # Sanitize title for filename
   safe_title <- gsub("[^A-Za-z0-9_-]", "_", user_title)
 
   result <- tryCatch({
     switch(type,
-      "csv" = {
+      "metrics" = {
         filename <- paste0("results_", safe_title, "__", date_for_filename, ".csv")
         filepath <- file.path(output_path, filename)
         readr::write_csv(metric_scores, filepath)
         list(file = filepath, success = TRUE, message = "OK")
       },
-      "csv_data" = {
+      "raw_data" = {
         filename <- paste0("IBI_", safe_title, "_", date_for_filename, ".csv")
         filepath <- file.path(output_path, filename)
-        # Add back metadata columns
+        # Add Level column by looking up tsn in taxonomy
         export_data <- taxa_data
+        export_data$Level <- taxonomy$level[match(export_data$tsn, taxonomy$tsn)]
+        # Add back metadata columns
         export_data$Title <- user_title
         export_data$Date <- user_date
+        export_data$schema_version <- "2.0.0"
+        # Reorder columns to match download_module output structure
+        export_data <- export_data[, c(
+          "group_id", "group_name", "section_id", "Taxon", "Level",
+          "Dipnet1", "Dipnet2", "tsn", "parentTsn", "Title", "Date", "schema_version"
+        )]
         readr::write_csv(export_data, filepath)
         list(file = filepath, success = TRUE, message = "OK")
       },

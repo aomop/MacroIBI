@@ -12,7 +12,8 @@ generate_single_output(
   date_for_filename,
   metric_scores,
   taxa_data,
-  autosave_file
+  autosave_file,
+  taxonomy
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ generate_single_output(
 \item{taxa_data}{Raw taxa data.}
 
 \item{autosave_file}{Original autosave filename.}
+
+\item{taxonomy}{Taxonomy data frame for Level lookup.}
 }
 \value{
 Data frame with result.

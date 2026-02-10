@@ -80,8 +80,19 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
         # Create rows for each taxon
         lapply(selected_genera$data, function(row_data) {
           row_id <- row_data$id
+          # Look up common name from taxonomy at render time
+          cn <- if ("common_names" %in% names(taxonomy_data)) {
+            cn_val <- taxonomy_data$common_names[taxonomy_data$tsn == row_data$tsn]
+            if (length(cn_val) > 0 && !is.na(cn_val[1]) && nzchar(cn_val[1])) cn_val[1] else NULL
+          }
           shiny::fluidRow(
-            shiny::column(3, shiny::h5(row_data$taxon)),  # Taxon name
+            shiny::column(3,
+              shiny::h5(row_data$taxon),
+              if (!is.null(cn)) shiny::tags$div(
+                style = "color: rgba(0,0,0,0.5); font-size: 0.85em; margin-top: -5px;",
+                cn
+              )
+            ),  # Taxon name + common name subtitle
             shiny::column(3, shiny::numericInput(ns(paste0("dipnet1_", row_id)), label = NULL, value = row_data$dipnet1)),  # Dipnet1 Input
             shiny::column(3, shiny::numericInput(ns(paste0("dipnet2_", row_id)), label = NULL, value = row_data$dipnet2)),  # Dipnet2 input
             shiny::column(2, shiny::verbatimTextOutput(ns(paste0("sum_count_", row_id)))),  # Row sum

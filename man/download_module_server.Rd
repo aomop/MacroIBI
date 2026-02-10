@@ -9,6 +9,7 @@ download_module_server(
   selected_genera,
   shared_reactives,
   group_defs,
+  taxonomy_data,
   auto_save_interval = 30,
   auto_save_path = get_app_path("autosave_dir"),
   expose_data_reactive = NULL

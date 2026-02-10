@@ -1,6 +1,6 @@
 Package: macroibi
 Title: Wetland Macroinvertebrate IBI Dashboard
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: person("Sam", "Swanson", email = "sam.swanson@example.com", role = c("aut", "cre"))
 Author: Sam Swanson
 Maintainer: Sam Swanson <sam.swanson@shakopeedakota.org>

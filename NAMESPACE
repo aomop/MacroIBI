@@ -2,6 +2,7 @@
 
 export("%>%")
 export(generate_reports)
+export(refresh_taxonomy)
 export(run_macroibi)
 import(ggplot2)
 import(graphics)

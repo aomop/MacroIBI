@@ -4,7 +4,12 @@
 \alias{assemble_download_data}
 \title{Assemble download data from selected genera}
 \usage{
-assemble_download_data(selected_list, shared_reactives, group_defs)
+assemble_download_data(
+  selected_list,
+  shared_reactives,
+  group_defs,
+  taxonomy_data
+)
 }
 \arguments{
 \item{selected_list}{Named list. Each element corresponds to a section

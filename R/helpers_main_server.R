@@ -38,6 +38,11 @@ build_taxon_choices <- function(taxonomy, show_out_of_region = FALSE) {
     choices_df <- dplyr::filter(choices_df, .data$in_region_flag)
   }
   
+  # Ensure common_names column exists (graceful fallback for older taxonomy files)
+  if (!"common_names" %in% names(choices_df)) {
+    choices_df$common_names <- NA_character_
+  }
+
   choices_df %>%
     dplyr::mutate(
       caution_flag = dplyr::if_else(
@@ -45,12 +50,22 @@ build_taxon_choices <- function(taxonomy, show_out_of_region = FALSE) {
         "<span style='color:#d9534f; font-weight:bold; margin-right:4px;' title='Outside region'>&#9888;</span>",
         ""
       ),
+      common_label = dplyr::if_else(
+        !is.na(.data$common_names) & .data$common_names != "",
+        paste0(
+          "<div style='color: #7a8b9a; font-size: 0.8em; font-style: italic; line-height: 1.3; margin-top: 2px;'>",
+          .data$common_names,
+          "</div>"
+        ),
+        ""
+      ),
       name = paste0(
         .data$caution_flag,
         "<strong>", .data$taxon, "</strong> ",
         "<span style='color: rgba(0, 0, 0, 0.5); font-size: 0.9em;'>",
         .data$level,
-        "</span>"
+        "</span>",
+        .data$common_label
       ),
       value = .data$taxon
     ) %>%

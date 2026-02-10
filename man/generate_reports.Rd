@@ -18,8 +18,8 @@ autosave files. Defaults to \code{"all"}.}
 
 \item{output_type}{Character. The type of output to generate. One of:
 \itemize{
-\item \code{"csv"} - Metric scores as CSV
-\item \code{"csv_data"} - Raw taxa data as CSV
+\item \code{"metrics"} - Metric scores as CSV
+\item \code{"raw_data"} - Raw taxa data as CSV
 \item \code{"pdf_report"} - Full PDF report
 \item \code{"pdf_summary"} - Data summary PDF
 \item \code{"all"} - Generate all output types
@@ -61,7 +61,7 @@ generate_reports(
 )
 
 # Generate CSV exports for all files
-generate_reports(output_type = "csv", output_path = "~/exports")
+generate_reports(output_type = "metrics", output_path = "~/exports")
 }
 
 }

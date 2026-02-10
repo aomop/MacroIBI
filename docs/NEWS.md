@@ -5,6 +5,13 @@
 
 ---
 
+# macroibi 1.1.1
+### 02/10/2026
+- **New:** Taxonomy dataset now includes common names for taxa where it is available. Users may search for taxa by the latin name, common name, or taxon level. Section tables now display common names.
+- **New:** Raw data outputs now include taxon level information. 
+
+---
+
 # macroibi 1.1.0
 ### 02/03/2026
 - **New:** Added `generate_reports()` exported function for batch report generation from autosave files without running the Shiny app. Supports output types: `"csv"` (metric scores), `"csv_data"` (raw taxa), `"pdf_report"` (full report), `"pdf_summary"` (data summary), or `"all"`.
