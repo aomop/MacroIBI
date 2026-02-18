@@ -105,11 +105,12 @@ resolve_selected_taxon <- function(taxonomy, group_list, selected_taxon_data) {
   section_id <- paste0("section_", which(group_list == taxon_group))
   
   taxon_info <- taxon_rows %>%
-    dplyr::select(dplyr::all_of(c("taxon", "tsn", "parentTsn"))) %>%
+    dplyr::select(dplyr::all_of(c("taxon", "common_names", "tsn", "parentTsn"))) %>%
     dplyr::distinct()
   
   list(
-    taxon     = selected_taxon_data,
+    taxon      = selected_taxon_data,
+    common     = taxon_info$common_names[1],
     section_id = section_id,
     tsn        = taxon_info$tsn[1],
     parentTsn  = taxon_info$parentTsn[1]

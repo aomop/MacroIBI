@@ -409,13 +409,14 @@ generate_single_output <- function(
         # Add Level column by looking up tsn in taxonomy
         export_data <- taxa_data
         export_data$Level <- taxonomy$level[match(export_data$tsn, taxonomy$tsn)]
+        export_data$Common <- taxonomy$common_names[match(export_data$tsn, taxonomy$tsn)]
         # Add back metadata columns
         export_data$Title <- user_title
         export_data$Date <- user_date
         export_data$schema_version <- "2.0.0"
         # Reorder columns to match download_module output structure
         export_data <- export_data[, c(
-          "group_id", "group_name", "section_id", "Taxon", "Level",
+          "group_id", "group_name", "section_id", "Taxon", "Common", "Level",
           "Dipnet1", "Dipnet2", "tsn", "parentTsn", "Title", "Date", "schema_version"
         )]
         readr::write_csv(export_data, filepath)

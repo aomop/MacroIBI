@@ -1,6 +1,6 @@
 Package: macroibi
 Title: Wetland Macroinvertebrate IBI Dashboard
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: person("Sam", "Swanson", email = "sam.swanson@example.com", role = c("aut", "cre"))
 Author: Sam Swanson
 Maintainer: Sam Swanson <sam.swanson@shakopeedakota.org>
@@ -35,7 +35,9 @@ Imports:
     magrittr
 Suggests:
     testthat (>= 3.0.0),
-    shinytest2
+    shinytest2,
+    pkgdown
+VignetteBuilder: knitr
 Remotes:
     github::aomop/MacroIBI
 Roxygen: list(markdown = TRUE)

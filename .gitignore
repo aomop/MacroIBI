@@ -18,3 +18,5 @@ Thumbs.db
 *.bak
 inst/doc/
 LICENSE
+/doc/
+/Meta/

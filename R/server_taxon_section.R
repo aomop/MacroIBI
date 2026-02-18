@@ -18,7 +18,7 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
     ## --- Add a Taxon to the Group Table ---
     shiny::observe({
       taxon_info <- selected_taxon()  # Retrieve selected taxon information
-      
+
       if (!is.null(taxon_info$taxon) && taxon_info$section_id == id) {
         taxon_name <- taxon_info$taxon
         tsn <- taxon_info$tsn
@@ -32,7 +32,14 @@ server_taxon_section <- function(id, group_name, taxonomy_data, selected_taxon, 
           # Add the new taxon with default dipnet counts
           selected_genera$data <- c(
             selected_genera$data,
-            list(list(id = new_id, taxon = taxon_name, dipnet1 = 1, dipnet2 = 0, tsn = tsn, parentTsn = parentTsn, section = section_id))
+            list(list(id = new_id, 
+                      taxon = taxon_name, 
+                      common = common,
+                      dipnet1 = 1, 
+                      dipnet2 = 0, 
+                      tsn = tsn, 
+                      parentTsn = parentTsn, 
+                      section = section_id))
           )
           
           # Reset selected_taxon to NULL to prevent re-triggering
