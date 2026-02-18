@@ -1,7 +1,9 @@
-# macroibi 1.0.1
-### 12/09/2025
-- Fix taxonomic tree layout crash for some taxa selections.
-- Harden tree layout logic against incomplete taxonomic hierarchies.
+---
+
+# macroibi 1.1.2
+### 02/16/2026
+- **New:** Common names are now included in raw data outputs
+- **Fix:** `generate_reports()` output formats are now properly aligned with the app updated outputs.
 
 ---
 
@@ -18,6 +20,13 @@
 - **Improvement:** Replaced free-text date input with a calendar date picker (`dateInput`), providing proper date validation while maintaining backwards compatibility with existing autosave files and uploaded CSV data containing string dates.
 - **Fix:** Download filenames now use ISO date format (YYYY-MM-DD) instead of raw user input, preventing invalid filenames when dates contain slashes (e.g., `07/10/2024`). Affected downloads: PNG table image, PDF full report, PDF data summary, and CSV data export.
 - **Docs:** Updated user documentation to be much more helpful.
+
+---
+
+# macroibi 1.0.1
+### 12/09/2025
+- **Fix:** Taxonomic tree layouts no longer crash for parent-less taxa selections.
+- **Improvement:** Harden tree layout logic against incomplete taxonomic hierarchies.
 
 ---
 
