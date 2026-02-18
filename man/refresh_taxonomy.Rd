@@ -17,10 +17,26 @@ CSV files. Defaults to the local TAXONOMY project output directory.}
 file will be saved. Defaults to \code{"inst/extdata/"}.}
 }
 \value{
-Invisibly returns \code{NULL}. Called for its side effect of writing
-an RDS file named \code{taxonomy_<YYYY-MM-DD>.rds} to \code{output_path}.
+Invisibly returns the taxonomy data frame. Called for its side effect
+of writing an RDS file named \code{taxonomy_<YYYY-MM-DD>.rds} to
+\code{output_path}.
 }
 \description{
 Reads the most recently modified CSV file from a directory of built taxonomy
 files and saves it as a dated RDS file in the package's extdata directory.
+}
+\note{
+The default \code{input_dir} points to a development-specific path and
+will not exist on most machines. External users must supply their own
+\code{input_dir} pointing to a directory of built taxonomy CSV files.
+}
+\examples{
+\dontrun{
+# Refresh taxonomy from a custom directory
+refresh_taxonomy(
+  input_dir = "path/to/taxonomy/csv/files",
+  output_path = "inst/extdata/"
+)
+}
+
 }

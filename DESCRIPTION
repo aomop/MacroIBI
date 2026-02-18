@@ -35,7 +35,9 @@ Imports:
     magrittr
 Suggests:
     testthat (>= 3.0.0),
-    shinytest2
+    shinytest2,
+    pkgdown
+VignetteBuilder: knitr
 Remotes:
     github::aomop/MacroIBI
 Roxygen: list(markdown = TRUE)

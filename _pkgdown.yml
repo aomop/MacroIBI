@@ -1,0 +1,35 @@
+url: https://aomop.github.io/MacroIBI/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/aomop/MacroIBI
+
+articles:
+  - title: Guides
+    navbar: ~
+    contents:
+      - getting-started
+      - batch-export
+      - field-and-app-guide
+
+reference:
+  - title: User-facing functions
+    desc: Primary functions for running the app and generating reports.
+    contents:
+      - run_macroibi
+      - generate_reports
+      - refresh_taxonomy
+
+  - title: Internal
+    desc: Internal functions not intended for direct use.
+    contents:
+      - starts_with("macroibi-package")
+      - everything()
