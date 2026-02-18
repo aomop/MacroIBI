@@ -1,0 +1,142 @@
+---
+title: "Batch Report Generation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Batch Report Generation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+`generate_reports()` lets you produce IBI outputs from autosave files without
+launching the Shiny app. This is useful for scripted workflows, scheduled
+report generation, and automation pipelines.
+
+## Prerequisites
+
+Autosave files must already exist from previous interactive sessions. By
+default, the function looks for autosaves in the package's user data directory:
+
+- **Windows:** `C:\Users\[YourName]\AppData\Local\R\macroibi\data\`
+- **Mac:** `~/Library/Application Support/macroibi/data/`
+
+## Basic Usage
+
+Generate all output types for all autosave files:
+
+```{r basic}
+library(macroibi)
+generate_reports()
+```
+
+This creates metric CSVs, raw data CSVs, PDF reports, and PDF summaries in your
+current working directory.
+
+## Output Types
+
+The `output_type` parameter controls which outputs to generate:
+
+| Value          | Description                        |
+|----------------|------------------------------------|
+| `"metrics"`    | Metric scores as CSV               |
+| `"raw_data"`   | Raw taxa data as CSV               |
+| `"pdf_report"` | Full PDF report with comparisons   |
+| `"pdf_summary"`| Concise data summary PDF           |
+| `"all"`        | All of the above (default)         |
+
+```{r types}
+# Only metric CSVs
+generate_reports(output_type = "metrics")
+
+# Only PDF reports
+generate_reports(output_type = "pdf_report")
+```
+
+## Processing Specific Files
+
+By default, all autosave files are processed. To target a specific file, pass
+its filename:
+
+```{r specific}
+generate_reports(
+  autosave_file = "autosave_MyWetland.rds",
+  output_type = "pdf_report",
+  output_path = "~/reports"
+)
+```
+
+## Custom Output Directory
+
+Use `output_path` to control where files are written. The directory is created
+automatically if it does not exist:
+
+```{r output-path}
+generate_reports(output_path = "~/wetland_exports/2025")
+```
+
+## Custom Autosave Directory
+
+If your autosave files are in a non-default location, use `autosave_path`:
+
+```{r autosave-path}
+generate_reports(
+  autosave_path = "/shared/macroibi_data",
+  output_path = "~/reports"
+)
+```
+
+## Return Value
+
+`generate_reports()` invisibly returns a data frame summarizing the results:
+
+| Column          | Description                               |
+|-----------------|-------------------------------------------|
+| `autosave_file` | Name of the processed autosave file       |
+| `output_type`   | Type of output generated                  |
+| `output_file`   | Path to the generated file                |
+| `success`       | Logical indicating success                |
+| `message`       | Status or error message                   |
+
+```{r results}
+results <- generate_reports(output_type = "metrics")
+print(results)
+```
+
+## Integration with Automated Pipelines
+
+### R script for scheduled runs
+
+```{r script}
+#!/usr/bin/env Rscript
+library(macroibi)
+
+results <- generate_reports(
+  output_type = "all",
+  output_path = "/output/macroibi"
+)
+
+failures <- results[!results$success, ]
+if (nrow(failures) > 0) {
+  warning("Some reports failed:\n", paste(failures$message, collapse = "\n"))
+}
+```
+
+### Command-line invocation
+
+You can call the above script from a shell or scheduler:
+
+```bash
+Rscript generate_all_reports.R
+```
+
+This makes it straightforward to integrate MacroIBI report generation into
+cron jobs, Task Scheduler, or CI/CD workflows.

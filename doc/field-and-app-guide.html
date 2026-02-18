@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Field Sampling &amp; App Guide</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Field Sampling &amp; App Guide</h1>
+
+
+
+<p>This vignette is adapted from the full <a href="https://github.com/aomop/MacroIBI/blob/main/docs/FIELD_AND_APP_GUIDE_v2.md">Field
+and App Guide</a> and covers the complete workflow from field sampling
+through IBI calculation.</p>
+<div id="overview" class="section level2">
+<h2>1. Overview</h2>
+<p>This guide explains how to collect, sort, identify, and score wetland
+macroinvertebrates using the MPCA protocol and the MacroIBI R/Shiny
+application. No prior R experience is required — the installation
+section walks you through setup step-by-step.</p>
+</div>
+<div id="equipment-checklist" class="section level2">
+<h2>2. Equipment Checklist</h2>
+<div id="required-field-equipment" class="section level3">
+<h3>Required Field Equipment</h3>
+<ul>
+<li>Two D-frame dip nets (500 um mesh)</li>
+<li>Hardware cloth and frame</li>
+<li>Plastic bin for catching material</li>
+<li>200 um sieve</li>
+<li>Squirt bottles (1 water, 1 alcohol)</li>
+<li>Forceps (one per person)</li>
+<li>Wetland Invertebrate Visit Form</li>
+<li>GPS unit</li>
+<li>Pencils, clipboards</li>
+<li>100% reagent alcohol</li>
+<li>Chest waders</li>
+<li>Plastic jars for storage</li>
+<li>Permanent marker</li>
+</ul>
+</div>
+<div id="optional-field-equipment" class="section level3">
+<h3>Optional Field Equipment</h3>
+<ul>
+<li>Maps for navigation</li>
+<li>Scissors for labels</li>
+<li>Camera to capture site conditions</li>
+<li>Cooler or crate for transporting samples</li>
+</ul>
+</div>
+<div id="required-lab-equipment" class="section level3">
+<h3>Required Lab Equipment</h3>
+<ul>
+<li>Stereoscopes (2x–4x magnification)</li>
+<li>Petri dishes</li>
+<li>Identification guides</li>
+<li>Squirt bottles (water or alcohol)</li>
+<li>Dissection tools</li>
+<li>Computer with R and the <strong>macroibi</strong> package</li>
+</ul>
+</div>
+</div>
+<div id="collecting-macroinvertebrate-samples" class="section level2">
+<h2>3. Collecting Macroinvertebrate Samples</h2>
+<div id="when-to-sample" class="section level3">
+<h3>When to Sample</h3>
+<ul>
+<li>Sample <strong>June–early July</strong> while larvae are mature but
+wetlands retain water.</li>
+<li>Sampling too late risks dried wetlands or transient species.</li>
+<li>If multiple samples are planned, keep all events within this
+timeframe.</li>
+</ul>
+</div>
+<div id="where-to-sample" class="section level3">
+<h3>Where to Sample</h3>
+<p>Prioritize habitat zones in this order:</p>
+<ol style="list-style-type: decimal">
+<li>Emergent vegetation (richest fauna)</li>
+<li>Floating-leaf vegetation</li>
+<li>Submerged vegetation</li>
+<li>Shallow open water</li>
+</ol>
+<p>Record the zone(s) used.</p>
+</div>
+<div id="sampling-procedure" class="section level3">
+<h3>Sampling Procedure</h3>
+<ol style="list-style-type: decimal">
+<li><p><strong>Identify the sampling area.</strong> Select the
+highest-priority habitat available and work within a 10–15 m
+radius.</p></li>
+<li><p><strong>Collect two efforts per sample.</strong> For each effort,
+perform 3–5 strong sweeps through vegetation and water. Avoid scraping
+mud; restart the effort if so.</p></li>
+<li><p><strong>Sort for 10 minutes.</strong> Dump both efforts onto
+hardware cloth above the bin. Start a 10-minute timer and begin sorting
+(see next section).</p></li>
+<li><p><strong>Repeat for the second sample.</strong> Stay in the same
+zone but choose new micro-locations. Samples may be combined or kept
+separate for processing; both ultimately contribute to one IBI
+evaluation.</p></li>
+</ol>
+<p>With larger crews, some people can begin the second sample while
+others finish the 10-minute sort; this saves significant time.</p>
+</div>
+</div>
+<div id="sorting-samples-in-the-field" class="section level2">
+<h2>4. Sorting Samples in the Field</h2>
+<div id="during-the-10-minute-sorting-window" class="section level3">
+<h3>During the 10-Minute Sorting Window</h3>
+<ol style="list-style-type: decimal">
+<li>Rinse vegetation so organisms fall into the pans.</li>
+<li>Pick organisms with forceps into the water-filled pans.</li>
+<li>After 10 minutes, return vegetation to the wetland; all organisms in
+the bin become the sample.</li>
+</ol>
+</div>
+<div id="after-vegetation-removal" class="section level3">
+<h3>After Vegetation Removal</h3>
+<ol style="list-style-type: decimal">
+<li>Pour pans through the 200 um sieve; flush snails and leeches into
+the sieve.</li>
+<li>Back-flush the sieve with alcohol only into sample jars. Aim for
+approximately 80% final concentration. Split jars if more than one-third
+full.</li>
+<li>Label jars (site ID, date, sample number, jar number, crew
+initials).</li>
+<li>Store in hazardous-materials room; check periodically for
+evaporation.</li>
+</ol>
+</div>
+</div>
+<div id="lab-identification-and-enumeration" class="section level2">
+<h2>5. Lab Identification and Enumeration</h2>
+<ol style="list-style-type: decimal">
+<li><p><strong>Software Setup</strong> — Ensure R and MacroIBI are
+installed (see section 6 below).</p></li>
+<li><p><strong>Prepare Workspace</strong> — Set up stereoscopes, petri
+dishes, tools, guides, and your sample.</p></li>
+<li><p><strong>Identify and Count Everything</strong></p>
+<ul>
+<li>Every individual in the sample must be identified and counted.</li>
+<li>Family-level ID is required; genus is ideal; species when
+possible.</li>
+<li>One person should handle data entry; others relay counts.</li>
+<li>Pre-sort into visually similar piles to speed identification.</li>
+<li>Samples may be rinsed with water to reduce irritation, but do not
+use water if samples must remain preserved after identification.</li>
+</ul></li>
+<li><p><strong>Enter Data Periodically</strong> — Relay taxa and counts
+to the data handler for entry into the app. Combined samples may all be
+entered into “Dipnet 1.” See section 7 for the full app
+workflow.</p></li>
+</ol>
+</div>
+<div id="installing-the-macroibi-app" class="section level2">
+<h2>6. Installing the MacroIBI App</h2>
+<div id="what-you-need" class="section level3">
+<h3>What You Need</h3>
+<p>You need two free programs:</p>
+<ul>
+<li><strong>R</strong> — The engine that powers the app. You will not
+interact with it directly.</li>
+<li><strong>RStudio</strong> — The program you will actually use. It
+provides a user-friendly interface for running R commands.</li>
+</ul>
+<p>Think of R as the engine and RStudio as the dashboard of a car — you
+need both, but you only interact with the dashboard.</p>
+</div>
+<div id="step-1-install-r" class="section level3">
+<h3>Step 1: Install R</h3>
+<ol style="list-style-type: decimal">
+<li>Go to <a href="https://cran.r-project.org" class="uri">https://cran.r-project.org</a></li>
+<li>Click the download link for your operating system:
+<ul>
+<li><strong>Windows:</strong> Click “Download R for Windows” then “base”
+then “Download R-4.x.x for Windows”</li>
+<li><strong>Mac:</strong> Click “Download R for macOS” and choose the
+version for your Mac</li>
+</ul></li>
+<li>Open the downloaded file and run the installer</li>
+<li>Accept all default options</li>
+</ol>
+</div>
+<div id="step-2-install-rstudio" class="section level3">
+<h3>Step 2: Install RStudio</h3>
+<ol style="list-style-type: decimal">
+<li>Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a></li>
+<li>Scroll down to “All Installers” and click the download for your
+OS</li>
+<li>Run the installer with default options</li>
+</ol>
+</div>
+<div id="step-3-install-rtools-windows-only" class="section level3">
+<h3>Step 3: Install Rtools (Windows Only)</h3>
+<p>This step is required on Windows. Rtools allows R to install packages
+that need compilation.</p>
+<ol style="list-style-type: decimal">
+<li>Go to <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a></li>
+<li>Download “Rtools44” (or the version matching your R version)</li>
+<li>Run the installer with default options</li>
+</ol>
+<p>Mac users can skip this step.</p>
+</div>
+<div id="step-4-open-rstudio-and-install-macroibi" class="section level3">
+<h3>Step 4: Open RStudio and Install MacroIBI</h3>
+<p>Open RStudio and find the <strong>Console</strong> — the panel with a
+<code>&gt;</code> symbol, usually in the bottom-left area. Type each
+command below and press Enter:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;aomop/MacroIBI&quot;</span>)</span></code></pre></div>
+<p>You will see text scrolling as R downloads and installs packages.
+This is normal and may take 1–2 minutes.</p>
+</div>
+<div id="step-5-launch-the-app" class="section level3">
+<h3>Step 5: Launch the App</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(macroibi)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">run_macroibi</span>()</span></code></pre></div>
+<p>A browser window will open with the Wetland IBI Dashboard.</p>
+</div>
+<div id="quick-verification" class="section level3">
+<h3>Quick Verification</h3>
+<p>To confirm everything works, try demo mode:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">run_macroibi</span>(<span class="at">demo_mode =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Click “OK” on the demo message, then click <strong>Load
+Autosave</strong> on the left sidebar. If you see demo files listed,
+everything is working correctly.</p>
+</div>
+<div id="closing-the-app" class="section level3">
+<h3>Closing the App</h3>
+<ul>
+<li>Close the browser tab, OR</li>
+<li>In RStudio, click the red Stop button in the Console area, OR</li>
+<li>Press the Escape key while clicked in the Console</li>
+</ul>
+</div>
+<div id="troubleshooting" class="section level3">
+<h3>Troubleshooting</h3>
+<ul>
+<li><strong>“Error: package ‘remotes’ is not available”</strong> — Run
+<code>install.packages(&quot;remotes&quot;)</code> first.</li>
+<li><strong>Red text mentioning “Rtools” or “compilation”
+(Windows)</strong> — Install Rtools (step 3), restart RStudio, and try
+again.</li>
+<li><strong>“Cannot open URL” or network errors</strong> — Check your
+internet connection. If on a work network, try from home or contact IT
+about firewall restrictions.</li>
+<li><strong>PDF/image export not working</strong> — Run
+<code>webshot2::install_phantomjs()</code> in the Console.</li>
+<li><strong>App will not start / “could not find function”</strong> —
+Make sure you ran <code>library(macroibi)</code> first. This is required
+every time you open RStudio.</li>
+<li><strong>Still stuck?</strong> — Open an issue at <a href="https://github.com/aomop/MacroIBI/issues" class="uri">https://github.com/aomop/MacroIBI/issues</a>.</li>
+</ul>
+</div>
+</div>
+<div id="using-the-macroibi-app" class="section level2">
+<h2>7. Using the MacroIBI App</h2>
+<div id="enter-metadata" class="section level3">
+<h3>Enter Metadata</h3>
+<p>When the app opens, enter a <strong>sample title</strong> and
+<strong>date</strong>, then click <strong>Let’s go!</strong>. You can
+also continue without metadata if you plan to upload data or reload an
+autosave.</p>
+</div>
+<div id="step-1-enable-autosave" class="section level3">
+<h3>Step 1: Enable Autosave</h3>
+<p>On the Data tab, find <strong>Autosave Settings</strong> on the left
+sidebar and enable auto-save. Autosave will:</p>
+<ul>
+<li>Periodically save your progress</li>
+<li>Store autosaves per user</li>
+<li>Allow recovery after crashes</li>
+<li>Provide history for reports and comparisons</li>
+</ul>
+<p>You can reload autosaves using <strong>Load Autosave</strong>.</p>
+<p>Data Summary and Full Report features rely on having autosaves
+available.</p>
+</div>
+<div id="step-2-enter-taxa-and-counts" class="section level3">
+<h3>Step 2: Enter Taxa and Counts</h3>
+<p>Use <strong>Select Taxon</strong> to search and add taxa. The app
+assigns each taxon to the correct group automatically.</p>
+<p>Each row displays:</p>
+<ul>
+<li>Taxon name</li>
+<li>Dipnet 1 count</li>
+<li>Dipnet 2 count</li>
+<li>Sum count (auto-calculated)</li>
+</ul>
+<p>Group footers update live with total taxa, percent of total sample,
+and total individuals.</p>
+</div>
+<div id="step-3-review-metrics" class="section level3">
+<h3>Step 3: Review Metrics</h3>
+<p>Switch to the <strong>Results</strong> tab to see real-time IBI
+calculations:</p>
+<ul>
+<li><strong>Total individuals</strong> — Sum of all individuals across
+both dipnets and all groups.</li>
+<li><strong>EOT richness</strong> — Number of unique taxa in
+Dragonflies, Mayflies, Damselflies, and Caddisflies (EOT orders).</li>
+<li><strong>Snail richness</strong> — Number of unique taxa in
+Gastropoda.</li>
+<li><strong>All-taxa richness</strong> — Sum of unique taxa across all
+groups.</li>
+<li><strong>Corixid ratio</strong> — Corixidae individuals divided by
+the sum of all true bugs and beetles. Higher ratios indicate potential
+nutrient loading.</li>
+<li><strong>Abundance of EOT</strong> — Total EOT individuals divided by
+total individuals.</li>
+<li><strong>IBI Score (0–50)</strong> — Sum of five adjusted metric
+scores (each 0–10). Scores are scaled between anchor percentiles from
+reference data.</li>
+</ul>
+<p>Hover over <em>“How are these calculated?”</em> in the app for metric
+formulas.</p>
+<div id="scoring-details" class="section level4">
+<h4>Scoring Details</h4>
+<p>Metrics that <strong>decrease</strong> with disturbance are scored on
+these ranges:</p>
+<ul>
+<li>EOT richness: 1–12 taxa</li>
+<li>Snail richness: 1–10 taxa</li>
+<li>All-taxa richness: 10–40 taxa</li>
+<li>Abundance of EOT: 0–0.16</li>
+</ul>
+<p>The <strong>corixid ratio</strong> increases with disturbance and
+uses anchors of 0 (best) to 1.0 (worst), with a 5th–95th percentile band
+of 0–0.82. Values above the maximum anchor score 0.</p>
+<p>Each component score is capped at 0–10. The final IBI score is their
+sum (maximum 50).</p>
+</div>
+</div>
+<div id="step-4-export-results" class="section level3">
+<h3>Step 4: Export Results</h3>
+<p>Available downloads:</p>
+<ul>
+<li><strong>Raw Data CSV</strong> — For archiving or re-uploading into
+the app. Use only CSVs exported from MacroIBI without external
+edits.</li>
+<li><strong>Results CSV</strong> — Final calculated scores.</li>
+<li><strong>Table Image (PNG)</strong> — Formatted metric table with
+titles and dates.</li>
+<li><strong>Data Summary (PDF)</strong> — Concise one-page snapshot of
+metrics.</li>
+<li><strong>Full Report (PDF)</strong> — Comprehensive report including
+current metrics and comparisons to other autosaved sessions.</li>
+</ul>
+<p>Reports require autosave history to generate comparisons.</p>
+</div>
+</div>
+<div id="additional-features" class="section level2">
+<h2>8. Additional Features</h2>
+<div id="taxonomic-hierarchy-viewer" class="section level3">
+<h3>Taxonomic Hierarchy Viewer</h3>
+<p>Use <strong>Show/Hide Taxonomic Hierarchy</strong> to view a
+taxonomic tree of selected taxa. This helps verify correct grouping.</p>
+</div>
+<div id="reloading-old-work" class="section level3">
+<h3>Reloading Old Work</h3>
+<p>Upload any previously exported <strong>Raw Data CSV</strong> to
+restore tables exactly as saved.</p>
+</div>
+<div id="clearing-data" class="section level3">
+<h3>Clearing Data</h3>
+<p><strong>Clear All Data</strong> resets everything. This cannot be
+undone if the data has not been saved.</p>
+</div>
+<div id="batch-export" class="section level3">
+<h3>Batch Export</h3>
+<p>For scripted or automated workflows, see
+<code>vignette(&quot;batch-export&quot;, package = &quot;macroibi&quot;)</code>.</p>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

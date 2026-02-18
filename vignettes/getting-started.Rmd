@@ -1,0 +1,139 @@
+---
+title: "Getting Started with MacroIBI"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with MacroIBI}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+MacroIBI is an R/Shiny application for calculating a macroinvertebrate-based
+Index of Biotic Integrity (IBI) for wetlands using the MPCA protocol. The
+package provides an interactive dashboard for data entry, metric calculation,
+and report generation.
+
+**Try before installing:** A demo version is available at
+<https://smsc2.shinyapps.io/MacroIBI/> (some features disabled). Install
+locally for full functionality.
+
+## Installation
+
+### Requirements
+
+- **R 4.2.0 or newer** --- Download from <https://cran.r-project.org>
+- **RStudio** (recommended) --- Download from
+  <https://posit.co/download/rstudio-desktop/>
+- **Rtools** (Windows only) --- Download from
+  <https://cran.r-project.org/bin/windows/Rtools/>
+
+If you are new to R, see `vignette("field-and-app-guide", package = "macroibi")`
+for detailed step-by-step installation instructions with troubleshooting tips.
+
+### Install MacroIBI
+
+```{r install}
+install.packages("remotes")
+remotes::install_github("aomop/MacroIBI")
+```
+
+## Launching the App
+
+```{r launch}
+library(macroibi)
+run_macroibi()
+```
+
+A browser window will open with the Wetland IBI Dashboard.
+
+## Basic Workflow
+
+### 1. Enter metadata
+
+When the app opens, enter a **sample title** and **date**, then click
+**Let's go!**. You can also skip metadata if you plan to upload data or reload
+an autosave.
+
+### 2. Enable autosave
+
+On the Data tab, find **Autosave Settings** on the left sidebar and enable
+auto-save. This periodically saves your progress and allows recovery after
+crashes. Data Summary and Full Report exports rely on autosave history.
+
+### 3. Enter taxa and counts
+
+Use **Select Taxon** to search and add taxa. The app assigns each taxon to the
+correct group automatically. Each row shows:
+
+- Taxon name
+- Dipnet 1 count
+- Dipnet 2 count
+- Sum count (auto-calculated)
+
+Group footers update live with total taxa, percent of total sample, and total
+individuals.
+
+### 4. Review metrics
+
+Switch to the **Results** tab to see real-time IBI calculations:
+
+- Total individuals
+- EOT richness (Ephemeroptera, Odonata, Trichoptera)
+- Snail richness
+- All-taxa richness
+- Corixid ratio
+- Abundance of EOT
+- **Overall IBI score (0--50)**
+
+Hover over *"How are these calculated?"* for metric formulas.
+
+### 5. Export results
+
+Available downloads from the Results tab:
+
+- **Raw Data CSV** --- for archiving or re-uploading into the app
+- **Results CSV** --- final calculated scores
+- **Table Image (PNG)** --- formatted metric table
+- **Data Summary (PDF)** --- concise one-page snapshot
+- **Full Report (PDF)** --- comprehensive report with comparisons to other
+  autosaved sessions
+
+## Demo Mode
+
+To explore the app with bundled sample data (no files are written to disk):
+
+```{r demo}
+run_macroibi(demo_mode = TRUE)
+```
+
+Click "OK" on the demo message, then click **Load Autosave** on the left
+sidebar. Demo files will be listed so you can explore all features.
+
+## Batch Export
+
+For scripted or automated workflows, use `generate_reports()` to produce
+outputs without launching the Shiny app. See
+`vignette("batch-export", package = "macroibi")` for details.
+
+## Where Are My Files Saved?
+
+Autosaves are stored in your user data folder:
+
+- **Windows:** `C:\Users\[YourName]\AppData\Local\R\macroibi\data\`
+- **Mac:** `~/Library/Application Support/macroibi/data/`
+
+## Further Reading
+
+- `vignette("batch-export", package = "macroibi")` --- scripted report
+  generation
+- `vignette("field-and-app-guide", package = "macroibi")` --- full field
+  sampling protocol and detailed app guide
