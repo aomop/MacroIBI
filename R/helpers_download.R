@@ -12,7 +12,7 @@ assemble_download_data <- function(selected_list, shared_reactives, group_defs, 
   
   all_data <- lapply(section_ids, function(section_id) {
     # Only care about actual taxon sections
-    if (!startsWith(section_id, "section_")) {
+    if (!startsWith(section_id, SECTION_PREFIX)) {
       return(NULL)
     }
     
@@ -46,7 +46,7 @@ assemble_download_data <- function(selected_list, shared_reactives, group_defs, 
           group_name = group_name,
           section_id = section_id,
           Taxon      = row$taxon,
-          Common     = taxonomy_data$common[taxonomy_data$tsn == row$tsn],
+          Common     = taxonomy_data$common_names[taxonomy_data$tsn == row$tsn],
           Level      = taxonomy_data$level[taxonomy_data$tsn == row$tsn],
           Dipnet1    = row$dipnet1,
           Dipnet2    = row$dipnet2,

@@ -13,7 +13,8 @@ generate_single_output(
   metric_scores,
   taxa_data,
   autosave_file,
-  taxonomy
+  taxonomy,
+  comparison_metrics = NULL
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ generate_single_output(
 \item{autosave_file}{Original autosave filename.}
 
 \item{taxonomy}{Taxonomy data frame for Level lookup.}
+
+\item{comparison_metrics}{Data frame of comparison metric scores from other
+wetlands, or a 0-row data frame if no comparison data is available.}
 }
 \value{
 Data frame with result.

@@ -1,5 +1,15 @@
 # tests/testthat/test-download-assemble-data.R
 
+# Minimal taxonomy_data used across tests: tsn matches the rows in selected_list
+make_taxonomy_data <- function() {
+  data.frame(
+    tsn          = c(1001L, 1002L, 1003L),
+    common_names = c("Common A", "Common B", "Common C"),
+    level        = c("Genus", "Species", "Family"),
+    stringsAsFactors = FALSE
+  )
+}
+
 testthat::test_that("assemble_download_data combines sections and stamps metadata", {
   # Fake group_defs mapping section IDs to group meta
   group_defs <- data.frame(
@@ -8,13 +18,13 @@ testthat::test_that("assemble_download_data combines sections and stamps metadat
     group_name = c("Group One", "Group Two"),
     stringsAsFactors = FALSE
   )
-  
+
   # Fake shared_reactives with title and date
   shared_reactives <- list(
     user_title = "Test Wetland",
     user_date  = as.Date("2025-12-01")
   )
-  
+
   # Fake selected_list structure:
   # - list names are section IDs (section_1, section_2)
   # - each has a $data field that is a list of rows
@@ -61,42 +71,47 @@ testthat::test_that("assemble_download_data combines sections and stamps metadat
       )
     )
   )
-  
+
   result <- assemble_download_data(
     selected_list    = selected_list,
     shared_reactives = shared_reactives,
-    group_defs       = group_defs
+    group_defs       = group_defs,
+    taxonomy_data    = make_taxonomy_data()
   )
-  
+
   # We expect 3 rows: 2 from section_1, 1 from section_2
   testthat::expect_s3_class(result, "data.frame")
   testthat::expect_equal(nrow(result), 3L)
-  
-  # Check required columns are present
+
+  # Check required columns are present (now includes Common and Level)
   expected_cols <- c(
     "group_id", "group_name", "section_id",
-    "Taxon", "Dipnet1", "Dipnet2",
+    "Taxon", "Common", "Level", "Dipnet1", "Dipnet2",
     "tsn", "parentTsn",
     "Title", "Date", "schema_version"
   )
   testthat::expect_true(all(expected_cols %in% names(result)))
-  
+
   # Check that group metadata and section_id are filled correctly
   # First two rows are section_1 / Group One
   testthat::expect_equal(result$group_id[1:2],   c("G1", "G1"))
   testthat::expect_equal(result$group_name[1:2], c("Group One", "Group One"))
   testthat::expect_equal(result$section_id[1:2], c("section_1", "section_1"))
-  
+
   # Third row is section_2 / Group Two
   testthat::expect_equal(result$group_id[3],   "G2")
   testthat::expect_equal(result$group_name[3], "Group Two")
   testthat::expect_equal(result$section_id[3], "section_2")
-  
+
   # Taxon and dipnet values preserved
   testthat::expect_equal(result$Taxon,   c("Taxon A", "Taxon B", "Taxon C"))
   testthat::expect_equal(result$Dipnet1, c(5L, 0L, 1L))
   testthat::expect_equal(result$Dipnet2, c(3L, 2L, 1L))
-  
+
+  # Common and Level looked up from taxonomy_data
+  testthat::expect_equal(result$Common, c("Common A", "Common B", "Common C"))
+  testthat::expect_equal(result$Level,  c("Genus", "Species", "Family"))
+
   # Shared metadata stamped correctly
   testthat::expect_equal(unique(result$Title),          "Test Wetland")
   testthat::expect_equal(unique(result$Date),           "2025-12-01")
@@ -110,12 +125,12 @@ testthat::test_that("assemble_download_data skips sections without mapping or da
     group_name = c("Group One"),
     stringsAsFactors = FALSE
   )
-  
+
   shared_reactives <- list(
     user_title = "Empty Test",
     user_date  = as.Date("2025-12-02")
   )
-  
+
   selected_list <- list(
     # Mapped section but empty data
     section_1 = list(
@@ -134,13 +149,14 @@ testthat::test_that("assemble_download_data skips sections without mapping or da
       )
     )
   )
-  
+
   result <- assemble_download_data(
     selected_list    = selected_list,
     shared_reactives = shared_reactives,
-    group_defs       = group_defs
+    group_defs       = group_defs,
+    taxonomy_data    = make_taxonomy_data()
   )
-  
+
   # Both sections should be effectively ignored, so we get NULL
   testthat::expect_null(result)
 })
@@ -152,19 +168,20 @@ testthat::test_that("assemble_download_data returns NULL when selected_list is e
     group_name = character(),
     stringsAsFactors = FALSE
   )
-  
+
   shared_reactives <- list(
     user_title = "No Data Test",
     user_date  = as.Date("2025-12-03")
   )
-  
+
   selected_list <- list()
-  
+
   result <- assemble_download_data(
     selected_list    = selected_list,
     shared_reactives = shared_reactives,
-    group_defs       = group_defs
+    group_defs       = group_defs,
+    taxonomy_data    = make_taxonomy_data()
   )
-  
+
   testthat::expect_null(result)
 })

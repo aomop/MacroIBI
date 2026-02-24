@@ -37,25 +37,11 @@ server_metrics <- function(id, selected_genera, taxonomy,
       ]
     
     # Initialize reactive values to store data for metrics
-    metric_scores <- shiny::reactiveValues(
-      data = data.frame(
-        metric_name = c(
-          "EOT Taxa: ", 
-          "Snail Taxa: ", 
-          "All Taxa: ", 
-          "Corixid Metric: ", 
-          "Abundance EOT: "
-        ),
-        response = c("Decrease", "Decrease", "Decrease", "Increase", "Decrease"),
-        min = c(1, 1, 10, 0, 0),
-        fifth = c(2, 2, 20, 0, 0.002),
-        ninety_fifth = c(12, 10, 40, 0.82, 0.16),
-        max = c(14, 12, 50, 1, 0.26),
-        metric_value = NA,
-        metric_score = NA,
-        adj_score = NA
-      )
-    )
+    cal <- metric_calibration_df()
+    cal$metric_value <- NA_real_
+    cal$metric_score <- NA_real_
+    cal$adj_score    <- NA_real_
+    metric_scores <- shiny::reactiveValues(data = cal)
     
     # Reactive observer to calculate metric values
     shiny::observe({
@@ -92,16 +78,7 @@ server_metrics <- function(id, selected_genera, taxonomy,
     
     # Render the metric scores table with formatted outputs
     output$metric_scores_table <- DT::renderDT({
-      summarized_data <- rbind(
-        metric_scores$data,
-        data.frame(
-          metric_name = "IBI Score (0-50)",
-          response = "Decrease",
-          min = NA, fifth = NA, ninety_fifth = NA, max = NA,
-          metric_value = NA, metric_score = NA,
-          adj_score = sum(metric_scores$data$adj_score, na.rm = TRUE)
-        )
-      )
+      summarized_data <- summarize_metric_scores(metric_scores$data)
       
       DT::datatable(
         summarized_data[, c("metric_name", "response", "metric_value", "metric_score", "adj_score")],

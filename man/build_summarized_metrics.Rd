@@ -13,7 +13,7 @@ build_summarized_metrics(metric_scores_data)
 A data.frame with the original rows plus a final IBI summary row.
 }
 \description{
-This takes the current metric scores and appends a final "IBI Score (0-50)"
-row whose \code{adj_score} is the sum of all other adjusted scores.
+Appends a final "IBI Score (0-50)" row whose \code{adj_score} is the sum of all
+other adjusted scores. Thin wrapper around \code{summarize_metric_scores()}.
 }
 \keyword{internal}

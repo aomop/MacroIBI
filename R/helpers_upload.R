@@ -10,7 +10,7 @@ split_uploaded_results <- function(data) {
   title <- if ("Title" %in% names(data)) data$Title[1] else NA_character_
   date  <- if ("Date"  %in% names(data)) data$Date[1]  else NA_character_
   
-  taxa <- data[, !(names(data) %in% c("Title", "Date", "schema_version")), drop = FALSE]
+  taxa <- data[, !(names(data) %in% METADATA_COLS), drop = FALSE]
   
   list(
     meta = list(
@@ -73,7 +73,7 @@ normalize_uploaded_taxa <- function(data, group_defs) {
     split_data <- split(data, data$Group)
     
     for (group_name in names(split_data)) {
-      if (!startsWith(group_name, "section_")) next
+      if (!startsWith(group_name, SECTION_PREFIX)) next
       
       group_data <- split_data[[group_name]]
       

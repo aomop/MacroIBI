@@ -115,7 +115,7 @@ testthat::test_that("load_taxonomy replaces empty strings and re-levels Group", 
   # Save to a temporary directory using the expected file name
   tmp_dir <- tempfile("taxonomy_extdata_")
   dir.create(tmp_dir, recursive = TRUE, showWarnings = FALSE)
-  fake_path <- file.path(tmp_dir, "taxonomy_20251208.rds")
+  fake_path <- file.path(tmp_dir, "taxonomy_2025-12-08.rds")
   saveRDS(fake_taxonomy, fake_path)
   
   # Point extdata_path at our temporary directory so load_taxonomy()

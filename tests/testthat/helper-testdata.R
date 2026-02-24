@@ -4,15 +4,16 @@
 # Minimal 2-taxon taxonomy for testing
 test_taxonomy_two_groups <- function() {
   data.frame(
-    taxon     = c("Aeshna", "Bithynia"),
-    Group     = c(
+    taxon        = c("Aeshna", "Bithynia"),
+    Group        = c(
       "Dragonflies, Mayflies, Damselflies, and Caddisflies - EOT Orders",
       "Snails - Class Gastropoda"
     ),
-    in_region = c("True", "True"),
-    level     = c("Genus", "Genus"),
-    tsn       = c(1001L, 2002L),
-    parentTsn = c(10L, 20L),
+    in_region    = c("True", "True"),
+    level        = c("Genus", "Genus"),
+    common_names = c("Darner dragonfly", "Bithynia snail"),
+    tsn          = c(1001L, 2002L),
+    parentTsn    = c(10L, 20L),
     stringsAsFactors = FALSE
   )
 }

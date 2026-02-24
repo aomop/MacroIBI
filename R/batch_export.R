@@ -214,7 +214,7 @@ process_autosave_file <- function(
   date_for_filename <- format_date_for_filename(user_date)
 
   # Remove metadata columns before processing
-  taxa_data <- data[, !(names(data) %in% c("Title", "Date", "schema_version")), drop = FALSE]
+  taxa_data <- data[, !(names(data) %in% METADATA_COLS), drop = FALSE]
 
   # Rebuild section data structure
   section_data <- tryCatch(
@@ -336,23 +336,9 @@ calculate_metrics_from_sections <- function(section_data, taxonomy, group_defs) 
     bugs_section = bugs_section
   )
 
-  # Build metric scores data frame
-  metric_data <- data.frame(
-    metric_name = c(
-      "EOT Taxa: ",
-      "Snail Taxa: ",
-      "All Taxa: ",
-      "Corixid Metric: ",
-      "Abundance EOT: "
-    ),
-    response = c("Decrease", "Decrease", "Decrease", "Increase", "Decrease"),
-    min = c(1, 1, 10, 0, 0),
-    fifth = c(2, 2, 20, 0, 0.002),
-    ninety_fifth = c(12, 10, 40, 0.82, 0.16),
-    max = c(14, 12, 50, 1, 0.26),
-    metric_value = c(eot_taxa, snail_taxa, all_taxa, corixid_ratio, eot_abundance),
-    stringsAsFactors = FALSE
-  )
+  # Build metric scores data frame from canonical calibration + computed values
+  metric_data <- metric_calibration_df()
+  metric_data$metric_value <- c(eot_taxa, snail_taxa, all_taxa, corixid_ratio, eot_abundance)
 
   # Calculate scores
   increase_rows <- grepl("Increase", metric_data$response)
@@ -617,6 +603,7 @@ generate_pdf_report <- function(
 #'
 #' Returns the left-hand side if not NULL, otherwise the right-hand side.
 #'
+#' @name null-coalescing-operator
 #' @param x Left-hand side value.
 #' @param y Right-hand side value (default).
 #' @return x if not NULL, otherwise y.

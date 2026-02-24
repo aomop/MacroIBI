@@ -317,7 +317,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     
     quality_class <- shiny::reactive({
       p <- summarize_metric_scores(metric_scores$data) %>%
-        dplyr::pull(adj_score)
+        dplyr::pull(.data$adj_score)
       
       t <- p[length(p)]
       

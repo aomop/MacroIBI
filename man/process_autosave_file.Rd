@@ -7,6 +7,7 @@
 process_autosave_file(
   file,
   autosave_path,
+  metric_autosave_path,
   output_path,
   types_to_generate,
   taxonomy,
@@ -17,6 +18,8 @@ process_autosave_file(
 \item{file}{Autosave filename.}
 
 \item{autosave_path}{Path to autosave directory.}
+
+\item{metric_autosave_path}{Path to the metric autosave directory.}
 
 \item{output_path}{Path to output directory.}
 

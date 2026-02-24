@@ -1,3 +1,9 @@
+# Metadata columns stamped onto every autosave/export CSV
+METADATA_COLS <- c("Title", "Date", "schema_version")
+
+# Prefix shared by all taxon-section module IDs (e.g. "section_1", "section_2")
+SECTION_PREFIX <- "section_"
+
 #' Evaluate a reactive or numeric value safely
 #'
 #' @param x A numeric value or a reactive returning numeric output.

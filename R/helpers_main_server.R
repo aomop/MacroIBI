@@ -12,15 +12,9 @@ build_group_defs <- function(group_list) {
 #' Normalize in_region to a logical flag
 #' @keywords internal
 normalize_in_region_flag <- function(taxonomy) {
-  taxonomy %>%
-    dplyr::mutate(
-      in_region_flag = dplyr::case_when(
-        .data$in_region %in% c(TRUE, "TRUE", "True", "T", "1")    ~ TRUE,
-        .data$in_region %in% c(FALSE, "FALSE", "False", "F", "0") ~ FALSE,
-        TRUE                                                      ~ NA
-      ),
-      in_region_flag = dplyr::coalesce(.data$in_region_flag, TRUE)
-    )
+  falsy <- c(FALSE, "FALSE", "False", "F", "0")
+  taxonomy$in_region_flag <- !(taxonomy$in_region %in% falsy)
+  taxonomy
 }
 
 #' Build choices for the main taxon selectize input
@@ -127,5 +121,5 @@ sum_group_totals <- function(counts, expected_groups) {
     return(0)
   }
   
-  sum(purrr::map_dbl(counts, reactive_handler), na.rm = TRUE)
+  sum(vapply(counts, reactive_handler, numeric(1L)), na.rm = TRUE)
 }

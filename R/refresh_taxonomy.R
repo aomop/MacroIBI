@@ -44,7 +44,7 @@ refresh_taxonomy <- function(
   
   latest_file_path <- rownames(file_details)[which.max(file_details$mtime)]
   
-  latest_taxonomy <- read.csv(latest_file_path)
+  latest_taxonomy <- utils::read.csv(latest_file_path)
   
   saveRDS(latest_taxonomy, paste0(output_path, sprintf("taxonomy_%s.rds", Sys.Date())))
 

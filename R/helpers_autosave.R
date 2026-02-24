@@ -1,38 +1,13 @@
 #' Build summarized metric table for autosave
 #'
-#' This takes the current metric scores and appends a final "IBI Score (0-50)"
-#' row whose `adj_score` is the sum of all other adjusted scores.
+#' Appends a final "IBI Score (0-50)" row whose `adj_score` is the sum of all
+#' other adjusted scores. Thin wrapper around \code{summarize_metric_scores()}.
 #'
 #' @param metric_scores_data A data.frame with at least an `adj_score` column.
 #' @return A data.frame with the original rows plus a final IBI summary row.
 #' @keywords internal
 build_summarized_metrics <- function(metric_scores_data) {
-  # Defensive check: require adj_score column
-  if (!"adj_score" %in% names(metric_scores_data)) {
-    stop("metric_scores_data must contain an 'adj_score' column.")
-  }
-  
-  # Calculate the total adjusted score, ignoring missing values
-  total_adj <- sum(metric_scores_data$adj_score, na.rm = TRUE)
-  
-  # Build the final IBI summary row
-  ibi_row <- data.frame(
-    metric_name  = "IBI Score (0-50)",
-    response     = "Decrease",
-    min          = NA_real_,
-    fifth        = NA_real_,
-    ninety_fifth = NA_real_,
-    max          = NA_real_,
-    metric_value = NA_real_,
-    metric_score = NA_real_,
-    adj_score    = total_adj,
-    stringsAsFactors = FALSE
-  )
-  
-  # rbind will recycle missing columns in metric_scores_data as needed
-  out <- rbind(metric_scores_data, ibi_row)
-  rownames(out) <- NULL
-  out
+  summarize_metric_scores(metric_scores_data)
 }
 
 #' Flatten selected genera into an autosave-friendly data.frame
@@ -63,7 +38,7 @@ build_autosave_df <- function(selected_snapshot, group_defs) {
   # Build a list of data.frames, one per section with data
   all_rows <- lapply(section_ids, function(section_id) {
     # Only modules are named "section_*" in this app
-    if (!startsWith(section_id, "section_")) {
+    if (!startsWith(section_id, SECTION_PREFIX)) {
       return(NULL)
     }
     
@@ -223,7 +198,7 @@ build_sections_from_autosave <- function(autosave_df, group_defs) {
     
     for (group_name in names(split_by_group)) {
       # Only section_* entries are relevant for this app
-      if (!startsWith(group_name, "section_")) {
+      if (!startsWith(group_name, SECTION_PREFIX)) {
         next
       }
       

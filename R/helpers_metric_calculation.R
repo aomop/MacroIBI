@@ -1,3 +1,31 @@
+#' Canonical IBI metric calibration table
+#'
+#' Returns the five-metric calibration data frame with fixed boundary values
+#' (min, 5th-percentile, 95th-percentile, max) derived from reference
+#' wetland data. This is the single source of truth used by both the Shiny
+#' server and the headless batch export path.
+#'
+#' @return A data.frame with columns: metric_name, response, min, fifth,
+#'   ninety_fifth, max.
+#' @keywords internal
+metric_calibration_df <- function() {
+  data.frame(
+    metric_name = c(
+      "EOT Taxa: ",
+      "Snail Taxa: ",
+      "All Taxa: ",
+      "Corixid Metric: ",
+      "Abundance EOT: "
+    ),
+    response = c("Decrease", "Decrease", "Decrease", "Increase", "Decrease"),
+    min          = c(1,    1,  10, 0,     0),
+    fifth        = c(2,    2,  20, 0,     0.002),
+    ninety_fifth = c(12,  10,  40, 0.82,  0.16),
+    max          = c(14,  12,  50, 1,     0.26),
+    stringsAsFactors = FALSE
+  )
+}
+
 #' Calculate a metric score
 #'
 #' @param values Metric values.

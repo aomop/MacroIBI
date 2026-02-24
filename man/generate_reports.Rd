@@ -8,7 +8,8 @@ generate_reports(
   autosave_file = "all",
   output_type = "all",
   output_path = getwd(),
-  autosave_path = NULL
+  autosave_path = NULL,
+  metric_autosave_path = NULL
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ the current working directory.}
 
 \item{autosave_path}{Character. Path to the directory containing autosave
 files. Defaults to the package's autosave directory.}
+
+\item{metric_autosave_path}{Character. Path to the directory containing
+metric autosave files used to build the comparison pool for report
+boxplots. Defaults to the package's metric autosave directory.}
 }
 \value{
 A data frame with columns:

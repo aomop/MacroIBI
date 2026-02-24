@@ -9,7 +9,9 @@ generate_pdf_report(
   user_title,
   user_date,
   metric_scores,
-  template_name
+  template_name,
+  raw_data = NULL,
+  comparison_metrics = NULL
 )
 }
 \arguments{
@@ -22,6 +24,13 @@ generate_pdf_report(
 \item{metric_scores}{Metric scores data frame.}
 
 \item{template_name}{Name of the Rmd template file.}
+
+\item{raw_data}{Optional raw taxa data frame passed to the data summary
+template as \code{params$raw_data}. Ignored for the full report template.}
+
+\item{comparison_metrics}{Optional data frame of metric scores from other
+wetlands, used to build comparison boxplots in both report templates.
+Defaults to an empty 0-row data frame when \code{NULL}.}
 }
 \description{
 Generate a PDF report from template
