@@ -1,5 +1,12 @@
 ---
 
+# macroibi 1.1.3
+### 02/24/2026
+- **Fix:** `generate_reports()` data summary and full report outputs are now rendered properly.
+- **Improvement:** `generate_reports()` now includes detailed outputs with error handling instead of hiding logs in `tryCatch()`.
+
+---
+
 # macroibi 1.1.2
 ### 02/16/2026
 - **New:** Common names are now included in raw data outputs

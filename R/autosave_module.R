@@ -252,7 +252,12 @@ autosave_module_server <- function(
           shared_reactives$user_title <- data$Title[1]
         }
         if ("Date" %in% colnames(data)) {
-          shared_reactives$user_date <- data$Date[1]
+          raw_date <- data$Date[1]
+          shared_reactives$user_date <- tryCatch(
+            as.Date(raw_date),
+            error   = function(e) raw_date,
+            warning = function(w) raw_date
+          )
         }
         
         # Drop non-taxa columns before splitting
@@ -277,7 +282,21 @@ autosave_module_server <- function(
         }
         
         message("Loaded sections from autosave: ", paste(names(section_data), collapse = ", "))
-        
+
+        # Clear ALL sections first so that taxa from a prior session do not
+        # bleed into the freshly loaded state.
+        all_section_ids <- names(shiny::isolate(shiny::reactiveValuesToList(selected_genera)))
+        for (section_id in all_section_ids) {
+          if (startsWith(section_id, "section_") && !is.null(selected_genera[[section_id]])) {
+            shiny::isolate({
+              current_group <- selected_genera[[section_id]]()
+              if (inherits(current_group, "reactivevalues")) {
+                current_group$data <- list()
+              }
+            })
+          }
+        }
+
         # Push loaded data back into selected_genera
         for (section_id in names(section_data)) {
           # Only update sections that actually exist in selected_genera
@@ -285,14 +304,14 @@ autosave_module_server <- function(
             shiny::isolate({
               # This is a reactive() that returns a reactiveValues object
               current_group <- selected_genera[[section_id]]()
-              
+
               # Sanity check: should be a reactivevalues
               if (!inherits(current_group, "reactivevalues")) {
                 message("Warning: selected_genera[[", section_id, "]]() did not return a reactivevalues object.")
               } else {
                 # Overwrite the data slot with the loaded rows
                 current_group$data <- section_data[[section_id]]$data
-                
+
                 # IMPORTANT:
                 # - We do NOT call selected_genera[[section_id]](current_group)
                 #   because it's a reactive(), not a reactiveVal.

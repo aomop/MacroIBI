@@ -137,7 +137,7 @@ testthat::test_that("load_taxonomy replaces empty strings and re-levels Group", 
     "Other Aquatic Insects",
     "Snails - Class Gastropoda",
     "Leeches - Order Hirudinida",
-    "Crustaceans - Subclass Eumalacostraca",
+    "Crustaceans - Subphylum Crustacea",
     "Other Non-Insect Invertebrates"
   )
   

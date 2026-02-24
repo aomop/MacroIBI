@@ -92,84 +92,93 @@ asis_output(paste0(
 ```
 
 ```{r boxplots, echo=FALSE, warning = FALSE, message = FALSE, include = FALSE}
-comparison_other <- params$comparison_metrics %>%
-  dplyr::filter(.data$metric_name != "IBI Score (0-50)")
+has_comparison <- is.data.frame(params$comparison_metrics) &&
+  nrow(params$comparison_metrics) > 0L
 
-current_other <- params$metric_data %>%
-  dplyr::filter(.data$metric_name != "IBI Score (0-50)")
+if (has_comparison) {
+  comparison_other <- params$comparison_metrics %>%
+    dplyr::filter(.data$metric_name != "IBI Score (0-50)")
 
-comp_boxes <- ggplot(
-  comparison_other,
-  aes(x = .data$metric_name, y = .data$adj_score)
-) +
-  geom_boxplot() +
-  labs(x = "", y = "Adjusted Score") +
-  geom_segment(
-    data = current_other,
-    aes(
-      x    = as.numeric(factor(.data$metric_name,
-                               levels = unique(comparison_other$metric_name))) - 0.4,
-      xend = as.numeric(factor(.data$metric_name,
-                               levels = unique(comparison_other$metric_name))) + 0.4,
-      y    = .data$adj_score,
-      yend = .data$adj_score
-    ),
-    color = "red",
-    size  = 1
+  current_other <- params$metric_data %>%
+    dplyr::filter(.data$metric_name != "IBI Score (0-50)")
+
+  comp_boxes <- ggplot(
+    comparison_other,
+    aes(x = .data$metric_name, y = .data$adj_score)
   ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    geom_boxplot() +
+    labs(x = "", y = "Adjusted Score") +
+    geom_segment(
+      data = current_other,
+      aes(
+        x    = as.numeric(factor(.data$metric_name,
+                                 levels = unique(comparison_other$metric_name))) - 0.4,
+        xend = as.numeric(factor(.data$metric_name,
+                                 levels = unique(comparison_other$metric_name))) + 0.4,
+        y    = .data$adj_score,
+        yend = .data$adj_score
+      ),
+      color = "red",
+      size  = 1
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-comparison_total <- params$comparison_metrics %>%
-  dplyr::filter(.data$metric_name == "IBI Score (0-50)")
+  comparison_total <- params$comparison_metrics %>%
+    dplyr::filter(.data$metric_name == "IBI Score (0-50)")
 
-current_total <- params$metric_data %>%
-  dplyr::filter(.data$metric_name == "IBI Score (0-50)")
+  current_total <- params$metric_data %>%
+    dplyr::filter(.data$metric_name == "IBI Score (0-50)")
 
-total_box <- ggplot(
-  comparison_total,
-  aes(x = .data$metric_name, y = .data$adj_score)
-) +
-  geom_boxplot() +
-  labs(x = "", y = "Total Adjusted Score") +
-  geom_segment(
-    data = current_total,
-    aes(
-      x    = 0.6,
-      xend = 1.4,
-      y    = .data$adj_score,
-      yend = .data$adj_score
-    ),
-    color = "red",
-    size  = 1
+  total_box <- ggplot(
+    comparison_total,
+    aes(x = .data$metric_name, y = .data$adj_score)
   ) +
-  theme_minimal()
+    geom_boxplot() +
+    labs(x = "", y = "Total Adjusted Score") +
+    geom_segment(
+      data = current_total,
+      aes(
+        x    = 0.6,
+        xend = 1.4,
+        y    = .data$adj_score,
+        yend = .data$adj_score
+      ),
+      color = "red",
+      size  = 1
+    ) +
+    theme_minimal()
 
-figure1_text <- paste0(
-  "Figures 1 & 2: Distributions of calculated metric scores from all surveyed sites (left). ",
-  "Distribution of total IBI score from all surveyed sites (right). ",
-  "The red lines indicate the score for ",
-  params$user_title
-)
+  figure1_text <- paste0(
+    "Figures 1 & 2: Distributions of calculated metric scores from all surveyed sites (left). ",
+    "Distribution of total IBI score from all surveyed sites (right). ",
+    "The red lines indicate the score for ",
+    params$user_title
+  )
 
-plots <- grid.arrange(comp_boxes, total_box, nrow = 1)
+  plots <- grid.arrange(comp_boxes, total_box, nrow = 1)
 
-plotpath <- file.path(getwd(), "combinedplots.pdf")
+  plotpath <- "combinedplots.pdf"
 
-ggsave(filename = plotpath, plot = plots)
+  ggsave(filename = plotpath, plot = plots)
+}
 ```
 
 ```{r, echo = FALSE}
-knitr::asis_output(paste0(
-  "\\vspace{-0.3cm}\n",  # pull it up
-  "\\resizebox{\\textwidth}{!}{%\n",
-  "\\begin{minipage}{\\textwidth}\n",
-  "\\includegraphics{", plotpath, "}\n",
-  "\\vspace{0.1cm}\n",  # tight caption spacing
-  "\\small\\textit{", escape_latex(figure1_text), "}\\par\n",  # smaller caption
-  "\\end{minipage}%\n",
-  "}\n"
-))
+if (has_comparison) {
+  knitr::asis_output(paste0(
+    "\\vspace{-0.3cm}\n",
+    "\\resizebox{\\textwidth}{!}{%\n",
+    "\\begin{minipage}{\\textwidth}\n",
+    "\\includegraphics{", plotpath, "}\n",
+    "\\vspace{0.1cm}\n",
+    "\\small\\textit{", escape_latex(figure1_text), "}\\par\n",
+    "\\end{minipage}%\n",
+    "}\n"
+  ))
+} else {
+  knitr::asis_output("\\textit{Comparison data is not available for this report.}\n\n")
+}
 ```
 
 ```{r, echo=FALSE, warning = FALSE, message = FALSE}
@@ -228,16 +237,16 @@ ordered_taxa <- get_ordered_taxa(tree_data)
 # Build expanded table
 taxa_expanded <- params$taxonomy %>%
   dplyr::filter(.data$taxon %in% observed_taxa) %>%
-  dplyr::select(
-    .data$taxon,
-    .data$tsn,
-    .data$parentTsn,
-    .data$level
+  dplyr::transmute(
+    taxon = .data$taxon,
+    tsn = .data$tsn,
+    parentTsn = readr::parse_number(as.character(.data$parentTsn)),
+    level = .data$level
   ) %>%
   dplyr::left_join(
     params$taxonomy %>%
-      dplyr::select(
-        .data$tsn,
+      dplyr::transmute(
+        tsn = readr::parse_number(as.character(.data$tsn)),
         parent_taxon = .data$taxon
       ),
     by = c("parentTsn" = "tsn")

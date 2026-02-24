@@ -21,6 +21,9 @@
 #'   the current working directory.
 #' @param autosave_path Character. Path to the directory containing autosave
 #'   files. Defaults to the package's autosave directory.
+#' @param metric_autosave_path Character. Path to the directory containing
+#'   metric autosave files used to build the comparison pool for report
+#'   boxplots. Defaults to the package's metric autosave directory.
 #'
 #' @return A data frame with columns:
 #'   \itemize{
@@ -52,7 +55,8 @@ generate_reports <- function(
     autosave_file = "all",
     output_type = "all",
     output_path = getwd(),
-    autosave_path = NULL
+    autosave_path = NULL,
+    metric_autosave_path = NULL
 ) {
   # Validate output_type
   valid_types <- c("metrics", "raw_data", "pdf_report", "pdf_summary", "all")
@@ -70,6 +74,11 @@ generate_reports <- function(
   # Set autosave path
   if (is.null(autosave_path)) {
     autosave_path <- get_app_path("autosave_dir")
+  }
+
+  # Set metric autosave path (used to build comparison pool for boxplots)
+  if (is.null(metric_autosave_path)) {
+    metric_autosave_path <- get_app_path("metric_autosave_dir")
   }
 
   if (!dir.exists(autosave_path)) {
@@ -116,9 +125,11 @@ generate_reports <- function(
 
   # Process each file
   results <- lapply(files, function(file) {
+    message(sprintf("[generate_reports] Processing: %s", file))
     process_autosave_file(
       file = file,
       autosave_path = autosave_path,
+      metric_autosave_path = metric_autosave_path,
       output_path = output_path,
       types_to_generate = types_to_generate,
       taxonomy = taxonomy,
@@ -135,6 +146,19 @@ generate_reports <- function(
   n_total <- nrow(result_df)
   message(sprintf("Generated %d/%d outputs successfully.", n_success, n_total))
 
+  # Print details for any failures
+  failures <- result_df[!result_df$success, ]
+  if (nrow(failures) > 0L) {
+    message("Failed outputs:")
+    for (i in seq_len(nrow(failures))) {
+      message(sprintf("  [%s] %s -- %s",
+        failures$output_type[i],
+        failures$autosave_file[i],
+        failures$message[i]
+      ))
+    }
+  }
+
   invisible(result_df)
 }
 
@@ -142,6 +166,7 @@ generate_reports <- function(
 #'
 #' @param file Autosave filename.
 #' @param autosave_path Path to autosave directory.
+#' @param metric_autosave_path Path to the metric autosave directory.
 #' @param output_path Path to output directory.
 #' @param types_to_generate Character vector of output types.
 #' @param taxonomy Taxonomy data frame.
@@ -151,6 +176,7 @@ generate_reports <- function(
 process_autosave_file <- function(
     file,
     autosave_path,
+    metric_autosave_path,
     output_path,
     types_to_generate,
     taxonomy,
@@ -177,7 +203,12 @@ process_autosave_file <- function(
 
   # Extract metadata
   user_title <- if ("Title" %in% names(data)) data$Title[1] else "Unknown"
-  user_date <- if ("Date" %in% names(data)) data$Date[1] else NA
+  raw_date   <- if ("Date" %in% names(data)) data$Date[1] else NA
+  user_date  <- tryCatch(
+    as.Date(raw_date),
+    error   = function(e) raw_date,
+    warning = function(w) raw_date
+  )
 
   # Parse date for filename
   date_for_filename <- format_date_for_filename(user_date)
@@ -205,6 +236,28 @@ process_autosave_file <- function(
   # Calculate metrics
   metric_scores <- calculate_metrics_from_sections(section_data, taxonomy, group_defs)
 
+  # Build comparison pool from other metric autosave files, mirroring the
+  # logic in results_download_server() but for the batch context.
+  comparison_metrics <- tryCatch({
+    all_metric_files <- list.files(
+      metric_autosave_path,
+      pattern    = "^metrics_.*\\.rds$",
+      full.names = TRUE
+    )
+    current_metric_file <- file.path(
+      metric_autosave_path,
+      paste0("metrics_", user_title, ".rds")
+    )
+    other_metric_files <- all_metric_files[all_metric_files != current_metric_file]
+    if (length(other_metric_files) > 0L) {
+      do.call(rbind, lapply(other_metric_files, readRDS))
+    } else {
+      metric_scores[0L, , drop = FALSE]
+    }
+  }, error = function(e) {
+    metric_scores[0L, , drop = FALSE]
+  })
+
   # Generate each output type
   results <- lapply(types_to_generate, function(type) {
     generate_single_output(
@@ -216,7 +269,8 @@ process_autosave_file <- function(
       metric_scores = metric_scores,
       taxa_data = taxa_data,
       autosave_file = file,
-      taxonomy = taxonomy
+      taxonomy = taxonomy,
+      comparison_metrics = comparison_metrics
     )
   })
 
@@ -379,6 +433,8 @@ calculate_corixid_ratio_static <- function(
 #' @param taxa_data Raw taxa data.
 #' @param autosave_file Original autosave filename.
 #' @param taxonomy Taxonomy data frame for Level lookup.
+#' @param comparison_metrics Data frame of comparison metric scores from other
+#'   wetlands, or a 0-row data frame if no comparison data is available.
 #' @return Data frame with result.
 #' @keywords internal
 generate_single_output <- function(
@@ -390,11 +446,13 @@ generate_single_output <- function(
     metric_scores,
     taxa_data,
     autosave_file,
-    taxonomy
+    taxonomy,
+    comparison_metrics = NULL
 ) {
   # Sanitize title for filename
   safe_title <- gsub("[^A-Za-z0-9_-]", "_", user_title)
 
+  message(sprintf("  [%s] %s", type, autosave_file))
   result <- tryCatch({
     switch(type,
       "metrics" = {
@@ -430,7 +488,8 @@ generate_single_output <- function(
           user_title = user_title,
           user_date = user_date,
           metric_scores = metric_scores,
-          template_name = "full_report_template.Rmd"
+          template_name = "full_report_template.Rmd",
+          comparison_metrics = comparison_metrics
         )
         list(file = filepath, success = TRUE, message = "OK")
       },
@@ -442,15 +501,23 @@ generate_single_output <- function(
           user_title = user_title,
           user_date = user_date,
           metric_scores = metric_scores,
-          template_name = "datasum_report_template.Rmd"
+          template_name = "datasum_report_template.Rmd",
+          raw_data = taxa_data,
+          comparison_metrics = comparison_metrics
         )
         list(file = filepath, success = TRUE, message = "OK")
       },
       list(file = NA_character_, success = FALSE, message = paste("Unknown type:", type))
     )
   }, error = function(e) {
-    list(file = NA_character_, success = FALSE, message = conditionMessage(e))
+    msg <- conditionMessage(e)
+    message(sprintf("  -> FAILED (%s): %s", type, msg))
+    list(file = NA_character_, success = FALSE, message = msg)
   })
+
+  if (result$success) {
+    message(sprintf("  -> OK: %s", result$file))
+  }
 
   data.frame(
     autosave_file = autosave_file,
@@ -469,13 +536,20 @@ generate_single_output <- function(
 #' @param user_date Sampling date.
 #' @param metric_scores Metric scores data frame.
 #' @param template_name Name of the Rmd template file.
+#' @param raw_data Optional raw taxa data frame passed to the data summary
+#'   template as \code{params$raw_data}. Ignored for the full report template.
+#' @param comparison_metrics Optional data frame of metric scores from other
+#'   wetlands, used to build comparison boxplots in both report templates.
+#'   Defaults to an empty 0-row data frame when \code{NULL}.
 #' @keywords internal
 generate_pdf_report <- function(
     filepath,
     user_title,
     user_date,
     metric_scores,
-    template_name
+    template_name,
+    raw_data = NULL,
+    comparison_metrics = NULL
 ) {
   template_path <- system.file("app/www", template_name, package = "macroibi")
 
@@ -484,40 +558,57 @@ generate_pdf_report <- function(
   }
 
   temp_rmd <- tempfile(fileext = ".Rmd")
+  message(sprintf("    template : %s", template_name))
+  message(sprintf("    output   : %s", filepath))
+  message(sprintf("    temp_rmd : %s", temp_rmd))
   file.copy(template_path, temp_rmd, overwrite = TRUE)
 
-  # Prepare params based on template
-  params <- list(
-    user_title = user_title,
-    user_date = user_date,
-    report_date = add_ordinal_suffix(Sys.Date()),
-    data = metric_scores,
-    comparison_metrics = metric_scores[0, , drop = FALSE]  # Empty comparison
-  )
+  # Build comparison_metrics value used by both templates
+  comparison_metrics_param <- if (is.data.frame(comparison_metrics) && nrow(comparison_metrics) > 0L) {
+    comparison_metrics
+  } else {
+    metric_scores[0L, , drop = FALSE]
+  }
 
-  # For datasum template, add additional params
+  # Prepare params based on template
   if (grepl("datasum", template_name)) {
-    params$metric_data <- metric_scores
-    params$raw_data <- NULL
-    params$taxonomy <- load_taxonomy()
-    # Calculate quality class
     total_score <- metric_scores$adj_score[metric_scores$metric_name == "IBI Score (0-50)"]
-    params$quality_class <- dplyr::case_when(
-      total_score >= 38 ~ "4 (Excellent)",
-      total_score >= 28 ~ "3 (Good)",
-      total_score >= 20 ~ "2 (Fair)",
-      total_score >= 10 ~ "1 (Poor)",
-      TRUE ~ NA_character_
+    params <- list(
+      user_title = user_title,
+      user_date = user_date,
+      report_date = add_ordinal_suffix(Sys.Date()),
+      metric_data = metric_scores,
+      comparison_metrics = comparison_metrics_param,
+      raw_data = raw_data,
+      taxonomy = load_taxonomy(),
+      quality_class = dplyr::case_when(
+        total_score >= 38 ~ "4 (Excellent)",
+        total_score >= 28 ~ "3 (Good)",
+        total_score >= 20 ~ "2 (Fair)",
+        total_score >= 10 ~ "1 (Poor)",
+        TRUE ~ NA_character_
+      )
+    )
+  } else {
+    params <- list(
+      user_title = user_title,
+      user_date = user_date,
+      report_date = add_ordinal_suffix(Sys.Date()),
+      data = metric_scores,
+      comparison_metrics = comparison_metrics_param
     )
   }
 
+  message("    calling rmarkdown::render()...")
   rmarkdown::render(
     input = temp_rmd,
     output_file = filepath,
     params = params,
     envir = new.env(parent = asNamespace("macroibi")),
-    quiet = TRUE
+    quiet = FALSE
   )
+  message("    rmarkdown::render() returned.")
+  message(sprintf("    file exists: %s", file.exists(filepath)))
 
   invisible(filepath)
 }

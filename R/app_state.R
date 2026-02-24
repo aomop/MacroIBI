@@ -49,7 +49,7 @@ load_taxonomy <- function() {
   
   files <- list.files(
     path = extdata_dir,
-    pattern = "^taxonomy_.*\\.rds$",
+    pattern = "^taxonomy_\\d{4}-\\d{2}-\\d{2}\\.rds$",
     full.names = TRUE
   )
   
@@ -75,7 +75,7 @@ load_taxonomy <- function() {
           "Other Aquatic Insects",
           "Snails - Class Gastropoda",
           "Leeches - Order Hirudinida",
-          "Crustaceans - Subclass Eumalacostraca",
+          "Crustaceans - Subphylum Crustacea",
           "Other Non-Insect Invertebrates"
         )
       )
