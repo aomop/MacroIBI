@@ -95,7 +95,7 @@ Record the zone(s) used.
    Stay in the same zone but choose new micro-locations.  
    Samples may be combined or kept separate for processing; both ultimately contribute to one IBI evaluation.
 
-> **Tip:** With larger crews, some people can begin the second sample while others finish the 10-minute sort; this saves significant time.
+>  With larger crews, some people can begin the second sample while others finish the first; this saves significant time.
 
 ---
 
@@ -133,7 +133,6 @@ Record the zone(s) used.
    - Pre-sort into visually similar piles to speed identification.  
    - Samples may be rinsed with water to reduce irritation during the process, BUT;
    - If samples must remain preserved after ID, do not use any water.
-   
 
 4. **Enter Data Periodically**  
    Relay taxa and counts to the data handler for entry into the app.  
@@ -155,8 +154,6 @@ You need two free programs:
 | **R** | The engine that powers the app. You won't interact with it directly. |
 | **RStudio** | The program you'll actually use. It provides a user-friendly interface for running R commands. |
 
-Think of R as the engine and RStudio as the dashboard of a car — you need both, but you only interact with the dashboard.
-
 ---
 
 ### Step 1: Install R
@@ -166,11 +163,9 @@ Think of R as the engine and RStudio as the dashboard of a car — you need both
    - **Windows:** Click "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
    - **Mac:** Click "Download R for macOS" → Choose the version for your Mac (Apple Silicon or Intel)
 3. Open the downloaded file and run the installer
-4. **Accept all default options** — just keep clicking "Next" or "Continue"
+4. **Accept all default options** - just keep clicking "Next" or "Continue"
 
 ![CRAN download page showing where to click](images/01-cran-download.png)
-
-**✓ Success:** The installer finishes without errors. You don't need to open R directly.
 
 ---
 
@@ -183,11 +178,9 @@ Think of R as the engine and RStudio as the dashboard of a car — you need both
 
 ![RStudio download page](images/02-rstudio-download.png)
 
-**✓ Success:** RStudio appears in your applications/programs.
-
 ---
 
-### Step 3: Install Rtools (Windows Only — Required)
+### Step 3: Install Rtools (Windows Only - Required)
 
 > **Mac users:** Skip to Step 4.
 
@@ -200,8 +193,6 @@ Think of R as the engine and RStudio as the dashboard of a car — you need both
 
 ![Rtools download page](images/03-rtools-download.png)
 
-**✓ Success:** The installer completes. You won't see Rtools anywhere — it works behind the scenes.
-
 ---
 
 ### Step 4: Open RStudio
@@ -209,7 +200,7 @@ Think of R as the engine and RStudio as the dashboard of a car — you need both
 - **Windows:** Click the Start menu and search for "RStudio", then click to open
 - **Mac:** Open Finder → Applications → RStudio
 
-When RStudio opens, you'll see a window divided into panels. Look for the **Console** — it's the panel with a `>` symbol where you can type commands. This is usually in the bottom-left area.
+When RStudio opens, you'll see a window divided into panels. Look for the **Console** - it's the panel with a `>` symbol where you can type commands. This is usually in the bottom-left area.
 
 ![RStudio interface with Console highlighted](images/04-rstudio-console.png)
 
@@ -217,30 +208,26 @@ When RStudio opens, you'll see a window divided into panels. Look for the **Cons
 
 ### Step 5: Install the MacroIBI Package
 
-Now you'll type commands in the Console. Here's how:
+Now you'll type commands in the Console:
 
 1. **Click in the Console** (next to the `>` symbol)
 2. **Type or copy-paste** the command shown below
 3. **Press Enter** to run it
 4. **Wait** for the `>` to reappear before typing the next command
 
-#### First command — Install the "remotes" helper package:
+#### First command - Install the "remotes" helper package:
 
 ```r
 install.packages("remotes")
 ```
 
-You'll see text scrolling as R downloads and installs the package. **This is normal.**
-
-**✓ Success:** You see a message containing `package 'remotes' successfully unpacked` and the `>` prompt returns.
-
-#### Second command — Install MacroIBI:
+#### Second command - Install MacroIBI:
 
 ```r
 remotes::install_github("aomop/MacroIBI")
 ```
 
-This downloads MacroIBI from the internet. It may take 1-2 minutes. You'll see lots of text — **this is normal.**
+This downloads MacroIBI from the internet. It may take 1-2 minutes. You'll see lots of text - **this is normal.**
 
 **✓ Success:** The console says `* DONE (macroibi)` and the `>` prompt returns.
 
@@ -293,9 +280,9 @@ When running R commands, you'll see various messages in the Console. Here's what
 
 | What You See | What It Means | Action Needed |
 |--------------|---------------|---------------|
-| **Black text scrolling by** | Normal progress messages | None — just wait |
-| **Blue text** | Informational notes | None — just informational |
-| **Red text with "Warning"** | A heads-up, but not an error | Usually none — warnings often don't prevent success |
+| **Black text scrolling by** | Normal progress messages | None - just wait |
+| **Blue text** | Informational notes | None - just informational |
+| **Red text with "Warning"** | A heads-up, but not an error | Usually none - warnings often don't prevent success |
 | **Red text with "Error"** | Something went wrong | See troubleshooting below |
 
 > **Key point:** Red text doesn't always mean failure! Warnings are common and usually harmless. Only "Error" messages indicate a real problem.
@@ -326,7 +313,7 @@ Make sure you ran `library(macroibi)` first. You need to run this command every 
 Try closing and relaunching the app. If the problem persists, clear your data and re-enter it.
 
 #### Still stuck?
-Contact Sam Swanson at sam.swanson@shakopeedakota.org — happy to help!
+Contact Sam Swanson at sam.swanson@shakopeedakota.org - happy to help!
 
 ---
 
@@ -378,7 +365,7 @@ You can also continue without metadata if you plan to upload data or reload an a
 
 ---
 
-### Step 1 — Enable Autosave
+### Step 1 - Enable Autosave
 
 Before entering data, find the **Autosave Settings** on the left side of the Data tab and **Enable Auto-Save**
 
@@ -395,7 +382,7 @@ You can reload autosaves using **Load Autosave**.
 
 ---
 
-### Step 2 — Enter Taxa and Counts
+### Step 2 - Enter Taxa and Counts
 
 Still on the data tab, use **Select Taxon** to search and add taxa.  
 The app assigns each taxon to the correct group automatically.
@@ -415,7 +402,7 @@ Each group footer updates live:
 
 ---
 
-### Step 3 — Review Metrics
+### Step 3 - Review Metrics
 
 Switch to **Results** to see real-time IBI calculations.
 
@@ -433,20 +420,20 @@ Hover over *“How are these calculated?”* for metric formulas.
 
 #### Metric definitions and scoring (offline reference)
 
-- **Total Individuals** — Sum of all individuals entered across both dipnets and all taxonomic groups.
-- **EOT richness** — Number of unique taxa in Dragonflies, Mayflies, Damselflies, and Caddisflies (EOT Orders).
-- **Snail richness** — Number of unique taxa in Gastropoda.
-- **All-taxa richness** — Sum of unique taxa across all groups entered in the app.
-- **Corixid ratio** — \(\text{Corixidae individuals} / (\text{all true bugs} + \text{beetles})\); higher ratios indicate potential nutrient loading, so scoring decreases as the ratio rises.
-- **Abundance of EOT** — \(\text{Total EOT individuals} / \text{Total individuals}\).
-- **IBI Score (0–50)** — Sum of five adjusted metric scores (each 0–10). Scores are scaled between anchor percentiles observed in reference data:
+- **Total Individuals** - Sum of all individuals entered across both dipnets and all taxonomic groups.
+- **EOT richness** - Number of unique taxa in Dragonflies, Mayflies, Damselflies, and Caddisflies (EOT Orders).
+- **Snail richness** - Number of unique taxa in Gastropoda.
+- **All-taxa richness** - Sum of unique taxa across all groups entered in the app.
+- **Corixid ratio** - \(\text{Corixidae individuals} / (\text{all true bugs} + \text{beetles})\); higher ratios indicate potential nutrient loading, so scoring decreases as the ratio rises.
+- **Abundance of EOT** - \(\text{Total EOT individuals} / \text{Total individuals}\).
+- **IBI Score (0–50)** - Sum of five adjusted metric scores (each 0–10). Scores are scaled between anchor percentiles observed in reference data:
   - *Decrease with disturbance:* EOT richness (1–12 taxa), snail richness (1–10 taxa), all-taxa richness (10–40 taxa), abundance of EOT (0–0.16). Values below the minimum score 0; values at/above the upper anchor score 10.
   - *Increase with disturbance:* Corixid ratio uses anchors 0 (best) to 1.0 (worst) with a 5th–95th percentile band of 0–0.82 guiding the scale; values above the maximum anchor score 0.
   - The final IBI score is the sum of the capped component scores (maximum 50).
 
 ---
 
-### Step 4 — Export Final Outputs
+### Step 4 - Export Final Outputs
 
 Available downloads:
 
