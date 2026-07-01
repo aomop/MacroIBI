@@ -227,9 +227,7 @@ install.packages("remotes")
 remotes::install_github("aomop/MacroIBI")
 ```
 
-This downloads MacroIBI from the internet. It may take 1-2 minutes. You'll see lots of text - **this is normal.**
-
-**✓ Success:** The console says `* DONE (macroibi)` and the `>` prompt returns.
+This downloads MacroIBI from the internet. It may take 1-2 minutes.
 
 ![Successful MacroIBI installation in RStudio](images/05-install-success.png)
 
@@ -245,8 +243,6 @@ Type these two commands (press Enter after each):
 library(macroibi)
 run_macroibi()
 ```
-
-**✓ Success:** A web browser window opens showing the "Wetland IBI Dashboard". You're ready to use the app!
 
 ![MacroIBI app running in browser](images/06-app-running.png)
 
@@ -274,21 +270,6 @@ When you're done:
 
 ---
 
-### Don't Panic: Understanding Console Messages
-
-When running R commands, you'll see various messages in the Console. Here's what they mean:
-
-| What You See | What It Means | Action Needed |
-|--------------|---------------|---------------|
-| **Black text scrolling by** | Normal progress messages | None - just wait |
-| **Blue text** | Informational notes | None - just informational |
-| **Red text with "Warning"** | A heads-up, but not an error | Usually none - warnings often don't prevent success |
-| **Red text with "Error"** | Something went wrong | See troubleshooting below |
-
-> **Key point:** Red text doesn't always mean failure! Warnings are common and usually harmless. Only "Error" messages indicate a real problem.
-
----
-
 ### Troubleshooting
 
 #### "Error: package 'remotes' is not available"
@@ -313,41 +294,7 @@ Make sure you ran `library(macroibi)` first. You need to run this command every 
 Try closing and relaunching the app. If the problem persists, clear your data and re-enter it.
 
 #### Still stuck?
-Contact Sam Swanson at sam.swanson@shakopeedakota.org - happy to help!
-
----
-
-### Quick Reference Card
-
-Copy this and keep it handy:
-
-```
-╔═══════════════════════════════════════════════════════════╗
-║           MacroIBI QUICK REFERENCE                        ║
-╠═══════════════════════════════════════════════════════════╣
-║  TO START THE APP (every time):                           ║
-║  ─────────────────────────────────────────────────────    ║
-║  1. Open RStudio                                          ║
-║  2. In the Console, type:                                 ║
-║                                                           ║
-║       library(macroibi)                                   ║
-║       run_macroibi()                                      ║
-║                                                           ║
-║  TO CLOSE THE APP:                                        ║
-║  ─────────────────────────────────────────────────────    ║
-║  • Close the browser tab, OR                              ║
-║  • Press Escape in the RStudio Console                    ║
-║                                                           ║
-║  AUTOSAVE LOCATION:                                       ║
-║  ─────────────────────────────────────────────────────    ║
-║  Windows: C:\Users\[You]\AppData\Local\R\macroibi\data\   ║
-║  Mac: ~/Library/Application Support/macroibi/data/        ║
-║                                                           ║
-║  NEED HELP?                                               ║
-║  ─────────────────────────────────────────────────────    ║
-║  Contact: sam.swanson@shakopeedakota.org                  ║
-╚═══════════════════════════════════════════════════════════╝
-```
+Contact Sam Swanson at sam.swanson@shakopeedakota.org
 
 ---
 
@@ -378,7 +325,7 @@ Autosave will:
 
 You can reload autosaves using **Load Autosave**.
 
-> **Important:** Data Summary and Full Report features rely on having autosaves available.
+> Data Summary and Full Report features rely on having autosaves available.
 
 ---
 
@@ -455,7 +402,7 @@ Available downloads:
    - current metrics  
    - comparisons to other autosaved sessions  
 
-> *Reports require autosave history to generate comparisons.*
+> PDF Reports require autosave history to generate comparisons.
 
 ---
 
