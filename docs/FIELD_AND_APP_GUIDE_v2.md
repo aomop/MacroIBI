@@ -187,7 +187,7 @@ You need two free programs:
 **This step is required on Windows.** Rtools allows R to install packages that need compilation.
 
 1. Go to **<https://cran.r-project.org/bin/windows/Rtools/>**
-2. Download "Rtools44" (or the version matching your R version)
+2. Download "Rtools45" (or the version matching your R version)
 3. Run the installer
 4. **Accept all default options**
 
