@@ -11,9 +11,9 @@ A Shiny application for calculating a macroinvertebrate-based Index of Biotic In
 ## Quick Start
 
 ### Requirements
-- **R 4.2.0 or newer** — Download from <https://cran.r-project.org>
-- **RStudio** (recommended) — Download from <https://posit.co/download/rstudio-desktop/>
-- **Rtools** (Windows only) — Download from <https://cran.r-project.org/bin/windows/Rtools/>
+- **R 4.2.0 or newer** - Download from <https://cran.r-project.org>
+- **RStudio** (recommended) - Download from <https://posit.co/download/rstudio-desktop/>
+- **Rtools** (Windows only) - Download from <https://cran.r-project.org/bin/windows/Rtools/>
 
 ### Install MacroIBI
 Open RStudio and type these commands in the Console (press Enter after each):
@@ -41,8 +41,8 @@ Autosaves are stored in your user data folder:
 ## For Experienced R Users
 
 All dependencies install automatically. The package exports two functions:
-- `run_macroibi()` — Launch the app
-- `run_macroibi(demo_mode = TRUE)` — Launch with bundled demo data (no file writes)
+- `run_macroibi()` - Launch the app
+- `run_macroibi(demo_mode = TRUE)` - Launch with bundled demo data (no file writes)
 
 ## Key Features
 
