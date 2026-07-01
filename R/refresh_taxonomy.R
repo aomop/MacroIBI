@@ -12,9 +12,8 @@
 #'   of writing an RDS file named \code{taxonomy_<YYYY-MM-DD>.rds} to
 #'   \code{output_path}.
 #'
-#' @note The default \code{input_dir} points to a development-specific path and
-#'   will not exist on most machines. External users must supply their own
-#'   \code{input_dir} pointing to a directory of built taxonomy CSV files.
+#' @note \code{input_dir} has no default. You must supply the path to a
+#'   directory containing built taxonomy CSV files.
 #'
 #' @examples
 #' \dontrun{
@@ -27,9 +26,17 @@
 #'
 #' @export
 refresh_taxonomy <- function(
-    input_dir = "C:/Users/61296/Documents/repos/Miscelaneous/TAXONOMY/data/output",
+    input_dir = NULL,
     output_path = "inst/extdata/"
     ){
+  if (is.null(input_dir)) {
+    stop(
+      "No `input_dir` specified. Please provide the path to your taxonomy CSV directory.\n",
+      "Example: refresh_taxonomy(input_dir = \"path/to/taxonomy/csvs\")",
+      call. = FALSE
+    )
+  }
+
   files <- list.files(
     path = input_dir,
     pattern = "*.csv$",

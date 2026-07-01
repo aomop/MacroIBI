@@ -4,7 +4,7 @@
 \alias{calculate_corixids_ratio}
 \title{Calculate the Corixids ratio metric}
 \usage{
-calculate_corixids_ratio(selected_genera, group_totals, taxonomy)
+calculate_corixids_ratio(selected_genera, group_totals, taxonomy, group_defs)
 }
 \arguments{
 \item{selected_genera}{Reactive values of selected taxa.}
@@ -12,6 +12,9 @@ calculate_corixids_ratio(selected_genera, group_totals, taxonomy)
 \item{group_totals}{Reactive values of group totals.}
 
 \item{taxonomy}{Taxonomy data frame.}
+
+\item{group_defs}{Data frame with columns section_id, group_id, group_name,
+used to look up the beetles and true bugs section IDs.}
 }
 \value{
 Numeric ratio.

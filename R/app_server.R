@@ -318,16 +318,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
     quality_class <- shiny::reactive({
       p <- summarize_metric_scores(metric_scores$data) %>%
         dplyr::pull(.data$adj_score)
-      
-      t <- p[length(p)]
-      
-      dplyr::case_when(
-        t >= 38 ~ "4 (Excellent)",
-        t >= 28 ~ "3 (Good)",
-        t >= 20 ~ "2 (Fair)",
-        t >= 10 ~ "1 (Poor)",
-        TRUE   ~ NA
-      )
+      ibi_quality_class(p[length(p)])
     })
     
     output$ram_quality_class <- renderText({ quality_class() })
@@ -368,7 +359,7 @@ macroibi_server <- function(taxonomy, group_list, demo_mode = FALSE) {
       shared_reactives = shared_reactives,
       selected_genera = selected_genera,
       taxonomy = taxonomy,
-      quality_class = quality_class(),
+      quality_class = quality_class,
       metric_save_path = get_app_path("metric_autosave_dir"),
       group_defs = group_defs
     )

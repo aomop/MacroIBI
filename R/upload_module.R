@@ -32,8 +32,19 @@ upload_module_server <- function(
     shiny::observeEvent(input$reload_data, {
       shiny::req(input$reload_data)
       
-      data <- readr::read_csv(input$reload_data$datapath)
-      
+      data <- tryCatch(
+        readr::read_csv(input$reload_data$datapath, show_col_types = FALSE),
+        error = function(e) {
+          shiny::showNotification(
+            paste("Could not read uploaded file:", conditionMessage(e)),
+            type = "error",
+            closeButton = TRUE
+          )
+          NULL
+        }
+      )
+      if (is.null(data)) return(invisible(NULL))
+
       shared_reactives$server_update <- TRUE
       
       split <- split_uploaded_results(data)

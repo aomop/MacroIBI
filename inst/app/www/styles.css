@@ -41,3 +41,29 @@
 .delete-btn:hover {
   background-color: #d9363e; /* Darker red for hover effect */
 }
+
+/* "How are these calculated?" tooltip on the Results tab */
+.metric-tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.metric-tooltip-wrapper span {
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+}
+
+.metric-tooltip-content {
+  display: none;
+  position: absolute;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 100;
+  width: 600px;
+}
+
+.metric-tooltip-wrapper:hover .metric-tooltip-content {
+  display: block;
+}

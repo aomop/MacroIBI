@@ -1,3 +1,19 @@
+#' Classify an IBI total score into a RAM quality class
+#'
+#' @param score Numeric total IBI score (0--50).
+#' @return A character quality class string, or \code{NA_character_} when
+#'   \code{score} is below 10 or \code{NA}.
+#' @keywords internal
+ibi_quality_class <- function(score) {
+  dplyr::case_when(
+    score >= 38 ~ "4 (Excellent)",
+    score >= 28 ~ "3 (Good)",
+    score >= 20 ~ "2 (Fair)",
+    score >= 10 ~ "1 (Poor)",
+    TRUE        ~ NA_character_
+  )
+}
+
 #' Append IBI summary row to metric scores
 #'
 #' @param metric_df Data frame of metric scores with an `adj_score` column.

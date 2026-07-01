@@ -97,7 +97,11 @@ download_module_server <- function(
         data <- assemble_data(taxonomy_data)
         
         if (is.null(data)) {
-          warning("No data to save. Skipping file creation.")
+          shiny::showNotification(
+            "No data to download. Add taxa first.",
+            type = "warning",
+            closeButton = TRUE
+          )
           return()
         }
         

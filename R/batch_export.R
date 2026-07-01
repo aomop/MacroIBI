@@ -567,13 +567,7 @@ generate_pdf_report <- function(
       comparison_metrics = comparison_metrics_param,
       raw_data = raw_data,
       taxonomy = load_taxonomy(),
-      quality_class = dplyr::case_when(
-        total_score >= 38 ~ "4 (Excellent)",
-        total_score >= 28 ~ "3 (Good)",
-        total_score >= 20 ~ "2 (Fair)",
-        total_score >= 10 ~ "1 (Poor)",
-        TRUE ~ NA_character_
-      )
+      quality_class = ibi_quality_class(total_score)
     )
   } else {
     params <- list(
@@ -584,6 +578,8 @@ generate_pdf_report <- function(
       comparison_metrics = comparison_metrics_param
     )
   }
+
+  require_latex()
 
   message("    calling rmarkdown::render()...")
   rmarkdown::render(

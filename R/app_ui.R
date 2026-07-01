@@ -81,22 +81,14 @@ macroibi_ui <- function(theme, group_list, group_colors, www_prefix, demo_mode =
       div(
         ui_metric_scores("metrics"),
         div(
-          style = "position: relative; display: inline-block;",
-          tags$span(
-            "How are these calculated?",
-            style = "cursor: pointer; text-decoration: underline; color: blue;"
-          ),
+          class = "metric-tooltip-wrapper",
+          tags$span("How are these calculated?"),
           div(
-            style = paste0(
-              "display: none; position: absolute; background-color: #ffffff;",
-              " border: 1px solid #ccc; padding: 10px; z-index: 100; width: 600px;"
-            ),
+            class = "metric-tooltip-content",
             p(tags$em("*The corixid metric is calculated as the absolute abundance of Corixids divided by the sum
                     of the absolute abundance of all true bugs and beetles")),
             tags$img(src = file.path(www_prefix, "Picture1.png"), alt = "Metric Adjustment Equations", style = "width: 100%; max-width: 600px;")
-          ),
-          onmouseover = "this.querySelector('div').style.display = 'block';",
-          onmouseout = "this.querySelector('div').style.display = 'none';"
+          )
         )
       ),
       div(results_download_ui("results_download", demo_mode))

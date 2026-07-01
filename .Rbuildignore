@@ -16,3 +16,4 @@
 ^CLAUDE.md
 ^_pkgdown\.yml$
 ^\.claude
+^\.claude$

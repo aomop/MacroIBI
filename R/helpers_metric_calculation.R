@@ -52,16 +52,25 @@ calculate_metric_score <- function(values, min_values, max_values, scale_factor 
 #' @param selected_genera Reactive values of selected taxa.
 #' @param group_totals Reactive values of group totals.
 #' @param taxonomy Taxonomy data frame.
+#' @param group_defs Data frame with columns section_id, group_id, group_name,
+#'   used to look up the beetles and true bugs section IDs.
 #' @return Numeric ratio.
 #' @keywords internal
-calculate_corixids_ratio <- function(selected_genera, group_totals, taxonomy) {
+calculate_corixids_ratio <- function(selected_genera, group_totals, taxonomy, group_defs) {
   tryCatch({
-    count_beetles <- safe_reactive_value(group_totals[["section_2"]])
-    count_bugs <- safe_reactive_value(group_totals[["section_4"]])
-    
+    beetles_section <- group_defs$section_id[
+      group_defs$group_id == "beetles_order_coleoptera"
+    ]
+    bugs_section <- group_defs$section_id[
+      group_defs$group_id == "true_bugs_order_hemiptera"
+    ]
+
+    count_beetles <- safe_reactive_value(group_totals[[beetles_section]])
+    count_bugs    <- safe_reactive_value(group_totals[[bugs_section]])
+
     corixids_taxa <- dplyr::pull(dplyr::filter(taxonomy, .data$Family == "Corixidae"), .data$taxon)
-    
-    selected_data <- selected_genera[["section_4"]]()
+
+    selected_data <- selected_genera[[bugs_section]]()
     if (is.list(selected_data$data) & length(selected_data$data) == 0) {
       return(0)
     }

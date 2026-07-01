@@ -35,6 +35,12 @@ locally for full functionality.
   <https://posit.co/download/rstudio-desktop/>
 - **Rtools** (Windows only) --- Download from
   <https://cran.r-project.org/bin/windows/Rtools/>
+- **LaTeX** (optional, for PDF exports) --- Install TinyTeX after MacroIBI:
+  ```r
+  install.packages("tinytex")
+  tinytex::install_tinytex()
+  ```
+- **Chrome or Chromium** (optional, for PNG table image export)
 
 If you are new to R, see `vignette("field-and-app-guide", package = "macroibi")`
 for detailed step-by-step installation instructions with troubleshooting tips.
@@ -98,14 +104,17 @@ Hover over *"How are these calculated?"* for metric formulas.
 
 ### 5. Export results
 
-Available downloads from the Results tab:
+**Data tab sidebar:**
 
 - **Raw Data CSV** --- for archiving or re-uploading into the app
-- **Results CSV** --- final calculated scores
-- **Table Image (PNG)** --- formatted metric table
-- **Data Summary (PDF)** --- concise one-page snapshot
+
+**Results tab:**
+
+- **Results CSV** --- final calculated metric scores
+- **Table Image (PNG)** --- formatted metric table (requires Chrome)
+- **Data Summary (PDF)** --- concise one-page snapshot (requires LaTeX)
 - **Full Report (PDF)** --- comprehensive report with comparisons to other
-  autosaved sessions
+  autosaved sessions (requires LaTeX)
 
 ## Demo Mode
 

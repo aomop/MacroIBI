@@ -21,8 +21,7 @@ taxonomic_tree_ui <- function(id) {
 #'   where `$data` is a list of taxon rows (each row a list with `tsn`, etc.).
 #' @param taxonomy_df Reactive taxonomy data frame.
 #' @keywords internal
-#' @import stats
-#' @import graphics
+#' @importFrom graphics par axis abline segments points legend text title strheight strwidth plot.new
 taxonomic_tree_server <- function(id, selected_genera, taxonomy_df) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns

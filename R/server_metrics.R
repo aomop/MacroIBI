@@ -50,7 +50,7 @@ server_metrics <- function(id, selected_genera, taxonomy,
         safe_reactive_value(unique_taxa_counts[[EOT_SECTION]]),       # EOT
         safe_reactive_value(unique_taxa_counts[[SNAIL_SECTION]]),     # Snails (now via constant)
         sum(purrr::map_dbl(shiny::reactiveValuesToList(unique_taxa_counts), safe_reactive_value), na.rm = TRUE),
-        calculate_corixids_ratio(selected_genera, group_totals, taxonomy),
+        calculate_corixids_ratio(selected_genera, group_totals, taxonomy, group_defs),
         if (grand_total_observations() > 0) {
           safe_reactive_value(group_totals[[EOT_SECTION]]) / grand_total_observations()
         } else (0)

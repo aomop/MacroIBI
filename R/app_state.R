@@ -1,9 +1,3 @@
-#' Internal application state
-#'
-#' Utilities to manage package paths and user data directories.
-#' @keywords internal
-"_PACKAGE"
-
 .app_state <- new.env(parent = emptyenv())
 
 #' Initialize application paths

@@ -152,10 +152,10 @@ if(!is.null(snail_taxa) && !is.na(snail_taxa)) {
     cat("- Snail Taxa: A high diversity score of ", round(snail_taxa, 2), " indicates that the wetland supports a broad range of gastropod species. While snails are generally less sensitive to water quality changes, such diversity typically correlates with favorable environmental conditions.\n\n")
   } else if(snail_taxa >= 2) {
     cat("- Snail Taxa: With a score of ", round(snail_taxa, 2), ", the snail community is moderately diverse. This suggests that while the wetland sustains multiple gastropod species, there may be underlying pressures that limit their full complement.\n\n")
-  } else if (eot_taxa > 0){
+  } else if (snail_taxa > 0){
     cat("- Snail Taxa: A low diversity score of ", round(snail_taxa, 2), " may reflect environmental challenges affecting gastropods, potentially signaling issues with water quality or habitat conditions.\n\n")
-  } else if (eot_taxa == 0){
-    cat("- Snail Taxa: A diversity score of ", round(eot_taxa, 2), " implies no gastropod taxa were found in the sample. This absence could indicate significant impairment or environmental stress.\n\n")
+  } else if (snail_taxa == 0){
+    cat("- Snail Taxa: A diversity score of ", round(snail_taxa, 2), " implies no gastropod taxa were found in the sample. This absence could indicate significant impairment or environmental stress.\n\n")
   }
 } else {
   cat("Snail Taxa data is not available.\n\n")

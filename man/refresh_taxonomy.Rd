@@ -4,10 +4,7 @@
 \alias{refresh_taxonomy}
 \title{Refresh Taxonomy Data}
 \usage{
-refresh_taxonomy(
-  input_dir = "C:/Users/61296/Documents/repos/Miscelaneous/TAXONOMY/data/output",
-  output_path = "inst/extdata/"
-)
+refresh_taxonomy(input_dir = NULL, output_path = "inst/extdata/")
 }
 \arguments{
 \item{input_dir}{Character. Path to the directory containing built taxonomy
@@ -26,9 +23,8 @@ Reads the most recently modified CSV file from a directory of built taxonomy
 files and saves it as a dated RDS file in the package's extdata directory.
 }
 \note{
-The default \code{input_dir} points to a development-specific path and
-will not exist on most machines. External users must supply their own
-\code{input_dir} pointing to a directory of built taxonomy CSV files.
+\code{input_dir} has no default. You must supply the path to a
+directory containing built taxonomy CSV files.
 }
 \examples{
 \dontrun{

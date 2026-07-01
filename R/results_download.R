@@ -61,7 +61,7 @@ results_download_server <- function(
       metric_data_list <- lapply(filtered_metric_files, readRDS)
       combined_metrics <- do.call(rbind, metric_data_list)
     } else {
-      combined_metrics <- NA  # or set defaults as needed
+      combined_metrics <- isolate(summarize_metric_scores(metric_scores$data))[0L, , drop = FALSE]
     }
     
     summarized_data <- shiny::reactive(
@@ -206,8 +206,10 @@ Sampled on<strong> ",
         paste0("Report_", shared_reactives$user_title, "_", format_date_for_filename(shared_reactives$user_date), ".pdf")
       },
       content = function(file) {
+        if (isFALSE(require_latex(notify = TRUE))) return(invisible(NULL))
+
         shiny::withProgress(message = "Generating report...", value = 0, {
-          
+
           # Step 1: Copy the Rmd template
           shiny::incProgress(0.1, detail = "Preparing template...")
           temp_rmd <- tempfile(fileext = ".Rmd")
@@ -238,8 +240,10 @@ Sampled on<strong> ",
         paste0("DataSummary_", shared_reactives$user_title, "_", format_date_for_filename(shared_reactives$user_date), ".pdf")
       },
       content = function(file) {
+        if (isFALSE(require_latex(notify = TRUE))) return(invisible(NULL))
+
         shiny::withProgress(message = "Generating report...", value = 0, {
-          
+
           # Step 1: Copy the Rmd template
           shiny::incProgress(0.1, detail = "Preparing template...")
           temp_rmd <- tempfile(fileext = ".Rmd")
@@ -258,7 +262,7 @@ Sampled on<strong> ",
               comparison_metrics = prepared_data()$combined_metrics,
               raw_data = prepared_data()$raw_data,
               taxonomy = taxonomy,
-              quality_class = quality_class
+              quality_class = quality_class()
             ),
             envir = new.env(parent = asNamespace("macroibi"))
           )

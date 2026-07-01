@@ -105,6 +105,51 @@ sanitize_group_id <- function(x) {
   x
 }
 
+#' Check whether a LaTeX distribution is available
+#'
+#' Looks for \code{pdflatex} or \code{xelatex} on the system PATH, and
+#' falls back to checking for a TinyTeX installation via the \pkg{tinytex}
+#' package (listed in Suggests).
+#'
+#' @return \code{TRUE} if LaTeX appears available, \code{FALSE} otherwise.
+#' @keywords internal
+is_latex_available <- function() {
+  if (nchar(Sys.which("pdflatex")) > 0 || nchar(Sys.which("xelatex")) > 0) {
+    return(TRUE)
+  }
+  requireNamespace("tinytex", quietly = TRUE) && tinytex::is_tinytex()
+}
+
+#' Require LaTeX or stop / notify
+#'
+#' Calls \code{stop()} (for non-Shiny contexts) or
+#' \code{shiny::showNotification()} (inside download handlers) when no LaTeX
+#' distribution is found.
+#'
+#' @param notify Logical. If \code{TRUE}, shows a Shiny error notification
+#'   instead of calling \code{stop()}. Use \code{TRUE} inside Shiny download
+#'   handler \code{content} functions.
+#' @return Invisibly \code{NULL} when LaTeX is available. Otherwise either
+#'   stops or shows a notification, then returns \code{invisible(FALSE)}.
+#' @keywords internal
+require_latex <- function(notify = FALSE) {
+  if (is_latex_available()) return(invisible(NULL))
+
+  msg <- paste0(
+    "PDF generation requires a LaTeX installation.\n",
+    "Install TinyTeX from within R:\n",
+    "  install.packages(\"tinytex\")\n",
+    "  tinytex::install_tinytex()"
+  )
+
+  if (notify) {
+    shiny::showNotification(msg, type = "error", duration = NULL)
+    return(invisible(FALSE))
+  }
+
+  stop(msg, call. = FALSE)
+}
+
 #' Pipe operator
 #'
 #' See \code{magrittr::\link[magrittr:pipe]{\%>\%}} for details.

@@ -48,8 +48,15 @@ test_that("calculate_corixids_ratio computes ratio of Corixidae counts", {
     }
   )
   
+  group_defs <- data.frame(
+    section_id = c("section_2", "section_4"),
+    group_id   = c("beetles_order_coleoptera", "true_bugs_order_hemiptera"),
+    group_name = c("Beetles - Order Coleoptera", "True Bugs - Order Hemiptera"),
+    stringsAsFactors = FALSE
+  )
+
   # Numerator = 4; denominator = 20 + 30 = 50 → 0.08
-  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy)
+  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy, group_defs)
   expect_equal(ratio, 4 / 50)
 })
 
@@ -59,19 +66,26 @@ test_that("calculate_corixids_ratio returns 0 when no beetles/bugs", {
     taxon  = "Corixa1",
     stringsAsFactors = FALSE
   )
-  
+
   group_totals <- list(
     section_2 = function() 0,
     section_4 = function() 0
   )
-  
+
   selected_genera <- list(
     section_4 = function() {
       list(data = list())
     }
   )
-  
-  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy)
+
+  group_defs <- data.frame(
+    section_id = c("section_2", "section_4"),
+    group_id   = c("beetles_order_coleoptera", "true_bugs_order_hemiptera"),
+    group_name = c("Beetles - Order Coleoptera", "True Bugs - Order Hemiptera"),
+    stringsAsFactors = FALSE
+  )
+
+  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy, group_defs)
   expect_equal(ratio, 0)
 })
 
@@ -92,6 +106,13 @@ test_that("calculate_corixids_ratio is robust to errors in selected data", {
     section_4 = function() stop("boom")
   )
   
-  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy)
+  group_defs <- data.frame(
+    section_id = c("section_2", "section_4"),
+    group_id   = c("beetles_order_coleoptera", "true_bugs_order_hemiptera"),
+    group_name = c("Beetles - Order Coleoptera", "True Bugs - Order Hemiptera"),
+    stringsAsFactors = FALSE
+  )
+
+  ratio <- calculate_corixids_ratio(selected_genera, group_totals, taxonomy, group_defs)
   expect_equal(ratio, 0)
 })
