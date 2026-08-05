@@ -5,6 +5,8 @@
 .Renviron
 *_cache/
 .cache/
+presentation/
+presentation/**/*
 .Rproj.user/
 .Rproj.user/**/*
 rsconnect/
