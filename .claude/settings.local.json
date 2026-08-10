@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Bash(find:*)",
+      "Bash(Rscript:*)",
+      "Bash(kpsewhich:*)",
+      "Bash(\"C:/Program Files/R/R-4.4.2/bin/Rscript.exe\" -e \"devtools::install\\(quiet = TRUE, upgrade = ''never''\\)\")",
+      "Bash(\"/c/Program Files/R/R-4.5.2/bin/Rscript.exe\" -e \"devtools::install\\(quiet = TRUE, upgrade = ''never''\\)\")",
+      "Bash(\"/c/Program Files/R/R-4.5.2/bin/Rscript.exe\" -e \":*)",
+      "Bash(\"/c/Program Files/R/R-4.4.3/bin/Rscript.exe\" -e \":*)",
+      "Bash(cmd.exe /c \"\"\"C:\\\\Program Files\\\\R\\\\R-4.4.3\\\\bin\\\\Rscript.exe\"\" -e \"\"library\\(macroibi\\); out <- generate_reports\\(output_type=''pdf_summary'', output_path=tempdir\\(\\)\\); cat\\(''done''\\)\"\" 2>&1\")",
+      "Bash(\"/c/Program Files/R/R-4.5.0/bin/Rscript\" -e \"devtools::test\\(\\)\")",
+      "Bash(\"/c/Program Files/R/R-4.5.0/bin/Rscript\" -e \"devtools::check\\(\\)\")",
+      "Bash(\"/c/Program Files/R/R-4.5.0/bin/Rscript\" -e \"devtools::check\\(vignettes = FALSE\\)\")"
+    ]
+  }
+}

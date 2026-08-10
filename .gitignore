@@ -18,10 +18,10 @@ Thumbs.db
 *.tmo
 *.tmp
 *.bak
-inst/doc/
+inst/docs/
 LICENSE
 /doc/
 /Meta/
 claude.exe
 CLAUDE.md
-.claude/*
+.claude/*data-private/
