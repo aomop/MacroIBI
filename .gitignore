@@ -22,6 +22,7 @@ inst/docs/*
 !inst/docs/mpca_protocol.pdf
 /doc/
 /Meta/
+/docs/
 claude.exe
 CLAUDE.md
 .claude/
