@@ -3,7 +3,7 @@
 ^\.github$
 ^auto_saves$
 ^metric_autosaves$
-^tests/testthat/test-smoke.R$
+^data-private/
 ^LICENSE\.md$
 ^app\.R$
 ^rsconnect$
