@@ -7,8 +7,9 @@
 refresh_taxonomy(input_dir = NULL, output_path = "inst/extdata/")
 }
 \arguments{
-\item{input_dir}{Character. Path to the directory containing built taxonomy
-CSV files. Defaults to the local TAXONOMY project output directory.}
+\item{input_dir}{Character. Path to a directory containing built taxonomy
+CSV files named \code{taxonomy_<YYYYMMDD>.csv}. Required; there is no
+default.}
 
 \item{output_path}{Character. Path to the output directory where the RDS
 file will be saved. Defaults to \code{"inst/extdata/"}.}
@@ -16,21 +17,24 @@ file will be saved. Defaults to \code{"inst/extdata/"}.}
 \value{
 Invisibly returns the taxonomy data frame. Called for its side effect
 of writing an RDS file named \code{taxonomy_<YYYY-MM-DD>.rds} to
-\code{output_path}.
+\code{output_path}. The date in the output filename is taken from the
+source CSV, so re-running on an older CSV does not mislabel it as current.
 }
 \description{
-Reads the most recently modified CSV file from a directory of built taxonomy
-files and saves it as a dated RDS file in the package's extdata directory.
+Reads the most recent built taxonomy CSV from a directory and saves it as a
+dated RDS file in the package's extdata directory. These CSVs are produced by
+the companion \href{https://github.com/aomop/macro-taxonomy}{macro-taxonomy}
+pipeline, which writes them to its \code{data/output/} directory.
 }
-\note{
-\code{input_dir} has no default. You must supply the path to a
-directory containing built taxonomy CSV files.
+\details{
+"Most recent" is determined by the date in the filename, not by file
+modification time, so the result does not depend on checkout or copy order.
 }
 \examples{
 \dontrun{
-# Refresh taxonomy from a custom directory
+# Refresh from the macro-taxonomy pipeline's output directory
 refresh_taxonomy(
-  input_dir = "path/to/taxonomy/csv/files",
+  input_dir   = "path/to/macro-taxonomy/data/output",
   output_path = "inst/extdata/"
 )
 }

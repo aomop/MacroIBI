@@ -51,7 +51,15 @@ load_taxonomy <- function() {
     stop("No taxonomy RDS files found in ", extdata_dir)
   }
   
-  taxonomy_path <- files[which.max(file.info(files)$mtime)]
+  # Select by the ISO date in the filename, not by mtime. Installing the package
+  # rewrites modification times, so on a fresh install every bundled snapshot
+  # carries essentially the same stamp and mtime ordering is arbitrary -- a user
+  # could silently get an older taxonomy than the one they expect.
+  file_dates <- as.Date(
+    sub("^taxonomy_(\\d{4}-\\d{2}-\\d{2})\\.rds$", "\\1", basename(files))
+  )
+
+  taxonomy_path <- files[which.max(file_dates)]
   
   readRDS(taxonomy_path) %>%
     dplyr::mutate(
