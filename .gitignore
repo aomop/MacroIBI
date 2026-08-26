@@ -18,10 +18,11 @@ Thumbs.db
 *.tmo
 *.tmp
 *.bak
-inst/docs/
-LICENSE
+inst/docs/*
+!inst/docs/mpca_protocol.pdf
 /doc/
 /Meta/
 claude.exe
 CLAUDE.md
-.claude/*data-private/
+.claude/
+data-private/
