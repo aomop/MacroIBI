@@ -10,6 +10,7 @@ navbar:
   components:
     github:
       icon: fa-github
+      aria-label: GitHub
       href: https://github.com/aomop/MacroIBI
 
 articles:
@@ -31,5 +32,4 @@ reference:
   - title: Internal
     desc: Internal functions not intended for direct use.
     contents:
-      - starts_with("macroibi-package")
-      - everything()
+      - has_keyword("internal")

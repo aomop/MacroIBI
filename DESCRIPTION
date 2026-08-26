@@ -6,6 +6,8 @@ Author: Sam Swanson
 Maintainer: Sam Swanson <sam.swanson@shakopeedakota.org>
 Description: Launches the Macroinvertebrate Index of Biotic Integrity Shiny dashboard and supporting utilities for wetlands.
 License: MIT + file LICENSE
+URL: https://aomop.github.io/MacroIBI, https://github.com/aomop/MacroIBI
+BugReports: https://github.com/aomop/MacroIBI/issues
 Encoding: UTF-8
 Depends: R (>= 4.2.0)
 Imports:
