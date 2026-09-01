@@ -1,11 +1,11 @@
 ---
-title: "Field Sampling & App Guide"
+title: "Field Sampling and Application Guide"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Field Sampling & App Guide}
+  %\VignetteIndexEntry{Field Sampling and Application Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,158 +18,172 @@ knitr::opts_chunk$set(
 )
 ```
 
-*A complete workflow for field sampling, lab sorting, identification, and IBI calculation.*
+## 1. Scope and Purpose
 
-This guide covers the complete workflow from field sampling through IBI
-calculation. No prior experience with R or programming is required.
+This document specifies the procedures for collecting, sorting, identifying, and scoring wetland macroinvertebrate samples using the MPCA protocol and the MacroIBI R/Shiny application. It covers the complete workflow from field collection through calculation of the Index of Biotic Integrity (IBI) and export of results.
 
-## 1. Overview
+The protocol is designed for family-level identification and does not require prior experience with R or programming. Section 7 provides installation instructions for personnel with no software background.
 
-This guide explains how to collect, sort, identify, and score wetland macroinvertebrates using the MPCA protocol and the MacroIBI R/Shiny application. No prior R experience is required, this document walks you through installation and use of the app step-by-step.
+### 1.1 Definitions and Abbreviations
 
----
-
-## 2. Equipment Checklist
-
-### Required Field Equipment
-
-- Two D-frame dip nets (500 µm mesh)  
-- Hardware cloth + frame  
-- Plastic bin for catching material  
-- 200 µm sieve  
-- Squirt bottles (1 water, 1 alcohol)  
-- Forceps (one per person)  
-- Wetland Invertebrate Visit Form  
-- GPS unit  
-- Pencils, clipboards  
-- 100% reagent alcohol  
-- Chest waders  
-- Plastic jars for storage  
-- Permanent marker  
-
-### Optional Field Equipment
-
-- Maps  for navigation
-- Scissors for labels  
-- Camera  to capture site conditions
-- Cooler or crate for transporting samples  
-
-### Required Lab Equipment
-
-- Stereoscopes (2x-4x magnification)  
-- Petri dishes  
-- Identification guides  
-- Squirt bottles (water or alcohol)  
-- Dissection tools  
-- Computer with R and the **macroibi** package  
+| Term | Definition |
+|------|------------|
+| **Effort** | One unit of collection consisting of 3–5 sweeps with a D-frame dip net. |
+| **Sample** | The combined material from two efforts, processed as a single unit. |
+| **EOT** | Ephemeroptera (mayflies), Odonata (dragonflies and damselflies), and Trichoptera (caddisflies). |
+| **IBI** | Index of Biotic Integrity; the summed score of five component metrics (0–50). |
+| **Richness** | The number of unique taxa recorded within a specified group. |
 
 ---
 
-## 3. Collecting Macroinvertebrate Samples
+## 2. Equipment and Materials
 
-### When to Sample
+### 2.1 Required Field Equipment
 
-- Sample **June–early July** while larvae are mature but wetlands retain water.  
-- Sampling too late risks dried wetlands or transient species.  
-- If multiple samples are planned, keep all events within this timeframe.
+- Two D-frame dip nets (500 µm mesh)
+- Hardware cloth and frame
+- Plastic bin for catching material
+- Sorting pans
+- Sieve (200 µm)
+- Squirt bottles (one water, one alcohol)
+- Forceps (one per crew member)
+- Wetland Invertebrate Visit Form
+- GPS unit
+- Pencils and clipboards
+- Reagent alcohol (100%)
+- Chest waders
+- Plastic sample jars
+- Permanent marker
 
-### Where to Sample
+### 2.2 Optional Field Equipment
 
-Prioritize habitat zones in this order:
+- Site maps for navigation
+- Scissors for preparing labels
+- Camera for documenting site conditions
+- Cooler or crate for sample transport
 
-1. Emergent vegetation (richest fauna)  
-2. Floating-leaf vegetation  
-3. Submerged vegetation  
-4. Shallow open water  
+### 2.3 Required Laboratory Equipment
 
-Record the zone(s) used.
-
-### Sampling Procedure
-
-1. **Identify the sampling area.**  
-   Select the highest-priority habitat available and work within a 10-15 m radius.
-
-2. **Collect two efforts per sample.**  
-   For each effort, perform **3-5 strong sweeps** through vegetation and water.  
-   *Avoid scraping mud; restart the effort if so.*
-
-3. **Sort for 10 minutes.**  
-   Dump both efforts onto hardware cloth above the bin.  
-   Start a 10-minute timer and begin sorting (see next section).
-
-4. **Repeat for the second sample.**  
-   Stay in the same zone but choose new micro-locations.  
-   Samples may be combined or kept separate for processing; both ultimately contribute to one IBI evaluation.
-
->  With larger crews, some people can begin the second sample while others finish the first; this saves significant time.
+- Stereoscopes (2×–4× magnification)
+- Petri dishes
+- Taxonomic identification guides
+- Squirt bottles (water or alcohol)
+- Dissection tools
+- Computer with R and the **macroibi** package installed
 
 ---
 
-## 4. Sorting Samples in the Field
+## 3. Sample Collection
 
-### During the 10-Minute Sorting Window
+### 3.1 Sampling Window
 
-1. Rinse vegetation so organisms fall into the pans.  
-2. Pick organisms with forceps into the water-filled pans.  
-3. After 10 minutes, return vegetation to the wetland; all organisms in the bin become the sample.
+Collect samples between June and early July, when larvae are sufficiently developed for identification and wetlands still retain water. Sampling outside this window risks dry basins and unrepresentative or transient assemblages. When multiple sampling events are planned for a season, conduct all events within this window.
 
-### After Vegetation Removal
+### 3.2 Habitat Selection
 
-1. Pour pans through the 200 µm sieve; flush snails/leeches into the sieve.  
-2. Back-flush the sieve **with alcohol only** into sample jars.  
-   - Aim for ~80% final concentration.  
-   - Split jars if >1/3 full.  
-3. Label jars (site ID, date, sample #, jar #, crew initials).  
-4. Store in hazardous-materials room; check periodically for evaporation.
+Sample the highest-priority habitat zone present at the site, following this order:
 
----
+1. Emergent vegetation (typically the richest fauna)
+2. Floating-leaf vegetation
+3. Submerged vegetation
+4. Shallow open water
 
-## 5. Lab Identification & Enumeration
+Record the zone or zones sampled on the visit form.
 
-1. **Software Setup**  
-   Ensure R + MacroIBI are installed (see next section).
+### 3.3 Collection Procedure
 
-2. **Prepare Workspace**  
-   Set up stereoscopes, petri dishes, tools, guides, and your sample.
+1. **Establish the sampling area.** Select the highest-priority habitat available and work within a 10–15 m radius.
 
-3. **Identify & Count Everything**  
-   - Every individual in the sample must be identified and counted.  
-   - Family-level ID is required; genus ideal; species when possible.  
-   - One person should handle data entry; others relay counts.  
-   - Pre-sort into visually similar piles to speed identification.  
-   - Samples may be rinsed with water to reduce irritation during the process, BUT;
-   - If samples must remain preserved after ID, do not use any water.
+2. **Collect two efforts per sample.** For each effort, perform 3–5 strong sweeps through vegetation and the water column. Do not scrape sediment. If sediment is collected, discard the material and restart the effort.
 
-4. **Enter Data Periodically**  
-   Relay taxa and counts to the data handler for entry into the app.  
-   - Combined samples may all be entered into “Dipnet 1.”  
-   - See Section 7 for full app workflow.
+3. **Sort for 10 minutes.** Transfer both efforts onto the hardware cloth positioned above the bin, start a 10-minute timer, and sort as described in Section 4.
+
+4. **Collect the second sample.** Remain within the same habitat zone and select new micro-locations. Samples may be processed in combination or kept separate; in either case both contribute to a single IBI evaluation.
+
+> **Note:** With larger crews, one group may begin the second sample while another completes sorting of the first. This substantially reduces total time on site.
 
 ---
 
-## 6. Installing the MacroIBI App
+## 4. Field Sorting and Preservation
 
-This section walks you through installing everything you need to run MacroIBI. **No prior experience with R or programming is required.** Follow each step in order.
+### 4.1 Sorting Period (10 minutes)
 
-### What You're Installing
+1. Rinse vegetation so that organisms are dislodged into the pans.
+2. Transfer organisms into water-filled pans using forceps.
+3. At the end of 10 minutes, return the rinsed vegetation to the wetland. All organisms remaining in the bin constitute the sample.
 
-You need two free programs:
+### 4.2 Preservation
 
-| Program | What It Does |
-|---------|--------------|
-| **R** | The engine that powers the app. You won't interact with it directly. |
-| **RStudio** | The program you'll actually use. It provides a user-friendly interface for running R commands. |
+1. Pour the pans through the 200 µm sieve, flushing snails and leeches into the sieve.
+2. Back-flush the sieve into sample jars using alcohol only.
+   - Target a final concentration of approximately 80%.
+   - Split the sample across additional jars if any jar exceeds one-third full.
+3. Label each jar with site ID, date, sample number, jar number, and crew initials.
+4. Store jars in the hazardous-materials room and inspect periodically for evaporation.
+
+> **Caution:** Do not back-flush with water. Dilution below approximately 80% alcohol compromises preservation.
 
 ---
+
+## 5. Laboratory Identification and Enumeration
+
+1. **Confirm software availability.** Verify that R and the MacroIBI application are installed and functional (Section 7).
+
+2. **Prepare the workspace.** Set out stereoscopes, petri dishes, dissection tools, identification guides, and the sample to be processed.
+
+3. **Identify and enumerate all individuals.**
+   - Every individual in the sample must be identified and counted.
+   - Family-level identification is required; genus is preferred and species is recorded where feasible.
+   - Assign one person to data entry; remaining personnel relay taxa and counts.
+   - Pre-sorting specimens into visually similar groups improves throughput.
+   - Samples may be rinsed with water to reduce irritation during processing.
+
+> **Caution:** If the sample must remain preserved after identification, do not introduce water at any stage.
+
+4. **Enter data at regular intervals.** Relay taxa and counts to the data handler for entry into the application.
+   - When efforts have been combined, enter all counts under "Dipnet 1."
+   - See Section 8 for the full application workflow.
+
+---
+
+## 6. Metric Definitions and Scoring
+
+The application calculates six reported metrics and one composite score. Definitions are provided here for offline reference; the same formulas are available in the application under "How are these calculated?"
+
+- **Total Individuals** — Sum of all individuals entered across both dipnets and all taxonomic groups.
+- **EOT richness** — Number of unique taxa within the EOT orders.
+- **Snail richness** — Number of unique taxa within Gastropoda.
+- **All-taxa richness** — Number of unique taxa across all groups entered.
+- **Corixid ratio** — \(\text{Corixidae individuals} / (\text{all true bugs} + \text{beetles})\). Elevated ratios indicate potential nutrient loading; the metric score decreases as the ratio increases.
+- **Abundance of EOT** — \(\text{Total EOT individuals} / \text{Total individuals}\).
+- **IBI Score (0–50)** — Sum of five component scores, each ranging from 0 to 10.
+
+Component scores are scaled between anchor values derived from reference data:
+
+- *Metrics that decrease with disturbance:* EOT richness (1–12 taxa), snail richness (1–10 taxa), all-taxa richness (10–40 taxa), and abundance of EOT (0–0.16). Values below the lower anchor score 0; values at or above the upper anchor score 10.
+- *Metrics that increase with disturbance:* the Corixid ratio is anchored at 0 (best condition) and 1.0 (worst condition), with a 5th–95th percentile band of 0–0.82 defining the scale. Values above the upper anchor score 0.
+
+The reported IBI score is the sum of the five capped component scores, with a maximum of 50.
+
+---
+
+## 7. Software Installation
+
+This section describes installation of the two programs required to run MacroIBI. No prior experience with R or programming is required. Complete the steps in order.
+
+| Program | Function |
+|---------|----------|
+| **R** | The computing engine underlying the application. No direct interaction is required. |
+| **RStudio** | The interface used to run commands and launch the application. |
 
 ### Step 1: Install R
 
-1. Go to **<https://cran.r-project.org>**
-2. Click the download link for your operating system:
-   - **Windows:** Click "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
-   - **Mac:** Click "Download R for macOS" → Choose the version for your Mac (Apple Silicon or Intel)
-3. Open the downloaded file and run the installer
-4. **Accept all default options** - just keep clicking "Next" or "Continue"
+1. Navigate to **<https://cran.r-project.org>**.
+2. Select the download link for the relevant operating system:
+   - **Windows:** "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
+   - **Mac:** "Download R for macOS" → select the build matching the processor (Apple Silicon or Intel)
+3. Open the downloaded file and run the installer.
+4. Accept all default options.
 
 ![CRAN download page showing where to click](figures/01-cran-download.png)
 
@@ -177,25 +191,23 @@ You need two free programs:
 
 ### Step 2: Install RStudio
 
-1. Go to **<https://posit.co/download/rstudio-desktop/>**
-2. Scroll down to "All Installers" and click the download for your operating system
-3. Open the downloaded file and run the installer
-4. **Accept all default options**
+1. Navigate to **<https://posit.co/download/rstudio-desktop/>**.
+2. Scroll to "All Installers" and select the download for the relevant operating system.
+3. Open the downloaded file and run the installer.
+4. Accept all default options.
 
 ![RStudio download page](figures/02-rstudio-download.png)
 
 ---
 
-### Step 3: Install Rtools (Windows Only - Required)
+### Step 3: Install Rtools (Windows only)
 
-> **Mac users:** Skip to Step 4.
+Rtools enables R to install packages that require compilation. This step is required on Windows and is not applicable on macOS.
 
-**This step is required on Windows.** Rtools allows R to install packages that need compilation.
-
-1. Go to **<https://cran.r-project.org/bin/windows/Rtools/>**
-2. Download "Rtools45" (or the version matching your R version)
-3. Run the installer
-4. **Accept all default options**
+1. Navigate to **<https://cran.r-project.org/bin/windows/Rtools/>**.
+2. Download "Rtools45", or the version corresponding to the installed R version.
+3. Run the installer.
+4. Accept all default options.
 
 ![Rtools download page](figures/03-rtools-download.png)
 
@@ -203,10 +215,10 @@ You need two free programs:
 
 ### Step 4: Open RStudio
 
-- **Windows:** Click the Start menu and search for "RStudio", then click to open
-- **Mac:** Open Finder → Applications → RStudio
+- **Windows:** Open the Start menu, search for "RStudio", and select it.
+- **Mac:** Open Finder → Applications → RStudio.
 
-When RStudio opens, you'll see a window divided into panels. Look for the **Console** - it's the panel with a `>` symbol where you can type commands. This is usually in the bottom-left area.
+The RStudio window is divided into panels. Commands are entered in the **Console**, identified by the `>` prompt and located in the lower-left area by default.
 
 ![RStudio interface with Console highlighted](figures/04-rstudio-console.png)
 
@@ -214,36 +226,36 @@ When RStudio opens, you'll see a window divided into panels. Look for the **Cons
 
 ### Step 5: Install the MacroIBI Package
 
-Now you'll type commands in the Console:
+Enter the following commands in the Console:
 
-1. **Click in the Console** (next to the `>` symbol)
-2. **Type or copy-paste** the command shown below
-3. **Press Enter** to run it
-4. **Wait** for the `>` to reappear before typing the next command
+1. Click in the Console, adjacent to the `>` prompt.
+2. Type or paste the command.
+3. Press Enter to execute.
+4. Wait for the `>` prompt to reappear before entering the next command.
 
-#### First command - Install the "remotes" helper package:
+Install the "remotes" helper package:
 
 ```r
 install.packages("remotes")
 ```
 
-#### Second command - Install MacroIBI:
+Install MacroIBI:
 
 ```r
 remotes::install_github("aomop/MacroIBI")
 ```
 
-This downloads MacroIBI from the internet. It may take 1-2 minutes.
+Installation retrieves the package over the internet and typically requires 1–2 minutes.
 
 ![Successful MacroIBI installation in RStudio](figures/05-install-success.png)
 
-> **If you see red text mentioning "Rtools":** Go back to Step 3 and install Rtools, then try this command again.
+> **Note:** Red output referencing "Rtools" indicates that Step 3 has not been completed. Install Rtools and repeat this command.
 
 ---
 
-### Step 6: Launch the App
+### Step 6: Launch the Application
 
-Type these two commands (press Enter after each):
+Enter the following commands, pressing Enter after each:
 
 ```r
 library(macroibi)
@@ -254,57 +266,30 @@ run_macroibi()
 
 ---
 
-### Quick Verification (Optional)
+### Step 7: Verify the Installation (optional)
 
-To confirm everything works, try the demo mode:
+Launch the application in demonstration mode:
 
 ```r
 library(macroibi)
 run_macroibi(demo_mode = TRUE)
 ```
 
-Click "OK" on the demo message, then click **Load Autosave** on the left sidebar. If you see demo files listed, everything is working correctly.
+Acknowledge the demonstration message, then select **Load Autosave** in the left sidebar. The presence of demonstration files confirms a working installation.
 
 ---
 
-### Closing the App
+### Closing the Application
 
-When you're done:
-- **Close the browser tab**, OR
-- **In RStudio**, click the red **Stop** button (🛑) in the Console area, OR
-- **Press the Escape key** while clicked in the Console
+Terminate the session by any of the following:
 
----
-
-### Troubleshooting
-
-#### "Error: package 'remotes' is not available"
-Run `install.packages("remotes")` first, then try again.
-
-#### Red text mentioning "Rtools" or "compilation" (Windows)
-Install Rtools from Step 3, restart RStudio, and try again.
-
-#### "Cannot open URL" or network errors
-Check your internet connection. If you're on a work network, try from home or contact IT about firewall restrictions.
-
-#### PDF/image export not working
-The PDF export feature requires additional software. In the Console, run:
-```r
-webshot2::install_phantomjs()
-```
-
-#### App won't start / "could not find function"
-Make sure you ran `library(macroibi)` first. You need to run this command every time you open RStudio.
-
-#### "Object not found" errors while using the app
-Try closing and relaunching the app. If the problem persists, clear your data and re-enter it.
-
-#### Still stuck?
-Contact Sam Swanson at sam.swanson@shakopeedakota.org
+- Closing the browser tab
+- Selecting the red **Stop** icon in the RStudio Console
+- Pressing Escape with the cursor active in the Console
 
 ---
 
-## 7. Using the MacroIBI App
+## 8. Application Workflow
 
 Start the dashboard:
 
@@ -313,118 +298,115 @@ library(macroibi)
 run_macroibi()
 ```
 
-Enter the **sample title** and **date**, then click **Let’s go!**  
-You can also continue without metadata if you plan to upload data or reload an autosave.
+Enter the sample title and date, then select **Let's go!** The application may also be started without metadata when data will be uploaded or an autosave reloaded.
+
+### Step 1: Enable Autosave
+
+Before entering data, locate **Autosave Settings** in the left panel of the Data tab and select **Enable Auto-Save**.
+
+Autosave performs the following functions:
+
+- Saves progress at regular intervals
+- Stores autosaves separately for each user
+- Permits recovery following an unexpected shutdown
+- Maintains the session history used for reports and comparisons
+
+Previous sessions are restored using **Load Autosave**.
+
+> **Note:** The Data Summary and Full Report outputs require available autosave history.
 
 ---
 
-### Step 1 - Enable Autosave
+### Step 2: Enter Taxa and Counts
 
-Before entering data, find the **Autosave Settings** on the left side of the Data tab and **Enable Auto-Save**
+On the Data tab, use **Select Taxon** to search for and add taxa. The application assigns each taxon to the appropriate group automatically.
 
-Autosave will:
-
-- periodically save your progress  
-- store autosaves per user  
-- allow recovery after crashes  
-- provide history for reports and comparisons  
-
-You can reload autosaves using **Load Autosave**.
-
-> Data Summary and Full Report features rely on having autosaves available.
-
----
-
-### Step 2 - Enter Taxa and Counts
-
-Still on the data tab, use **Select Taxon** to search and add taxa.  
-The app assigns each taxon to the correct group automatically.
-
-Each row displays:
+Each row reports:
 
 - Taxon name
-- Dipnet 1 Count 
-- Dipnet 2 Count
-- Sum Count (auto-calculated)
+- Dipnet 1 count
+- Dipnet 2 count
+- Sum count (calculated)
 
-Each group footer updates live:
+Each group footer updates continuously and reports:
 
-- Total Taxa
-- Percent of Total Sample 
-- Total Individuals
+- Total taxa
+- Percent of total sample
+- Total individuals
 
 ---
 
-### Step 3 - Review Metrics
+### Step 3: Review Metrics
 
-Switch to **Results** to see real-time IBI calculations.
+Open the **Results** tab to view IBI calculations, which update in real time. Reported values are:
 
-Displayed metrics include:
-
-- Total Individuals  
-- EOT richness  
-- Snail richness  
-- All-taxa richness  
-- Corixid ratio  
+- Total Individuals
+- EOT richness
+- Snail richness
+- All-taxa richness
+- Corixid ratio
 - Abundance of EOT
 - **Overall IBI score (0–50)**
 
-Hover over *“How are these calculated?”* for metric formulas.
-
-#### Metric definitions and scoring (offline reference)
-
-- **Total Individuals** - Sum of all individuals entered across both dipnets and all taxonomic groups.
-- **EOT richness** - Number of unique taxa in Dragonflies, Mayflies, Damselflies, and Caddisflies (EOT Orders).
-- **Snail richness** - Number of unique taxa in Gastropoda.
-- **All-taxa richness** - Sum of unique taxa across all groups entered in the app.
-- **Corixid ratio** - \(\text{Corixidae individuals} / (\text{all true bugs} + \text{beetles})\); higher ratios indicate potential nutrient loading, so scoring decreases as the ratio rises.
-- **Abundance of EOT** - \(\text{Total EOT individuals} / \text{Total individuals}\).
-- **IBI Score (0–50)** - Sum of five adjusted metric scores (each 0–10). Scores are scaled between anchor percentiles observed in reference data:
-  - *Decrease with disturbance:* EOT richness (1–12 taxa), snail richness (1–10 taxa), all-taxa richness (10–40 taxa), abundance of EOT (0–0.16). Values below the minimum score 0; values at/above the upper anchor score 10.
-  - *Increase with disturbance:* Corixid ratio uses anchors 0 (best) to 1.0 (worst) with a 5th–95th percentile band of 0–0.82 guiding the scale; values above the maximum anchor score 0.
-  - The final IBI score is the sum of the capped component scores (maximum 50).
+Metric definitions and scoring anchors are given in Section 6.
 
 ---
 
-### Step 4 - Export Final Outputs
+### Step 4: Export Outputs
 
-Available downloads:
+The following outputs are available for download:
 
-1. **Raw Data CSV**
-   For archiving or re-uploading into the app.
-   Use only CSVs exported from MacroIBI without external edits; uploading unrelated or manually prepared files can break metric calculations.
+1. **Raw Data CSV** — For archiving or re-uploading into the application. Use only CSV files exported from MacroIBI and not subsequently edited; externally prepared or modified files may produce invalid metric calculations.
+2. **Results CSV** — Final calculated scores in tabular form.
+3. **Table Image (PNG)** — Formatted metric table including title and date.
+4. **Data Summary (PDF)** — One-page summary of current metrics.
+5. **Full Report (PDF)** — Comprehensive report including current metrics and comparisons against other autosaved sessions.
 
-2. **Results CSV**
-   A basic CSV file with the final calculated scores
-
-3. **Table Image (PNG)**  
-   A formatted metric table with titles and dates.
-
-4. **Data Summary (PDF)**  
-   A concise one-page snapshot of metrics.
-
-5. **Full Report (PDF)**  
-   Comprehensive report including:  
-   - current metrics  
-   - comparisons to other autosaved sessions  
-
-> PDF Reports require autosave history to generate comparisons.
+> **Note:** PDF reports require autosave history to generate comparisons.
 
 ---
 
-## 8. Additional Features
+## 9. Additional Features
 
-### Taxonomic Hierarchy Viewer
+### 9.1 Taxonomic Hierarchy Viewer
 
-Use **Show/Hide Taxonomic Hierarchy** to view a taxonomic tree of selected taxa; this helps verify correct grouping.
+Select **Show/Hide Taxonomic Hierarchy** to display a taxonomic tree of the selected taxa. This is used to verify correct group assignment.
 
-### Reloading Old Work
+### 9.2 Restoring Previous Sessions
 
-Upload any previously exported **Raw Data CSV** to restore tables exactly as saved.
+Upload any previously exported **Raw Data CSV** to restore the data tables as saved.
 
-### Clearing Data
+### 9.3 Clearing Data
 
-**Clear All Data** resets everything.  
-***This cannot be undone if the data isn’t saved.***
+**Clear All Data** resets the session in full.
+
+> **Caution:** This action cannot be reversed if the data has not been saved or exported.
 
 ---
+
+## 10. Troubleshooting
+
+**"Error: package 'remotes' is not available"**
+Run `install.packages("remotes")`, then repeat the failed command.
+
+**Red output referencing "Rtools" or "compilation" (Windows)**
+Install Rtools (Section 7, Step 3), restart RStudio, and repeat the command.
+
+**"Cannot open URL" or other network errors**
+Verify the internet connection. On managed or institutional networks, retry from an unrestricted connection or consult IT regarding firewall restrictions.
+
+**PDF or image export fails**
+PDF export requires additional supporting software. In the Console, run:
+
+```r
+webshot2::install_phantomjs()
+```
+
+**Application will not start, or "could not find function"**
+Confirm that `library(macroibi)` has been run. This command is required in each new RStudio session.
+
+**"Object not found" errors during use**
+Close and relaunch the application. If the error persists, clear the data and re-enter it.
+
+**Unresolved issues**
+Contact Sam Swanson at sam.swanson@shakopeedakota.org.
